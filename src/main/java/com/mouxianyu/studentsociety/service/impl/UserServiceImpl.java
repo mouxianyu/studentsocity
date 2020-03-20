@@ -75,8 +75,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateById(UserDTO userDTO) {
         User user = new User();
-        user.setModifyTime(new Date());
         BeanUtils.copyProperties(userDTO,user);
+        user.setModifyTime(new Date());
         userMapper.updateByPrimaryKeySelective(user);
     }
 

@@ -23,7 +23,13 @@ public enum StatusEnum {
     /**
      * 删除
      */
-    DELETED(2,"删除");
+    DELETED(2,"删除"),
+
+    /**
+     * 审核中
+     */
+    AUDITING(3,"审核中")
+    ;
 
     /**
      * 编码
