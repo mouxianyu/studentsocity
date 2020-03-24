@@ -22,4 +22,11 @@ public interface MajorService {
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.Major>
      */
     List<Major> queryAll();
+
+    /**
+     * 通过学院id查询
+     * @param collegeId 学院id
+     * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.Major>
+     */
+    List<Major> queryByCollegeId(Long collegeId);
 }

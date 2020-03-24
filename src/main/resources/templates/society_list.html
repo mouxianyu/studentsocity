@@ -16,7 +16,8 @@
             -webkit-appearance: none !important;
             margin: 0;
         }
-        .updateToggle{
+
+        .linkToggle {
             cursor: pointer;
             color: #428bca;
             font-weight: normal;
@@ -51,7 +52,7 @@
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
                 <li><a th:href="@{/user/queryByPage}">学生管理</a></li>
-                <li  class="active"><a th:href="@{/society/queryByPage}">社团管理</a></li>
+                <li class="active"><a th:href="@{/society/queryByPage}">社团管理</a></li>
             </ul>
             <ul class="nav nav-sidebar">
                 <li><a href="">统计分析</a></li>
@@ -62,7 +63,8 @@
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h2 class="sub-header">社团管理</h2>
-            <form id="query_form" name="queryForm" class="form-inline" th:action="@{/society/queryByPage}" method="post">
+            <form id="query_form" name="queryForm" class="form-inline" th:action="@{/society/queryByPage}"
+                  method="post">
                 <div class="form-group">
                     <label>姓名</label>
                     <input type="text" class="form-control" name="name" th:value="${condition.name}">
@@ -107,8 +109,14 @@
                             <td th:case=3>审核中</td>
                             <td th:case=*>未知</td>
                         </th:block>
-                        <th><a class="updateToggle" data-toggle="modal" data-target="#updateModal" onclick="detail(this)">
-                            <input style="display: none" th:value="${society.id}">详情</a></th>
+                        <th>
+                            <a class="linkToggle" data-toggle="modal" data-target="#detailModal" onclick="showDetail(this,'detail')">
+                                <input style="display: none" th:value="${society.id}">详情
+                            </a>|
+                            <a class="linkToggle" data-toggle="modal" data-target="#updateModal" onclick="showDetail(this,'update')">
+                                <input style="display: none" th:value="${society.id}">修改
+                            </a>
+                        </th>
                     </tr>
                     </tbody>
                 </table>
@@ -222,9 +230,9 @@
                         <div class="form-group">
                             <label>状态</label>
                             <select class="form-control" name="status">
-                                    <option value="0">正常</option>
-                                    <option value="1">失效</option>
-                                    <option value="3">审核中</option>
+                                <option value="0">正常</option>
+                                <option value="1">失效</option>
+                                <option value="3">审核中</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -236,7 +244,7 @@
                         </div>
                         <div class="form-group">
                             <label>详情</label>
-                            <textarea class="form-control" name="detail"></textarea>
+                            <textarea class="form-control" style="height: 100px" name="detail"></textarea>
                         </div>
                     </div>
                     <div class=" modal-footer">
@@ -284,12 +292,58 @@
                         </div>
                         <div class="form-group">
                             <label>详情</label>
-                            <textarea id="update_detail" class="form-control" name="detail"></textarea>
+                            <textarea id="update_detail" style="height: 100px" class="form-control" name="detail"></textarea>
                         </div>
                     </div>
                     <div class=" modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                         <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form method="post" id="detailForm">
+        <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title" id="detailModalLabel" style="text-align: center">社团信息详情</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group" style="display: none">
+                            <label>ID</label>
+                            <input id="detail_id" name="id" type="text" readonly class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>社团名称</label>
+                            <input name="name" value="" type="text" class="form-control" id="detail_name" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>状态</label>
+                            <select class="form-control" name="status" id="detail_status" disabled>
+                                <option value="0">正常</option>
+                                <option value="1">失效</option>
+                                <option value="3">审核中</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>规模</label>
+                            <select class="form-control" name="scale" id="detail_scale" disabled>
+                                <option value="0">校级</option>
+                                <option value="1">院级</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>详情</label>
+                            <textarea style="height: 100px" id="detail_detail" class="form-control" name="detail" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class=" modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                     </div>
                 </div>
             </div>
@@ -376,19 +430,20 @@
         });
     }
 
-    function detail(obj) {
+    function showDetail(obj,method) {
+        method = "#"+method+"_";
         var val = $(obj).children();
         $.ajax({
-            url:"/society/"+$(val[0]).val(),
-            success:function (data) {
+            url: "/society/" + $(val[0]).val(),
+            success: function (data) {
                 console.log(data);
-                $("#update_id").val(data.id);
-                $("#update_name").val(data.name);
-                $("#update_detail").val(data.detail);
-                $("#update_status").val(data.status);
-                $("#update_scale").val(data.scale);
+                $(method+"id").val(data.id);
+                $(method+"name").val(data.name);
+                $(method+"detail").val(data.detail);
+                $(method+"status").val(data.status);
+                $(method+"scale").val(data.scale);
             },
-            error:function (error) {
+            error: function (error) {
                 alert("发生异常");
                 console.log(error);
             }

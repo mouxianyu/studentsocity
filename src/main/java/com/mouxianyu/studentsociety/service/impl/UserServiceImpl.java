@@ -75,6 +75,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateById(UserDTO userDTO) {
         User user = new User();
+        if(userDTO.getMajor()!=null){
+            Major major = majorService.getById(userDTO.getMajor());
+            userDTO.setCollege(major.getCollegeId());
+        }
         BeanUtils.copyProperties(userDTO,user);
         user.setModifyTime(new Date());
         userMapper.updateByPrimaryKeySelective(user);
@@ -90,6 +94,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void add(UserDTO userDTO) {
         User user = new User();
+        if(userDTO.getMajor()!=null){
+            Major major = majorService.getById(userDTO.getMajor());
+            userDTO.setCollege(major.getCollegeId());
+        }
         BeanUtils.copyProperties(userDTO,user);
         user.setCreateTime(new Date());
         if(StringUtils.isEmpty(user.getPassword())){

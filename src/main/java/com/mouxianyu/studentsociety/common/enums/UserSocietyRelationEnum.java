@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum RelationStuSocietyEnum {
+public enum UserSocietyRelationEnum {
     /**
      * 社长
      */

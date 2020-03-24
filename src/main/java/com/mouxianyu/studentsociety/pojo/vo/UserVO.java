@@ -31,6 +31,10 @@ public class UserVO implements Serializable {
      */
     private String grade;
     /**
+     * 学院
+     */
+    private Long college;
+    /**
      * 专业
      */
     private String major;

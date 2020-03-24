@@ -32,6 +32,10 @@ public class UserDTO extends PageDTO implements Serializable {
      */
     private String grade;
     /**
+     * 学院
+     */
+    private Long college;
+    /**
      * 专业
      */
     private Long major;

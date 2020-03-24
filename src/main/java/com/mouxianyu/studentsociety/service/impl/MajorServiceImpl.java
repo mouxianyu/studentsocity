@@ -32,4 +32,12 @@ public class MajorServiceImpl implements MajorService {
         criteria.andNotEqualTo("status", StatusEnum.DELETED.getCode());
         return majorMapper.selectByExample(example);
     }
+
+    @Override
+    public List<Major> queryByCollegeId(Long collegeId) {
+        Example example = new Example(Major.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("collegeId",collegeId);
+        return majorMapper.selectByExample(example);
+    }
 }
