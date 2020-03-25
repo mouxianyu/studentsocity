@@ -27,4 +27,9 @@ public class CollegeServiceImpl implements CollegeService {
         criteria.andNotEqualTo("status", StatusEnum.DELETED.getCode());
         return collegeMapper.selectByExample(example);
     }
+
+    @Override
+    public College getById(Long id) {
+        return collegeMapper.selectByPrimaryKey(id);
+    }
 }

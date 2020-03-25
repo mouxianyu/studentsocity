@@ -17,7 +17,11 @@ public enum AuthTypeEnum {
     /**
      * 普通用户
      */
-    USER(1,"普通用户")
+    USER(1,"普通用户"),
+    /**
+     * 社团管理员
+     */
+    SOCIETY_ADMIN(2,"社团管理员")
     ;
 
     /**

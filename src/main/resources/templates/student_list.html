@@ -41,9 +41,6 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="#">管理员</a></li>
             </ul>
-            <form class="navbar-form navbar-right">
-                <input type="text" class="form-control" placeholder="搜索">
-            </form>
         </div>
     </div>
 </nav>
@@ -231,17 +228,17 @@
                             <label>学号</label>
                             <input name="no" value="" type="text"
                                    class="form-control"
-                                   placeholder="请输入学号">
+                                   placeholder="请输入学号" required>
                         </div>
                         <div class="form-group">
                             <label>姓名</label>
                             <input name="name" value="" type="text" class="form-control"
-                                   placeholder="请输入姓名">
+                                   placeholder="请输入姓名" required>
                         </div>
                         <div class="form-group">
                             <label>年级</label>
                             <input name="grade" value="" type="text" class="form-control"
-                                   placeholder="请输入年级">
+                                   placeholder="请输入年级" required>
                         </div>
                         <div class="form-group">
                             <label>邮箱</label>
@@ -259,18 +256,18 @@
                         </div>
                         <div class="form-group">
                             <label>权限</label>
-                            <select class="form-control" name="authority">
+                            <select class="form-control" name="authority" required>
                                 <option value="1">普通用户</option>
                                 <option value="0">超级管理员</option>
                             </select>
                         </div>
                         <div class="form-group form-inline">
                             <label>学院</label>
-                            <select id="add_college_select" class="form-control" name="college" onchange="loadMajors($(this),$('#add_major_select'))">
+                            <select id="add_college_select" class="form-control" name="college" onchange="loadMajors($(this),$('#add_major_select'))" required>
                                 <option value="">——— 请 选 择 ———</option>
                             </select>
                             <label>专业</label>
-                            <select id="add_major_select" class="form-control" name="major">
+                            <select id="add_major_select" class="form-control" name="major" required>
                                 <option value="">——— 请 选 择 ———</option>
                             </select>
                         </div>
@@ -280,7 +277,7 @@
                         </div>
                         <div class="form-group">
                             <label>性别</label>
-                            <input type="radio" name="gender" value=true>男
+                            <input type="radio" name="gender" value=true checked>男
                             <input type="radio" name="gender" value=false>女
                         </div>
                     </div>
@@ -311,17 +308,17 @@
                             <label>学号</label>
                             <input name="no" value="" type="text"
                                    class="form-control"
-                                   placeholder="请输入学号" id="update_no">
+                                   placeholder="请输入学号" id="update_no" required>
                         </div>
                         <div class="form-group">
                             <label>姓名</label>
                             <input name="name" value="" type="text" class="form-control"
-                                   placeholder="请输入姓名" id="update_name">
+                                   placeholder="请输入姓名" id="update_name" required>
                         </div>
                         <div class="form-group">
                             <label>年级</label>
                             <input name="grade" value="" type="text" class="form-control"
-                                   placeholder="请输入年级" id="update_grade">
+                                   placeholder="请输入年级" id="update_grade" required>
                         </div>
                         <div class="form-group">
                             <label>邮箱</label>
@@ -346,11 +343,11 @@
                         </div>
                         <div class="form-group form-inline">
                             <label>学院</label>
-                            <select id="update_college_select" class="form-control" name="college" onchange="loadMajors($(this),$('#update_major_select'))">
+                            <select id="update_college_select" class="form-control" name="college" onchange="loadMajors($(this),$('#update_major_select'))" required>
                                 <option value="">——— 请 选 择 ———</option>
                             </select>
                             <label>专业</label>
-                            <select id="update_major_select" class="form-control" name="major">
+                            <select id="update_major_select" class="form-control" name="major" required>
                                 <option value="">——— 请 选 择 ———</option>
                             </select>
                         </div>

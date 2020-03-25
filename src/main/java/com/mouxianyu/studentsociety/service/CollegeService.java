@@ -14,4 +14,11 @@ public interface CollegeService {
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.College>
      */
     List<College> queryAll();
+
+    /**
+     * 通过id查询
+     * @param id
+     * @return com.mouxianyu.studentsociety.pojo.entity.College
+     */
+    College getById(Long id);
 }

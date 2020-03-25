@@ -20,6 +20,19 @@ public interface UserService {
     User getById(Long id);
 
     /**
+     * 查询所有
+     * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.User>
+     */
+    List<User> queryAll();
+
+    /**
+     * 通过社团id查询
+     * @param societyId
+     * @return java.util.List<com.mouxianyu.studentsociety.pojo.vo.UserVO>
+     */
+    List<UserVO> queryBySocietyId(Long societyId);
+
+    /**
      * 分页查询
      * @param userDTO 查询条件
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.User>

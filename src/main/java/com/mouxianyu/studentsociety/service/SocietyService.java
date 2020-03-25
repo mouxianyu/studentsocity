@@ -5,6 +5,7 @@ import com.mouxianyu.studentsociety.pojo.entity.Society;
 import com.mouxianyu.studentsociety.pojo.vo.SocietyVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description: TODO
@@ -36,7 +37,7 @@ public interface SocietyService {
      * 新建
      * @param societyDTO 内容
      */
-    void add(SocietyDTO societyDTO);
+    Long add(SocietyDTO societyDTO);
 
     /**
      * 通过主键删除
@@ -55,4 +56,13 @@ public interface SocietyService {
      * @param societyDTO 内容
      */
     void updateById(SocietyDTO societyDTO);
+
+    /**
+     * 学院统计
+     * @param societyId
+     * @return java.util.Map<java.util.List<java.lang.Integer>,java.util.List<java.lang.String>>
+            */
+    Map<String,List<String>> countByCollege(Long societyId);
+
+
 }

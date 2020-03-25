@@ -23,6 +23,32 @@ public class SocietyVO implements Serializable {
      * 名称
      */
     private String name;
+
+    /**
+     * 社长id
+     */
+    private Long presidentId;
+
+    /**
+     * 社长名
+     */
+    private String presidentName;
+
+    /**
+     * 副社长id
+     */
+    private Long vicePresidentId;
+
+    /**
+     * 副社长名
+     */
+    private String vicePresidentName;
+
+    /**
+     * 社团人数
+     */
+    private Integer userCount;
+
     /**
      * 详情
      */

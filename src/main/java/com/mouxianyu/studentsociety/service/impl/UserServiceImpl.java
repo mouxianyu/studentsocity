@@ -5,9 +5,11 @@ import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.mapper.UserMapper;
 import com.mouxianyu.studentsociety.pojo.dto.UserDTO;
 import com.mouxianyu.studentsociety.pojo.entity.Major;
+import com.mouxianyu.studentsociety.pojo.entity.RelUserSociety;
 import com.mouxianyu.studentsociety.pojo.entity.User;
 import com.mouxianyu.studentsociety.pojo.vo.UserVO;
 import com.mouxianyu.studentsociety.service.MajorService;
+import com.mouxianyu.studentsociety.service.RelUserSocietyService;
 import com.mouxianyu.studentsociety.service.UserService;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
@@ -32,9 +34,43 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private MajorService majorService;
 
+    @Autowired
+    private RelUserSocietyService relUserSocietyService;
+
     @Override
     public User getById(Long id) {
         return userMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public List<User> queryAll() {
+        Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andNotEqualTo("status",StatusEnum.DELETED.getCode());
+        return userMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<UserVO> queryBySocietyId(Long societyId) {
+        List<UserVO> userVOS = new ArrayList<>();
+        List<RelUserSociety> relUserSocieties = relUserSocietyService.queryBySocietyId(societyId);
+        for (RelUserSociety relUserSociety : relUserSocieties) {
+            User user = getById(relUserSociety.getUserId());
+            UserVO userVO = new UserVO();
+            BeanUtils.copyProperties(user,userVO);
+            userVO.setMajorId(user.getMajor());
+            userVO.setRelation(relUserSociety.getRelation());
+            userVO.setRelationStatus(relUserSociety.getStatus());
+            Major major = new Major();
+            if (user.getMajor() != null) {
+                major = majorService.getById(user.getMajor());
+            }
+            if (major != null) {
+                userVO.setMajor(major.getName());
+            }
+            userVOS.add(userVO);
+        }
+        return userVOS;
     }
 
     @Override
@@ -46,6 +82,7 @@ public class UserServiceImpl implements UserService {
         for (User user : users) {
             UserVO userVO = new UserVO();
             BeanUtils.copyProperties(user, userVO);
+            userVO.setMajorId(user.getMajor());
             Major major = new Major();
             if (user.getMajor() != null) {
                 major = majorService.getById(user.getMajor());

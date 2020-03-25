@@ -38,6 +38,12 @@ public class UserController {
         return userService.getById(id);
     }
 
+    @RequestMapping("queryAll")
+    @ResponseBody
+    public List<User> queryAll(){
+        return userService.queryAll();
+    }
+
     @RequestMapping("queryByPage")
     public String queryByPage(HttpServletRequest request, UserDTO userDTO) {
         UserDTO condition = new UserDTO();

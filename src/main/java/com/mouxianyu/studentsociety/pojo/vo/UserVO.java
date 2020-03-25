@@ -38,6 +38,21 @@ public class UserVO implements Serializable {
      * 专业
      */
     private String major;
+
+    /**
+     * 专业id
+     */
+    private Long majorId;
+
+    /**
+     * 用户与社团的关系
+     */
+    private Integer relation;
+
+    /**
+     * 用户与社团关系的状态
+     */
+    private Integer relationStatus;
     /**
      * 性别
      */
