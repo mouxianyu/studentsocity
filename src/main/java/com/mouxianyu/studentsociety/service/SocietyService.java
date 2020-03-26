@@ -20,6 +20,13 @@ public interface SocietyService {
     Society getById(Long id);
 
     /**
+     * 通过id获得
+     * @param id
+     * @return com.mouxianyu.studentsociety.pojo.vo.SocietyVO
+     */
+    SocietyVO getByIdMore(Long id);
+
+    /**
      * 分页查询
      * @param societyDTO 条件
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.vo.SocietyVO>

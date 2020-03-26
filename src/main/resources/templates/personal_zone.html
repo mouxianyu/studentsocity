@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>学生社团管理系统</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link th:href="@{/bootstrap/dashboard.css}" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" th:href="@{/user/queryByPage}">学生社团管理系统</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a th:href="@{/user/zone}" th:text="${session.USER.name}">管理员</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li><a th:href="@{/user/queryByPage}">学生管理</a></li>
+                <li><a th:href="@{/society/queryByPage}">社团管理</a></li>
+            </ul>
+            <!--            <ul class="nav nav-sidebar">-->
+            <!--                <li><a href="">统计分析</a></li>-->
+            <!--            </ul>-->
+            <!--            <ul class="nav nav-sidebar">-->
+            <!--                <li><a href="">日志系统</a></li>-->
+            <!--            </ul>-->
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="col-md-5 col-md-offset-3" style="padding-top: 50px">
+                <form method="post" th:action="@{/user/update}" id="updateForm">
+                    <div class="form-group" style="display: none">
+                        <label>ID</label>
+                        <input id="update_id" name="id" type="text" readonly class="form-control"
+                               th:value="${session.USER.id}">
+                    </div>
+                    <div class="form-group">
+                        <label>学号</label>
+                        <input name="no" value="" type="text"
+                               class="form-control"
+                               placeholder="请输入学号" id="update_no" required readonly th:value="${session.USER.no}">
+                    </div>
+                    <div class="form-group">
+                        <label>姓名</label>
+                        <input name="name" value="" type="text" class="form-control"
+                               placeholder="请输入姓名" id="update_name" required th:value="${session.USER.name}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>年级</label>
+                        <input name="grade" value="" type="text" class="form-control"
+                               placeholder="请输入年级" id="update_grade" required th:value="${session.USER.grade}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>邮箱</label>
+                        <input name="email" type="email" class="form-control"
+                               placeholder="请输入邮箱" id="update_email" th:value="${session.USER.email}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>手机</label>
+                        <input name="phone" type="tel" class="form-control" placeholder="请输入手机号码" id="update_phone"
+                               th:value="${session.USER.phone}" readonly>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label>学院</label>
+                        <input name="name" value="" type="text" class="form-control"
+                               placeholder="请输入姓名" id="update_college" required th:value="${session.COLLEGE}" readonly>
+                        <label>专业</label>
+                        <input name="name" value="" type="text" class="form-control"
+                               placeholder="请输入姓名" id="update_major" required th:value="${session.MAJOR}" readonly>
+                    </div>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">修改密码</button>
+                    <button type="button" id="modify_btn" class="btn btn-default" onclick="modify(this)">修改</button>
+                    <button type="button" id="save_btn" class="btn btn-primary" onclick="save()" style="display: none">
+                        保存
+                    </button>
+                    <button type="button" id="cancle_btn" class="btn btn-default" onclick="cancel(this)"
+                            style="display: none">取消
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">修改密码</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>旧 密 码</label>
+                    <input name="name" value="" type="password" class="form-control" placeholder="请输入旧密码" id="old_password">
+                </div>
+                <div class="form-group">
+                    <label>新 密 码</label>
+                    <input name="name" value="" type="password" class="form-control" placeholder="请输入新密码" id="new_password">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="changePassword()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+<script>
+    function modify(button) {
+        $(button).css("display", "none");
+        $("#save_btn").css("display", "inline");
+        $("#cancle_btn").css("display", "inline");
+        $("#update_name").attr("readonly", false);
+        $("#update_email").attr("readonly", false);
+        $("#update_phone").attr("readonly", false);
+    }
+
+    function save() {
+        $.ajax({
+            url: "/user/updateIncludeSession",
+            data: {
+                id: $("#update_id").val(),
+                name: $("#update_name").val(),
+                email: $("#update_email").val(),
+                phone: $("#update_phone").val()
+            },
+            success: function () {
+                window.location.reload();
+            },
+            error: function (error) {
+                alert("后台服务器发生错误");
+                console.log(error);
+            }
+        });
+    }
+
+    function cancel(button) {
+        $(button).css("display", "none");
+        $("#save_btn").css("display", "none");
+        $("#modify_btn").css("display", "inline");
+        $("#update_name").attr("readonly", true);
+        $("#update_email").attr("readonly", true);
+        $("#update_phone").attr("readonly", true);
+    }
+
+    function changePassword() {
+        var oldPassword = $("#old_password").val();
+        var newPassword =$("#new_password").val();
+        if (oldPassword===""||oldPassword===null){
+            alert("请输入旧密码");
+            return;
+        }
+        if (newPassword===""||newPassword===null){
+            alert("请输入新密码");
+            return;
+        }
+        $.ajax({
+            url:"/user/changePassword",
+            data:{
+                id: $("#update_id").val(),
+                oldPassword: oldPassword,
+                newPassword: newPassword,
+            },
+            success:function (data) {
+
+                if(data===""){
+                    alert("修改成功")
+                    window.location.reload();
+                }else {
+                    alert(data);
+                }
+            },
+            error:function (error) {
+                alert("后台服务器异常");
+                console.log(error);
+            }
+        })
+    }
+</script>
+</html>

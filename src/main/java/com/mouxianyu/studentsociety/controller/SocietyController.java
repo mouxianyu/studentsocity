@@ -1,5 +1,6 @@
 package com.mouxianyu.studentsociety.controller;
 
+import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.common.enums.UserSocietyRelationEnum;
 import com.mouxianyu.studentsociety.pojo.dto.SocietyDTO;
 import com.mouxianyu.studentsociety.pojo.entity.RelUserSociety;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,24 +42,7 @@ public class SocietyController {
     @RequestMapping("{id}")
     @ResponseBody
     public SocietyVO getById(@PathVariable("id") Long id) {
-        SocietyVO societyVO = new SocietyVO();
-        Society society = societyService.getById(id);
-        BeanUtils.copyProperties(society, societyVO);
-        RelUserSociety president = relUserSocietyService.getBySocietyIdAndRelation(id, UserSocietyRelationEnum.PRESIDENT.getCode());
-        RelUserSociety vicePresident = relUserSocietyService.getBySocietyIdAndRelation(id, UserSocietyRelationEnum.VICE_PRESIDENT.getCode());
-        if (president != null) {
-            societyVO.setPresidentId(president.getUserId());
-            User user = userService.getById(president.getUserId());
-            societyVO.setPresidentName(user.getName());
-        }
-        if (vicePresident != null) {
-            societyVO.setVicePresidentId(vicePresident.getUserId());
-            User user = userService.getById(vicePresident.getUserId());
-            societyVO.setVicePresidentName(user.getName());
-        }
-        int userCount = relUserSocietyService.countBySocietyId(id);
-        societyVO.setUserCount(userCount);
-        return societyVO;
+        return societyService.getByIdMore(id);
     }
 
     @RequestMapping("queryByPage")
@@ -114,6 +99,36 @@ public class SocietyController {
         relUserSociety.setRelation(UserSocietyRelationEnum.PRESIDENT.getCode());
         relUserSocietyService.add(relUserSociety);
         return "redirect:/society/queryByPage";
+    }
+
+    @RequestMapping("join/{id}")
+    @ResponseBody
+    public String join(HttpServletRequest request, @PathVariable("id") Long societyId){
+        User user = (User) request.getSession().getAttribute("USER");
+        RelUserSociety relUserSociety = relUserSocietyService.getByUserIdAndSocietyId(user.getId(), societyId);
+        if(relUserSociety!=null){
+            return "您已经加入或申请过该社团";
+        }
+        RelUserSociety newRelUserSociety = new RelUserSociety();
+        newRelUserSociety.setSocietyId(societyId);
+        newRelUserSociety.setUserId(user.getId());
+        newRelUserSociety.setRelation(UserSocietyRelationEnum.MEMBER.getCode());
+        relUserSocietyService.add(newRelUserSociety);
+        return "";
+    }
+
+    @RequestMapping("mySociety")
+    public String mySociety(HttpServletRequest request){
+        List<SocietyVO> societyVOS = new ArrayList<>();
+        User user = (User) request.getSession().getAttribute("USER");
+        List<RelUserSociety> relUserSocieties = relUserSocietyService.queryByUserId(user.getId());
+        for (RelUserSociety relUserSociety : relUserSocieties) {
+            SocietyVO societyVO = societyService.getByIdMore(relUserSociety.getSocietyId());
+            societyVO.setRelationStatus(relUserSociety.getStatus());
+            societyVOS.add(societyVO);
+        }
+        request.setAttribute("societies",societyVOS);
+        return "client/my_society";
     }
 
     @RequestMapping("countByCollege/{id}")

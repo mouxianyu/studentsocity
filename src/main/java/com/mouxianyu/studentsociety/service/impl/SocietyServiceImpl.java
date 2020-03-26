@@ -45,6 +45,28 @@ public class SocietyServiceImpl implements SocietyService {
     }
 
     @Override
+    public SocietyVO getByIdMore(Long id) {
+        SocietyVO societyVO = new SocietyVO();
+        Society society = getById(id);
+        BeanUtils.copyProperties(society, societyVO);
+        RelUserSociety president = relUserSocietyService.getBySocietyIdAndRelation(id, UserSocietyRelationEnum.PRESIDENT.getCode());
+        RelUserSociety vicePresident = relUserSocietyService.getBySocietyIdAndRelation(id, UserSocietyRelationEnum.VICE_PRESIDENT.getCode());
+        if (president != null) {
+            societyVO.setPresidentId(president.getUserId());
+            User user = userService.getById(president.getUserId());
+            societyVO.setPresidentName(user.getName());
+        }
+        if (vicePresident != null) {
+            societyVO.setVicePresidentId(vicePresident.getUserId());
+            User user = userService.getById(vicePresident.getUserId());
+            societyVO.setVicePresidentName(user.getName());
+        }
+        int userCount = relUserSocietyService.countBySocietyId(id);
+        societyVO.setUserCount(userCount);
+        return societyVO;
+    }
+
+    @Override
     public List<SocietyVO> queryByPage(SocietyDTO societyDTO) {
         Example example = condition(societyDTO);
         RowBounds rowBounds = new RowBounds(societyDTO.getStart(), societyDTO.getRow());

@@ -20,6 +20,13 @@ public interface UserService {
     User getById(Long id);
 
     /**
+     * 通过编号查询
+     * @param userNo
+     * @return com.mouxianyu.studentsociety.pojo.entity.User
+     */
+    User getByUserNo(String userNo);
+
+    /**
      * 查询所有
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.User>
      */

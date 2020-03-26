@@ -2,9 +2,11 @@ package com.mouxianyu.studentsociety.controller;
 
 import com.mouxianyu.studentsociety.common.constant.Constant;
 import com.mouxianyu.studentsociety.pojo.dto.UserDTO;
+import com.mouxianyu.studentsociety.pojo.entity.College;
 import com.mouxianyu.studentsociety.pojo.entity.Major;
 import com.mouxianyu.studentsociety.pojo.entity.User;
 import com.mouxianyu.studentsociety.pojo.vo.UserVO;
+import com.mouxianyu.studentsociety.service.CollegeService;
 import com.mouxianyu.studentsociety.service.MajorService;
 import com.mouxianyu.studentsociety.service.UserService;
 import org.springframework.beans.BeanUtils;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -31,6 +34,9 @@ public class UserController {
     @Autowired
     private MajorService majorService;
 
+    @Autowired
+    private CollegeService collegeService;
+
 
     @RequestMapping("{id}")
     @ResponseBody
@@ -42,6 +48,29 @@ public class UserController {
     @ResponseBody
     public List<User> queryAll(){
         return userService.queryAll();
+    }
+    @RequestMapping("toLogin")
+    public String toLogin(){
+        return "login";
+    }
+
+    @RequestMapping("zone")
+    public String zone(){
+        return "personal_zone";
+    }
+
+    @RequestMapping("login")
+    @ResponseBody
+    public String login(String userNo,String userPassword,HttpServletRequest request){
+        User user = userService.getByUserNo(userNo);
+        if(user==null){
+            return "用户不存在";
+        }
+        if(!user.getPassword().equals(userPassword)){
+            return "密码错误";
+        }
+        updateSession(request,user);
+        return "";
     }
 
     @RequestMapping("queryByPage")
@@ -72,6 +101,14 @@ public class UserController {
         return "redirect:/user/queryByPage";
     }
 
+    @RequestMapping("updateIncludeSession")
+    @ResponseBody
+    public void updateIncludeSession(UserDTO userDTO ,HttpServletRequest request){
+        userService.updateById(userDTO);
+        User user = userService.getById(userDTO.getId());
+        updateSession(request,user);
+    }
+
     @RequestMapping("resetPassword")
     @ResponseBody
     public void resetPassword(Long id){
@@ -80,10 +117,33 @@ public class UserController {
         userDTO.setPassword(Constant.DEFAULT_PASSWORD);
         userService.updateById(userDTO);
     }
+    @RequestMapping("changePassword")
+    @ResponseBody
+    public String changePassword(Long id,String oldPassword,String newPassword){
+        User user = userService.getById(id);
+        if(!user.getPassword().equals(oldPassword)){
+            return "旧密码错误";
+        }else {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setPassword(newPassword);
+            userDTO.setId(id);
+            userService.updateById(userDTO);
+            return "";
+        }
+    }
 
     @RequestMapping("add")
     public String add(UserDTO userDTO){
         userService.add(userDTO);
         return "redirect:/user/queryByPage";
+    }
+
+    private void updateSession(HttpServletRequest request,User user){
+        HttpSession session = request.getSession();
+        Major major = majorService.getById(user.getMajor());
+        College college = collegeService.getById(major.getCollegeId());
+        session.setAttribute("USER",user);
+        session.setAttribute("MAJOR",major.getName());
+        session.setAttribute("COLLEGE",college.getName());
     }
 }

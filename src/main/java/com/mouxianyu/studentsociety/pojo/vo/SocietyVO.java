@@ -81,4 +81,9 @@ public class SocietyVO implements Serializable {
      * 状态
      */
     private Integer status;
+
+    /**
+     * 与社团的关系状态
+     */
+    private Integer relationStatus;
 }
