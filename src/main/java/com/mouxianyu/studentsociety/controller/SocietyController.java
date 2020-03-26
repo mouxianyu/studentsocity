@@ -121,4 +121,22 @@ public class SocietyController {
     public Map<String, List<String>> countByCollege(@PathVariable("id") Long societyId) {
         return societyService.countByCollege(societyId);
     }
+
+    @RequestMapping("countByMajor/{id}")
+    @ResponseBody
+    public Map<String, List<String>> countByMajor(@PathVariable("id") Long societyId) {
+        return societyService.countByMajor(societyId);
+    }
+
+    @RequestMapping("countByGrade/{id}")
+    @ResponseBody
+    public Map<String, List<String>> countByGrade(@PathVariable("id") Long societyId) {
+        return societyService.countByGrade(societyId);
+    }
+
+    @RequestMapping("countByGender/{id}")
+    @ResponseBody
+    public Map<String, List<String>> countByGender(@PathVariable("id") Long societyId) {
+        return societyService.countByGender(societyId);
+    }
 }

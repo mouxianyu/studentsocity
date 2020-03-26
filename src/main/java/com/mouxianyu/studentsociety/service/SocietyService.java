@@ -64,5 +64,26 @@ public interface SocietyService {
             */
     Map<String,List<String>> countByCollege(Long societyId);
 
+    /**
+     * 专业统计
+     * @param societyId
+     * @return java.util.Map<java.lang.String,java.util.List<java.lang.String>>
+     */
+    Map<String,List<String>> countByMajor(Long societyId);
+
+    /**
+     * 年级统计
+     * @param societyId
+     * @return java.util.Map<java.lang.String,java.util.List<java.lang.String>>
+     */
+    Map<String,List<String>> countByGrade(Long societyId);
+
+    /**
+     * 性别统计
+     * @param societyId
+     * @return java.util.Map<java.lang.String,java.lang.String>
+     */
+    Map<String,List<String>> countByGender(Long societyId);
+
 
 }

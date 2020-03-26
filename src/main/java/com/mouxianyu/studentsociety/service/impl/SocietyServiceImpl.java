@@ -5,16 +5,10 @@ import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.common.enums.UserSocietyRelationEnum;
 import com.mouxianyu.studentsociety.mapper.SocietyMapper;
 import com.mouxianyu.studentsociety.pojo.dto.SocietyDTO;
-import com.mouxianyu.studentsociety.pojo.entity.College;
-import com.mouxianyu.studentsociety.pojo.entity.RelUserSociety;
-import com.mouxianyu.studentsociety.pojo.entity.Society;
-import com.mouxianyu.studentsociety.pojo.entity.User;
+import com.mouxianyu.studentsociety.pojo.entity.*;
 import com.mouxianyu.studentsociety.pojo.vo.SocietyVO;
 import com.mouxianyu.studentsociety.pojo.vo.UserVO;
-import com.mouxianyu.studentsociety.service.CollegeService;
-import com.mouxianyu.studentsociety.service.RelUserSocietyService;
-import com.mouxianyu.studentsociety.service.SocietyService;
-import com.mouxianyu.studentsociety.service.UserService;
+import com.mouxianyu.studentsociety.service.*;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +35,9 @@ public class SocietyServiceImpl implements SocietyService {
 
     @Autowired
     private CollegeService collegeService;
+
+    @Autowired
+    private MajorService majorService;
 
     @Override
     public Society getById(Long id) {
@@ -134,9 +131,84 @@ public class SocietyServiceImpl implements SocietyService {
             colleges.add(college.getName());
             counts.add(relationMap.get(collegeId).toString());
         }
-        Map<String,List<String>> result = new HashMap<>(1);
-        result.put("counts",counts);
-        result.put("colleges",colleges);
+        Map<String, List<String>> result = new HashMap<>(1);
+        result.put("counts", counts);
+        result.put("names", colleges);
+        return result;
+    }
+
+    @Override
+    public Map<String, List<String>> countByMajor(Long societyId) {
+        List<String> counts = new ArrayList<>();
+        List<String> majors = new ArrayList<>();
+        Map<Long, Integer> relationMap = new HashMap<>();
+        List<UserVO> userVOS = userService.queryBySocietyId(societyId);
+        for (UserVO userVO : userVOS) {
+            Long majorId = userVO.getMajorId();
+            if (relationMap.containsKey(majorId)) {
+                Integer count = relationMap.get(majorId) + 1;
+                relationMap.put(majorId, count);
+            } else {
+                relationMap.put(majorId, 1);
+            }
+        }
+        for (Long majorId : relationMap.keySet()) {
+            Major major = majorService.getById(majorId);
+            majors.add(major.getName());
+            counts.add(relationMap.get(majorId).toString());
+        }
+        Map<String, List<String>> result = new HashMap<>(2);
+        result.put("counts", counts);
+        result.put("names", majors);
+        return result;
+    }
+
+    @Override
+    public Map<String, List<String>> countByGrade(Long societyId) {
+        List<String> counts = new ArrayList<>();
+        List<String> majors = new ArrayList<>();
+        Map<String, Integer> relationMap = new HashMap<>();
+        List<UserVO> userVOS = userService.queryBySocietyId(societyId);
+        for (UserVO userVO : userVOS) {
+            String grade = userVO.getGrade();
+            if (relationMap.containsKey(grade)) {
+                Integer count = relationMap.get(grade) + 1;
+                relationMap.put(grade, count);
+            } else {
+                relationMap.put(grade, 1);
+            }
+        }
+        for (String grade : relationMap.keySet()) {
+            majors.add(grade);
+            counts.add(relationMap.get(grade).toString());
+        }
+        Map<String, List<String>> result = new HashMap<>(2);
+        result.put("counts", counts);
+        result.put("names", majors);
+        return result;
+    }
+
+    @Override
+    public Map<String, List<String>> countByGender(Long societyId) {
+        int maleCount = 0;
+        int femaleCount = 0;
+        List<String> genderList = new ArrayList<>();
+        genderList.add("男");
+        genderList.add("女");
+        List<String> countList = new ArrayList<>();
+        List<UserVO> userVOS = userService.queryBySocietyId(societyId);
+        for (UserVO userVO : userVOS) {
+            if (userVO.getGender()) {
+                maleCount++;
+            } else {
+                femaleCount++;
+            }
+        }
+        Map<String, List<String>> result = new HashMap<>(2);
+        countList.add(Integer.toString(maleCount));
+        countList.add(Integer.toString(femaleCount));
+        result.put("counts", countList);
+        result.put("names", genderList);
         return result;
     }
 

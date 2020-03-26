@@ -47,21 +47,23 @@
                 <li><a th:href="@{/user/queryByPage}">学生管理</a></li>
                 <li class="active"><a th:href="@{/society/queryByPage}">社团管理</a></li>
             </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">统计分析</a></li>
-            </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">日志系统</a></li>
-            </ul>
+<!--            <ul class="nav nav-sidebar">-->
+<!--                <li><a href="">统计分析</a></li>-->
+<!--            </ul>-->
+<!--            <ul class="nav nav-sidebar">-->
+<!--                <li><a href="">日志系统</a></li>-->
+<!--            </ul>-->
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h2 class="sub-header" th:text="${society.name}"></h2><br>
             <input id="society_id" style="display: none" th:value="${society.id}">
             <button class="btn btn-primary" type="button" onclick="gotoTable()">列表信息</button>
-            <button class="btn btn-primary" type="button">学院统计</button>
-            <button class="btn btn-primary" type="button">专业统计</button>
-            <button class="btn btn-primary" type="button">年级统计</button>
-            <button class="btn btn-primary" type="button">性别统计</button>
+            <button class="btn btn-primary" type="button" onclick="loadChart('society/countByCollege','学院分布统计')">学院统计
+            </button>
+            <button class="btn btn-primary" type="button" onclick="loadChart('society/countByMajor','专业分布统计')">专业统计
+            </button>
+            <button class="btn btn-primary" type="button" onclick="loadChart('society/countByGrade','年级分布统计')">年级统计</button>
+            <button class="btn btn-primary" type="button" onclick="loadChart('society/countByGender','性别分布统计')">性别统计</button>
             <br><br>
             <canvas id="society_chart"></canvas>
         </div>
@@ -90,40 +92,61 @@
         'rgba(153, 102, 255, 1)',
         'rgba(255, 159, 64, 1)'
     ];
+    var firstLoad = true;
+    var chart;
 
     $(function () {
+        loadChart("society/countByCollege", "学院分布统计");
+    });
+
+    function loadChart(url, chartName) {
+        url = "/" + url + "/";
         $.ajax({
-            url: "/society/countByCollege/" + $("#society_id").val(),
+            url: url + $("#society_id").val(),
             success: function (data) {
                 var currentBackgroundColors = [];
                 var currentBorderColors = [];
-                for (var i = 0; i < data.colleges.length; i++) {
+                for (var i = 0; i < data.names.length; i++) {
                     currentBackgroundColors.push(backgroundColorsSample[i % 6]);
                     currentBorderColors.push(borderColorSample[i % 6])
                 }
-                var myChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: data.colleges,
+                if (firstLoad) {
+                    chart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: data.names,
+                            datasets: [{
+                                data: data.counts,
+                                backgroundColor: currentBackgroundColors,
+                                borderColor: currentBorderColors,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            title: {
+                                text: chartName,
+                                display: true,
+                                fontSize: 18,
+                                padding: 20
+                            }
+                        }
+                    });
+                    firstLoad = false;
+                } else {
+                    chart.data = {
+                        labels: data.names,
                         datasets: [{
                             data: data.counts,
                             backgroundColor: currentBackgroundColors,
-                            borderColor: currentBorderColors,
-                            borderWidth: 1
+                            borderColor: currentBorderColors
                         }]
-                    },
-                    options: {
-                        title: {
-                            text: "学院分布统计",
-                            display: true,
-                            fontSize: 18,
-                            padding: 20
-                        }
-                    }
-                });
+                    };
+                    chart.options.title.text = chartName;
+                    chart.update();
+                }
             }
         });
-    });
+    }
 
     function gotoTable() {
         window.location.href = "/society/queryUserBySocietyId/" + $("#society_id").val();
