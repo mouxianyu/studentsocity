@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/common::common-header('学生社团管理系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<!--引入导航栏-->
+<th:block th:replace="../templates/common::navigation"/>
+<div class="page">
+    <th:block th:replace="../templates/common::common-pageHeader"/>
+    <div class="breadcrumb-holder">
+        <div class="container-fluid">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/home}">主页</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/society/queryByPage}">社团管理</a></li>
+                <li class="breadcrumb-item active" th:text="${society.name+'列表'}"></li>
+            </ul>
+        </div>
+    </div>
+    <br>
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <input id="society_id" style="display: none" th:value="${society.id}">
+                    <button type="button" class="btn btn-primary" onclick="gotoChart()">图表信息</button>
+                    <br><br>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>学号</th>
+                                <th>姓名</th>
+                                <th>专业</th>
+                                <th>年级</th>
+                                <th>职位</th>
+                                <th>状态</th>
+                            </tr>
+                            </thead>
+                            <tbody th:each="user:${users}">
+                            <tr>
+                                <td th:text="${user.no}"></td>
+                                <td th:text="${user.name}"></td>
+                                <td th:text="${user.major}"></td>
+                                <td th:text="${user.grade}"></td>
+                                <th:block th:switch="${user.relation}">
+                                    <td th:case=0>社长</td>
+                                    <td th:case=1>副社长</td>
+                                    <td th:case=2>社员</td>
+                                    <td th:case=*>未知</td>
+                                </th:block>
+                                <th:block th:switch="${user.relationStatus}">
+                                    <td th:case=0>正常</td>
+                                    <td th:case=3>审核中</td>
+                                    <td th:case=1>失效</td>
+                                    <td th:case=*>未知</td>
+                                </th:block>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!--引入通用js-->
+<th:block th:replace="../templates/common::common-js"/>
+<script th:src="@{/my/js/societyMoreInfo.js}"></script>
+</body>
+</html>

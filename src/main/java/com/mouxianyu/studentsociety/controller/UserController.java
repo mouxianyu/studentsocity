@@ -46,8 +46,8 @@ public class UserController {
 
     @RequestMapping("queryAll")
     @ResponseBody
-    public List<User> queryAll(){
-        return userService.queryAll();
+    public List<User> queryAll(UserDTO userDTO){
+        return userService.queryAll(userDTO);
     }
     @RequestMapping("toLogin")
     public String toLogin(){
@@ -56,7 +56,7 @@ public class UserController {
 
     @RequestMapping("zone")
     public String zone(){
-        return "personal_zone";
+        return "my_zone";
     }
 
     @RequestMapping("login")
@@ -86,7 +86,7 @@ public class UserController {
         request.setAttribute("users", userVOS);
         List<Major> majors = majorService.queryAll();
         request.setAttribute("majors",majors);
-        return "student_list";
+        return "student_management";
     }
 
     @RequestMapping("delete")

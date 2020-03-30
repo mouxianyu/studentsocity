@@ -51,11 +51,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> queryAll() {
-        Example example = new Example(User.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andNotEqualTo("status",StatusEnum.DELETED.getCode());
-        return userMapper.selectByExample(example);
+    public List<User> queryAll(UserDTO userDTO) {
+        if(userDTO.getId()!=null){
+            User user = getById(userDTO.getId());
+            List<User> users = new ArrayList<>();
+            users.add(user);
+            return users;
+        }
+        Example example = condition(userDTO);
+        RowBounds rowBounds = new RowBounds(userDTO.getStart(), userDTO.getRow());
+        return userMapper.selectByExampleAndRowBounds(example, rowBounds);
     }
 
     @Override

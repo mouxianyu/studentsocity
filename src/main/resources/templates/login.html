@@ -8,12 +8,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <style>
-        .row {
-            background: url("/img/bg.jpg") no-repeat;
-            height: 720px;
-            background-size: 100%;
-        }
-
+        body {
+             background: url("/img/bg.jpg") no-repeat;
+             background-size: 100%;
+         }
         .login_platform {
             background-color: rgba(255, 255, 255, 0.85);
             padding: 60px 20px;
@@ -72,11 +70,30 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 <script>
+    function myAlert(text) {
+        $.dialog({
+            icon: 'glyphicon glyphicon-alert',
+            title : "提 示",
+            content: text,
+            type : 'blue'
+        });
+    }
+
     function login() {
         var authType = $("#auth_type").val();
         var userNo = $("#user_no").val();
+        if(userNo===""){
+            myAlert("请输入学号");
+            return;
+        }
         var userPassword = $("#user_password").val();
+        if(userPassword===""){
+            myAlert("请输入密码");
+            return;
+        }
         $.ajax({
             type: "post",
             url: "/user/login",
@@ -86,13 +103,13 @@
             },
             success: function (data) {
                 if (data === "") {
-                    if(authType===""){
-                        window.location.href ="/client/home"
-                    }else {
+                    if (authType === "") {
+                        window.location.href = "/client/home"
+                    } else {
                         window.location.href = "/user/queryByPage";
                     }
                 } else {
-                    alert(data);
+                    myAlert(data)
                 }
             }
         });

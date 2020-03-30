@@ -1,0 +1,28 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0;
+}
+
+.linkToggle {
+    cursor: pointer;
+    color: #2d9f50 !important;
+    font-weight: normal;
+}
+.pagination li{
+    padding: 10px;
+}
+.pagination .active{
+    color: #2d9f50;
+}
+.pagination li:hover{
+    color: #2d9f50;
+    cursor: pointer;
+}
+label{
+    padding-right: 10px;
+    padding-left: 10px;
+}
+.form-inline .my-inline-form-control{
+    width: 184px;
+}

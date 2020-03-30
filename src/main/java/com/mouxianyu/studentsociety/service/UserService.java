@@ -30,7 +30,7 @@ public interface UserService {
      * 查询所有
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.User>
      */
-    List<User> queryAll();
+    List<User> queryAll(UserDTO userDTO);
 
     /**
      * 通过社团id查询

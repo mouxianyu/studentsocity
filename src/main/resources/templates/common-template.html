@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/common::common-header('学生社团管理系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<!--引入导航栏-->
+<th:block th:replace="../templates/common::navigation"/>
+<div class="page">
+    <th:block th:replace="../templates/common::common-pageHeader"/>
+    <div class="breadcrumb-holder">
+        <div class="container-fluid">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/home}">主页</a></li>
+                <li class="breadcrumb-item active">学生管理</li>
+            </ul>
+        </div>
+    </div>
+    <br>
+    <section></section>
+</div>
+<!--引入通用js-->
+<th:block th:replace="../templates/common::common-js"/>
+</body>
+</html>

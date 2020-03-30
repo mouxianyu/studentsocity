@@ -56,7 +56,7 @@ public class SocietyController {
         request.setAttribute("condition", condition);
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("societies", societyVOS);
-        return "society_list";
+        return "society_management";
     }
 
     @RequestMapping("queryUserBySocietyId/{id}")
@@ -65,14 +65,14 @@ public class SocietyController {
         Society society = societyService.getById(societyId);
         request.setAttribute("users", userVOS);
         request.setAttribute("society", society);
-        return "society_more_info";
+        return "society_moreInfo";
     }
 
     @RequestMapping("chart/{id}")
     public String societyChart(HttpServletRequest request, @PathVariable("id") Long societyId) {
         Society society = societyService.getById(societyId);
         request.setAttribute("society", society);
-        return "society_chart";
+        return "society_charts";
     }
 
     @RequestMapping("delete")

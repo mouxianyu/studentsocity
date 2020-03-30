@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/common::common-header('学生社团管理系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<!--引入导航栏-->
+<th:block th:replace="../templates/common::navigation"/>
+<div class="page">
+    <th:block th:replace="../templates/common::common-pageHeader"/>
+    <div class="breadcrumb-holder">
+        <div class="container-fluid">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/home}">主页</a></li>
+                <li class="breadcrumb-item active">学生管理</li>
+            </ul>
+        </div>
+    </div>
+    <br>
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <form id="query_form" name="queryForm" class="form-inline" th:action="@{/user/queryByPage}" method="post">
+                        <div class="form-group">
+                            <label>学号</label>
+                            <input type="text" class="form-control" name="no" th:value="${condition.no}">
+                        </div>
+                        <div class="form-group">
+                            <label>姓名</label>
+                            <input type="text" class="form-control" name="name" th:value="${condition.name}">
+                        </div>
+                        <div class="form-group">
+                            <label>年级</label>
+                            <input type="text" class="form-control" name="grade" th:value="${condition.grade}">
+                        </div>
+                        <div style="display: none">
+                            <input type="text" id="start" name="start" th:value="${condition.start}">
+                            <input type="text" id="row" name="row" th:value="${condition.row}">
+                            <input type="text" id="totalPage" th:value="${totalPage}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">查询</button>
+                    </form>
+                    <br>
+                    <input class="btn btn-primary" type="button" value="新增" data-toggle="modal" data-target="#addModal" onclick="loadColleges()">
+                    <input class="btn btn-primary" type="button" value="删除" onclick="deleteByIds()">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th><input type="checkbox"></th>
+                                <th>学号</th>
+                                <th>姓名</th>
+                                <th>专业</th>
+                                <th>年级</th>
+                                <th>状态</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody th:each="user:${users}">
+                            <tr>
+                                <td>
+                                    <input name="id" type="checkbox" th:value="${user.id}">
+                                </td>
+                                <td th:text="${user.no}"></td>
+                                <td th:text="${user.name}"></td>
+                                <td th:text="${user.major}"></td>
+                                <td th:text="${user.grade}"></td>
+                                <th:block th:switch="${user.status}">
+                                    <td th:case=0>正常</td>
+                                    <td th:case=1>失效</td>
+                                    <td th:case=*>未知</td>
+                                </th:block>
+                                <th>
+                                    <a class="linkToggle" data-toggle="modal" data-target="#detailModal"
+                                       onclick="showDetail(this,$('#detail_college_select'),$('#detail_major_select'),'detail')">
+                                        <input style="display: none" th:value="${user.id}">详情
+                                    </a>
+                                    |
+                                    <a class="linkToggle" data-toggle="modal" data-target="#updateModal"
+                                       onclick="showDetail(this,$('#update_college_select'),$('#update_major_select'),'update')">
+                                        <input style="display: none" th:value="${user.id}">修改
+                                    </a>
+                                </th>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <th:block th:if="${users.size()>0}">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <li>
+                                        <a onclick="prePage()" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <th:block th:if="${totalPage<=5}">
+                                        <th:block th:each="i:${#numbers.sequence(1,totalPage)}">
+                                            <li th:if="${i==condition.start}" class="active"><a onclick="page(this)"
+                                                                                                th:text="${i}"></a></li>
+                                            <li th:if="${i!=condition.start}"><a onclick="page(this)" th:text="${i}"></a></li>
+                                        </th:block>
+                                    </th:block>
+
+                                    <th:block th:if="${totalPage>5 && totalPage<7}">
+                                        <th:block th:if="${condition.start<4}">
+                                            <th:block th:each="i:${#numbers.sequence(1,4)}">
+                                                <li th:if="${i==condition.start}" class="active"><a onclick="page(this)"
+                                                                                                    th:text="${i}"></a></li>
+                                                <li th:if="${i!=condition.start}"><a onclick="page(this)" th:text="${i}"></a>
+                                                </li>
+                                            </th:block>
+                                            <li><a>...</a></li>
+                                            <li><a onclick="page(this)" th:text="${totalPage}"></a>
+                                        </th:block>
+                                        <th:block th:if="${condition.start>=4}">
+                                            <li><a onclick="page(this)">1</a>
+                                            <li><a>...</a></li>
+                                            <th:block th:each="i:${#numbers.sequence(totalPage-3,totalPage)}">
+                                                <li th:if="${i==condition.start}" class="active"><a onclick="page(this)"
+                                                                                                    th:text="${i}"></a></li>
+                                                <li th:if="${i!=condition.start}"><a onclick="page(this)" th:text="${i}"></a>
+                                                </li>
+                                            </th:block>
+                                        </th:block>
+                                    </th:block>
+
+                                    <th:block th:if="${totalPage>=7}">
+                                        <th:block th:if="${condition.start<4}">
+                                            <th:block th:each="i:${#numbers.sequence(1,4)}">
+                                                <li th:if="${i==condition.start}" class="active"><a onclick="page(this)"
+                                                                                                    th:text="${i}"></a></li>
+                                                <li th:if="${i!=condition.start}"><a onclick="page(this)" th:text="${i}"></a>
+                                                </li>
+                                            </th:block>
+                                            <li><a>...</a></li>
+                                            <li><a onclick="page(this)" th:text="${totalPage}"></a>
+                                        </th:block>
+                                        <th:block th:if="${condition.start>=4 && condition.start<=totalBPage-3}">
+                                            <li><a onclick="page(this)">1</a>
+                                            <li><a>...</a></li>
+                                            <th:block th:each="i:${#numbers.sequence(condition.start-1,condition.start+1)}">
+                                                <li th:if="${i==condition.start}" class="active"><a onclick="page(this)"
+                                                                                                    th:text="${i}"></a></li>
+                                                <li th:if="${i!=condition.start}"><a onclick="page(this)" th:text="${i}"></a>
+                                                </li>
+                                            </th:block>
+                                            <li><a>...</a></li>
+                                            <li><a onclick="page(this)" th:text="${totalPage}"></a>
+                                        </th:block>
+                                        <th:block th:if="${condition.start>totalPage-3}">
+                                            <li><a onclick="page(this)">1</a>
+                                            <li><a>...</a></li>
+                                            <th:block th:each="i:${#numbers.sequence(totalPage-3,totalPage)}">
+                                                <li th:if="${i==condition.start}" class="active"><a onclick="page(this)"
+                                                                                                    th:text="${i}"></a></li>
+                                                <li th:if="${i!=condition.start}"><a onclick="page(this)" th:text="${i}"></a>
+                                                </li>
+                                            </th:block>
+                                        </th:block>
+                                    </th:block>
+                                    <li>
+                                        <a onclick="nextPage()" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                    <li><a><input onkeydown="return inputIntOnly()" id="goto" style="width: 30px;height: 20px;"
+                                                  type="number"></a></li>
+                                    <li><a onclick="goToPage()">跳转</a></li>
+                                </ul>
+                            </nav>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+            <form method="post" th:action="@{/user/add}">
+                <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="addModalLabel" style="text-align: center">新增用户</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group" style="display: none">
+                                    <label>ID</label>
+                                    <input name="id" type="text" readonly class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>学号</label>
+                                    <input name="no" value="" type="text"
+                                           class="form-control"
+                                           placeholder="请输入学号" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>姓名</label>
+                                    <input name="name" value="" type="text" class="form-control"
+                                           placeholder="请输入姓名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>年级</label>
+                                    <input name="grade" value="" type="text" class="form-control"
+                                           placeholder="请输入年级" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>邮箱</label>
+                                    <input name="email" type="email" class="form-control"
+                                           placeholder="请输入邮箱">
+                                </div>
+                                <div class="form-group">
+                                    <label>手机</label>
+                                    <input name="phone" type="tel" class="form-control" placeholder="请输入手机号码">
+                                </div>
+                                <div class="form-group">
+                                    <label>生源地</label>
+                                    <input name="origin" type="text" class="form-control"
+                                           placeholder="请输入生源地">
+                                </div>
+                                <div class="form-group">
+                                    <label>权限</label>
+                                    <select class="form-control" name="authority" required>
+                                        <option value="1">普通用户</option>
+                                        <option value="0">超级管理员</option>
+                                    </select>
+                                </div>
+                                <div class="form-group form-inline">
+                                    <label>学院</label>
+                                    <select id="add_college_select" class="form-control my-inline-form-control" name="college" onchange="loadMajors($(this),$('#add_major_select'))" required>
+                                        <option value="">——— 请 选 择 ———</option>
+                                    </select>
+                                    <label>专业</label>
+                                    <select id="add_major_select" class="form-control my-inline-form-control" name="major" required>
+                                        <option value="">——— 请 选 择 ———</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>激活用户</label>
+                                    <input type="checkbox" value=0 name="status" checked>
+                                </div>
+                                <div class="form-group">
+                                    <label>性别</label>
+                                    <input type="radio" name="gender" value=true checked>男
+                                    <input type="radio" name="gender" value=false>女
+                                </div>
+                            </div>
+                            <div class=" modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                <button type="submit" class="btn btn-primary">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <form method="post" th:action="@{/user/update}" id="updateForm">
+                <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="updateModalLabel" style="text-align: center">修改用户信息</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group" style="display: none">
+                                    <label>ID</label>
+                                    <input id="update_id" name="id" type="text" readonly class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>学号</label>
+                                    <input name="no" value="" type="text"
+                                           class="form-control"
+                                           placeholder="请输入学号" id="update_no" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>姓名</label>
+                                    <input name="name" value="" type="text" class="form-control"
+                                           placeholder="请输入姓名" id="update_name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>年级</label>
+                                    <input name="grade" value="" type="text" class="form-control"
+                                           placeholder="请输入年级" id="update_grade" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>邮箱</label>
+                                    <input name="email" type="email" class="form-control"
+                                           placeholder="请输入邮箱" id="update_email">
+                                </div>
+                                <div class="form-group">
+                                    <label>手机</label>
+                                    <input name="phone" type="tel" class="form-control" placeholder="请输入手机号码" id="update_phone">
+                                </div>
+                                <div class="form-group">
+                                    <label>生源地</label>
+                                    <input name="origin" type="text" class="form-control"
+                                           placeholder="请输入生源地" id="update_origin">
+                                </div>
+                                <div class="form-group">
+                                    <label>权限</label>
+                                    <select class="form-control" name="authority" id="update_authority">
+                                        <option value="0">超级管理员</option>
+                                        <option value="1">普通用户</option>
+                                    </select>
+                                </div>
+                                <div class="form-group form-inline">
+                                    <label>学院</label>
+                                    <select id="update_college_select" class="form-control my-inline-form-control" name="college" onchange="loadMajors($(this),$('#update_major_select'))" required>
+                                        <option value="">——— 请 选 择 ———</option>
+                                    </select>
+                                    <label>专业</label>
+                                    <select id="update_major_select" class="form-control my-inline-form-control" name="major" required>
+                                        <option value="">——— 请 选 择 ———</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>激活用户</label>
+                                    <input type="checkbox" value=0 name="status" id="update_status">
+                                </div>
+                                <div class="form-group" id="update_gender">
+                                    <label>性别</label>
+                                    <input type="radio" name="gender" value=true>男
+                                    <input type="radio" name="gender" value=false>女
+                                </div>
+                            </div>
+                            <div class=" modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                <button type="button" onclick="resetPassword()" class="btn btn-primary">重置密码</button>
+                                <button type="submit" class="btn btn-primary">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <form id="detailForm">
+                <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="detailModalLabel" style="text-align: center">用户信息</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group" style="display: none">
+                                    <label>ID</label>
+                                    <input id="detail_id" name="id" type="text" readonly class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>学号</label>
+                                    <input name="no" value="" type="text"
+                                           class="form-control" id="detail_no" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>姓名</label>
+                                    <input name="name" value="" type="text" class="form-control" id="detail_name" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>年级</label>
+                                    <input name="grade" value="" type="text" class="form-control" id="detail_grade" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>邮箱</label>
+                                    <input name="email" type="email" class="form-control" id="detail_email" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>手机</label>
+                                    <input name="phone" type="tel" class="form-control" readonly  id="detail_phone">
+                                </div>
+                                <div class="form-group">
+                                    <label>生源地</label>
+                                    <input name="origin" type="text" class="form-control" id="detail_origin" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>权限</label>
+                                    <select class="form-control" name="authority" id="detail_authority" disabled>
+                                        <option value="0">超级管理员</option>
+                                        <option value="1">普通用户</option>
+                                    </select>
+                                </div>
+                                <div class="form-group form-inline">
+                                    <label>学院</label>
+                                    <select id="detail_college_select" class="form-control my-inline-form-control" disabled name="college" onchange="loadMajors($(this),$('#detail_major_select'))">
+                                        <option value="">——— 请 选 择 ———</option>
+                                    </select>
+                                    <label>专业</label>
+                                    <select id="detail_major_select" class="form-control my-inline-form-control" disabled name="major">
+                                        <option value="">——— 请 选 择 ———</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>激活用户</label>
+                                    <input type="checkbox" value=0 name="status" id="detail_status" disabled>
+                                </div>
+                                <div class="form-group" id="detail_gender">
+                                    <label>性别</label>
+                                    <input type="radio" name="gender" value=true disabled>男
+                                    <input type="radio" name="gender" value=false disabled>女
+                                </div>
+                            </div>
+                            <div class=" modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+<!--引入通用js-->
+<th:block th:replace="../templates/common::common-js"/>
+<!--引入自己的js-->
+<script th:src="@{/my/js/studentManagement.js}"></script>
+</body>
+</html>

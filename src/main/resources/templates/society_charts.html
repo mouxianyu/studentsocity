@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/common::common-header('学生社团管理系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<!--引入导航栏-->
+<th:block th:replace="../templates/common::navigation"/>
+<div class="page">
+    <th:block th:replace="../templates/common::common-pageHeader"/>
+    <div class="breadcrumb-holder">
+        <div class="container-fluid">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/home}">主页</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/society/queryByPage}">社团管理</a></li>
+                <li class="breadcrumb-item"><a th:href="@{'/society/queryUserBySocietyId/'+${society.id}}" th:text="${society.name+'列表'}"></a></li>
+                <li class="breadcrumb-item active" th:text="${society.name+'图表'}"></li>
+            </ul>
+        </div>
+    </div>
+    <br>
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <input id="society_id" style="display: none" th:value="${society.id}">
+                    <button class="btn btn-primary" type="button" onclick="gotoTable()">列表信息</button>
+                    <button class="btn btn-primary" type="button" onclick="loadChart('society/countByCollege','学院分布统计')">学院统计
+                    </button>
+                    <button class="btn btn-primary" type="button" onclick="loadChart('society/countByMajor','专业分布统计')">专业统计
+                    </button>
+                    <button class="btn btn-primary" type="button" onclick="loadChart('society/countByGrade','年级分布统计')">年级统计</button>
+                    <button class="btn btn-primary" type="button" onclick="loadChart('society/countByGender','性别分布统计')">性别统计</button>
+                    <br><br>
+                    <canvas id="society_chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!--引入通用js-->
+<th:block th:replace="../templates/common::common-js"/>
+<script th:src="@{/my/js/societyCharts.js}"></script>
+</body>
+</html>
