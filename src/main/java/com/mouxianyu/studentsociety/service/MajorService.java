@@ -1,7 +1,9 @@
 package com.mouxianyu.studentsociety.service;
 
 import com.mouxianyu.studentsociety.pojo.entity.Major;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -29,4 +31,20 @@ public interface MajorService {
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.Major>
      */
     List<Major> queryByCollegeId(Long collegeId);
+
+    /**
+     * 导入专业信息
+     * @param multipartFile
+     * @param collegeName
+     * @return java.lang.String
+     */
+    String upload(MultipartFile multipartFile, String collegeName, String majorName) throws Exception;
+
+    /**
+     * 通过姓名查询
+     * @param name
+     * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.Major>
+     */
+    List<Major> queryByName(String name);
+
 }

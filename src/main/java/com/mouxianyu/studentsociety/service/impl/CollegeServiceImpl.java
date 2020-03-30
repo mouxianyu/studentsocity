@@ -32,4 +32,20 @@ public class CollegeServiceImpl implements CollegeService {
     public College getById(Long id) {
         return collegeMapper.selectByPrimaryKey(id);
     }
+
+    @Override
+    public void addList(List<College> collegeList) {
+        for (College college : collegeList) {
+            collegeMapper.insertSelective(college);
+        }
+    }
+
+    @Override
+    public List<College> queryByName(String name) {
+        Example example = new Example(College.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("name",name);
+        criteria.andEqualTo("status",StatusEnum.NORMAL.getCode());
+        return collegeMapper.selectByExample(example);
+    }
 }

@@ -1,9 +1,12 @@
 package com.mouxianyu.studentsociety.service;
 
 import com.mouxianyu.studentsociety.pojo.dto.UserDTO;
+import com.mouxianyu.studentsociety.pojo.dto.UserImportDTO;
 import com.mouxianyu.studentsociety.pojo.entity.User;
 import com.mouxianyu.studentsociety.pojo.vo.UserVO;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -76,4 +79,12 @@ public interface UserService {
      * @param userDTO
      */
     void add(UserDTO userDTO);
+
+    /**
+     * 导入上传数据
+     * @param userImportDTO
+     * @param multipartFile
+     * @return java.lang.String
+     */
+    String upload(UserImportDTO userImportDTO, MultipartFile multipartFile) throws Exception;
 }

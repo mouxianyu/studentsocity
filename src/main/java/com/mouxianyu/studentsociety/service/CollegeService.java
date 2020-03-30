@@ -21,4 +21,17 @@ public interface CollegeService {
      * @return com.mouxianyu.studentsociety.pojo.entity.College
      */
     College getById(Long id);
+
+    /**
+     * 批量添加
+     * @param collegeList
+     */
+    void addList(List<College> collegeList);
+
+    /**
+     * 通过名称查询
+     * @param name
+     * @return com.mouxianyu.studentsociety.pojo.entity.College
+     */
+    List<College> queryByName(String name);
 }

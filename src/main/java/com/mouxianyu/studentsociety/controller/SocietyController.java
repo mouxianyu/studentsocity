@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -43,6 +45,15 @@ public class SocietyController {
     @ResponseBody
     public SocietyVO getById(@PathVariable("id") Long id) {
         return societyService.getByIdMore(id);
+    }
+    @RequestMapping("toImport")
+    public String toUpload(){
+        return "society_import";
+    }
+    @RequestMapping("upload")
+    @ResponseBody
+    public String upload(String societyName,@RequestParam( value="file",required=false) MultipartFile multipartFile) throws Exception {
+        return societyService.upload(societyName,multipartFile);
     }
 
     @RequestMapping("queryByPage")
@@ -85,8 +96,17 @@ public class SocietyController {
     public String update(SocietyDTO societyDTO, Long presidentId) {
         societyService.updateById(societyDTO);
         RelUserSociety oldPresident = relUserSocietyService.getBySocietyIdAndRelation(societyDTO.getId(), UserSocietyRelationEnum.PRESIDENT.getCode());
-        oldPresident.setUserId(presidentId);
-        relUserSocietyService.updateById(oldPresident);
+        if(oldPresident!=null){
+            oldPresident.setUserId(presidentId);
+            relUserSocietyService.updateById(oldPresident);
+        }else {
+            RelUserSociety newRel = new RelUserSociety();
+            newRel.setUserId(presidentId);
+            newRel.setRelation(UserSocietyRelationEnum.PRESIDENT.getCode());
+            newRel.setSocietyId(societyDTO.getId());
+            newRel.setStatus(StatusEnum.NORMAL.getCode());
+            relUserSocietyService.add(newRel);
+        }
         return "redirect:/society/queryByPage";
     }
 

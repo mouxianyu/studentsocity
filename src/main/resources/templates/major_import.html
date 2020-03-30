@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/common::common-header('学生社团管理系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<!--引入导航栏-->
+<th:block th:replace="../templates/common::navigation"/>
+<div class="page">
+    <th:block th:replace="../templates/common::common-pageHeader"/>
+    <div class="breadcrumb-holder">
+        <div class="container-fluid">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/home}">主页</a></li>
+                <li class="breadcrumb-item">数据导入</li>
+                <li class="breadcrumb-item active">专业数据导入</li>
+            </ul>
+        </div>
+    </div>
+    <br>
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header d-flex align-items-center">
+                            <h4>专 业 数 据 导 入</h4>
+                        </div>
+                        <div class="card-body">
+                            <p>请将表格中列的对应关系填入，填入数据必须与表格表头相同，当前支持的格式为 .xlsx</p>
+                            <form>
+                                <div class="form-group">
+                                    <label>专业表头</label>
+                                    <input id="major_name" type="text" placeholder="请填入学院名称的对应的excel表头"
+                                           class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>学院表头</label>
+                                    <input id="college_name" type="text" placeholder="请填入专业名称的对应的excel表头"
+                                           class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>文件</label>
+                                    <input id="excel_file" type="file" accept=".xlsx" name="file" class="form-control"
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary" onclick="upload()">提交</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!--引入通用js-->
+<th:block th:replace="../templates/common::common-js"/>
+<script>
+    function upload() {
+        var formData = new FormData();
+        var file = $("#excel_file")[0].files[0];
+        var collegeName = $("#college_name").val();
+        var majorName = $("#major_name").val();
+        formData.append("file", file);
+        formData.append("majorName", majorName);
+        formData.append("collegeName", collegeName);
+        if (collegeName === "") {
+            myAlert("请填写专业表头");
+            return;
+        }
+        if (collegeName === "") {
+            myAlert("请填写学院表头");
+            return;
+        }
+        if (file === undefined) {
+            myAlert("请选择文件");
+            return;
+        }
+
+        $.confirm({
+            title: "提 示",
+            type: "green",
+            content: function () {
+                var self = this;
+                return $.ajax({
+                    type: 'post',
+                    url: "/major/upload",
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false
+                }).done(function (msg) {
+                    if (msg === "") {
+                        self.setContentAppend("导入成功");
+                    } else {
+                        self.setContentAppend(msg);
+                    }
+                }).fail(function (error) {
+                    self.setContentAppend("导入失败");
+                    console.log(error);
+                });
+            },
+            buttons: {
+                关闭: {}
+            }
+        });
+    }
+</script>
+</body>
+</html>

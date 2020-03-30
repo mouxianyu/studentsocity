@@ -2,6 +2,7 @@ package com.mouxianyu.studentsociety.controller;
 
 import com.mouxianyu.studentsociety.common.constant.Constant;
 import com.mouxianyu.studentsociety.pojo.dto.UserDTO;
+import com.mouxianyu.studentsociety.pojo.dto.UserImportDTO;
 import com.mouxianyu.studentsociety.pojo.entity.College;
 import com.mouxianyu.studentsociety.pojo.entity.Major;
 import com.mouxianyu.studentsociety.pojo.entity.User;
@@ -14,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -57,6 +60,17 @@ public class UserController {
     @RequestMapping("zone")
     public String zone(){
         return "my_zone";
+    }
+
+    @RequestMapping("toImport")
+    public String toImport(){
+        return "student_import";
+    }
+
+    @RequestMapping("upload")
+    @ResponseBody
+    public String upload(UserImportDTO userImportDTO, @RequestParam( value="file",required=false)MultipartFile multipartFile) throws Exception {
+        return userService.upload(userImportDTO,multipartFile);
     }
 
     @RequestMapping("login")

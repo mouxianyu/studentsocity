@@ -66,7 +66,9 @@ public class RelUserSocietyServiceImpl implements RelUserSocietyService {
 
     @Override
     public void add(RelUserSociety relUserSociety) {
-        relUserSociety.setStatus(StatusEnum.AUDITING.getCode());
+        if(relUserSociety.getStatus()==null){
+            relUserSociety.setStatus(StatusEnum.AUDITING.getCode());
+        }
         relUserSociety.setCreateTime(new Date());
         relUserSocietyMapper.insert(relUserSociety);
     }

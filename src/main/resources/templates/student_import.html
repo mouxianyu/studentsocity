@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/common::common-header('学生社团管理系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<!--引入导航栏-->
+<th:block th:replace="../templates/common::navigation"/>
+<div class="page">
+    <th:block th:replace="../templates/common::common-pageHeader"/>
+    <div class="breadcrumb-holder">
+        <div class="container-fluid">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/home}">主页</a></li>
+                <li class="breadcrumb-item">数据导入</li>
+                <li class="breadcrumb-item active">专业数据导入</li>
+            </ul>
+        </div>
+    </div>
+    <br>
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header d-flex align-items-center">
+                            <h4>学 生 数 据 导 入</h4>
+                        </div>
+                        <div class="card-body">
+                            <p>请将表格中列的对应关系填入，填入数据必须与表格表头相同，当前支持的格式为 .xlsx</p>
+                            <form>
+                                <div class="form-group">
+                                    <label>学号表头（必填）</label>
+                                    <input id="stu_no" type="text" placeholder="请填入学号的对应的excel表头"
+                                           class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>姓名表头（必填）</label>
+                                    <input id="stu_name" type="text" placeholder="请填入姓名的对应的excel表头"
+                                           class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>年级表头（必填）</label>
+                                    <input id="stu_grade" type="text" placeholder="请填入年级的对应的excel表头"
+                                           class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>专业表头（必填）</label>
+                                    <input id="stu_major" type="text" placeholder="请填入专业的对应的excel表头"
+                                           class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>性别表头（必填）表格中的数据为 ”男“ 或 “女” </label>
+                                    <input id="stu_gender" type="text" placeholder="请填入性别对应的excel表头"
+                                           class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>生源地表头</label>
+                                    <input id="stu_origin" type="text" placeholder="请填入生源地对应的excel表头"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>手机表头</label>
+                                    <input id="stu_phone" type="text" placeholder="请填入手机号码对应的excel表头"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>邮箱表头</label>
+                                    <input id="stu_email" type="text" placeholder="请填入电子邮箱对应的excel表头"
+                                           class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>文件</label>
+                                    <input id="excel_file" type="file" accept=".xlsx" name="file" class="form-control"
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-primary" onclick="upload()">提交</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!--引入通用js-->
+<th:block th:replace="../templates/common::common-js"/>
+<script>
+    function upload() {
+        var formData = new FormData();
+        var file = $("#excel_file")[0].files[0];
+        var stuNo = $("#stu_no").val();
+        var stuName = $("#stu_name").val();
+        var stuGrade = $("#stu_grade").val();
+        var stuMajor = $("#stu_major").val();
+        var stuGender = $("#stu_gender").val();
+        var stuOrigin = $("#stu_origin").val();
+        var stuPhone = $("#stu_phone").val();
+        var stuEmail = $("#stu_email").val();
+        formData.append("file", file);
+        formData.append("no", stuNo);
+        formData.append("name", stuName);
+        formData.append("grade", stuGrade);
+        formData.append("major", stuMajor);
+        formData.append("gender", stuGender);
+        formData.append("origin", stuOrigin);
+        formData.append("phone", stuPhone);
+        formData.append("email", stuEmail);
+        if (stuNo === "") {
+            myAlert("请填写学号表头");
+            return;
+        }
+        if (stuName === "") {
+            myAlert("请填写姓名表头");
+            return;
+        }
+        if (stuGrade=== "") {
+            myAlert("请填写年级表头");
+            return;
+        }
+        if (stuMajor === "") {
+            myAlert("请填写专业表头");
+            return;
+        }
+        if (stuGender === "") {
+            myAlert("请填写性别表头");
+            return;
+        }
+        if (file === undefined) {
+            myAlert("请选择文件");
+            return;
+        }
+
+        $.confirm({
+            title: "提 示",
+            type: "green",
+            content: function () {
+                var self = this;
+                return $.ajax({
+                    type: 'post',
+                    url: "/user/upload",
+                    data: formData,
+                    cache: false,
+                    processData: false,
+                    contentType: false
+                }).done(function (msg) {
+                    if (msg === "") {
+                        self.setContentAppend("导入成功");
+                    } else {
+                        self.setContentAppend(msg);
+                    }
+                }).fail(function (error) {
+                    self.setContentAppend("导入失败");
+                    console.log(error);
+                });
+            },
+            buttons: {
+                关闭: {}
+            }
+        });
+    }
+</script>
+</body>
+</html>

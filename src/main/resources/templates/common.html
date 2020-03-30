@@ -67,10 +67,10 @@
                     <li><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i
                             class="fa fa-upload"></i>数据导入</a>
                         <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
-                            <li><a href="#">学院数据导入</a></li>
-                            <li><a href="#">专业数据导入</a></li>
-                            <li><a href="#">学生数据导入</a></li>
-                            <li><a href="#">社团数据导入</a></li>
+                            <li><a th:href="@{/college/toImport}">学院数据导入</a></li>
+                            <li><a th:href="@{/major/toImport}">专业数据导入</a></li>
+                            <li><a th:href="@{/user/toImport}">学生数据导入</a></li>
+                            <li><a th:href="@{/society/toImport}">社团数据导入</a></li>
                         </ul>
                     </li>
                     <li><a href="#"> <i class="icon-flask"> </i>日志</a></li>

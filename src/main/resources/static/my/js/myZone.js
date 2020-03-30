@@ -24,7 +24,7 @@ function save() {
             window.location.reload();
         },
         error: function (error) {
-            alert("后台服务器发生错误");
+            myAlert("后台服务器发生错误");
             console.log(error);
         }
     });
@@ -43,11 +43,11 @@ function changePassword() {
     var oldPassword = $("#old_password").val();
     var newPassword =$("#new_password").val();
     if (oldPassword===""||oldPassword===null){
-        alert("请输入旧密码");
+        myAlert("请输入旧密码");
         return;
     }
     if (newPassword===""||newPassword===null){
-        alert("请输入新密码");
+        myAlert("请输入新密码");
         return;
     }
     $.ajax({
@@ -60,14 +60,14 @@ function changePassword() {
         success:function (data) {
 
             if(data===""){
-                alert("修改成功")
+                myAlert("修改成功")
                 window.location.reload();
             }else {
-                alert(data);
+                myAlert(data);
             }
         },
         error:function (error) {
-            alert("后台服务器异常");
+            myAlert("后台服务器异常");
             console.log(error);
         }
     })

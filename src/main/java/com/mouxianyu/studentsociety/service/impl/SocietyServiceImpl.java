@@ -10,12 +10,19 @@ import com.mouxianyu.studentsociety.pojo.vo.SocietyVO;
 import com.mouxianyu.studentsociety.pojo.vo.UserVO;
 import com.mouxianyu.studentsociety.service.*;
 import org.apache.ibatis.session.RowBounds;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -232,6 +239,47 @@ public class SocietyServiceImpl implements SocietyService {
         result.put("counts", countList);
         result.put("names", genderList);
         return result;
+    }
+
+    @Override
+    public String upload(String societyName, MultipartFile multipartFile) throws Exception {
+        int societyNameIndex =-1;
+        InputStream inputStream = multipartFile.getInputStream();
+        XSSFWorkbook book = new XSSFWorkbook(inputStream);
+        XSSFSheet sheet = book.getSheetAt(0);
+        XSSFRow tableHead = sheet.getRow(0);
+        for(int i=0;i<tableHead.getLastCellNum();i++){
+            XSSFCell cell = tableHead.getCell(i);
+            cell.setCellType(CellType.STRING);
+            String cellValue = cell.getStringCellValue();
+            if(cellValue.equals(societyName)){
+                societyNameIndex=i;
+            }
+        }if(societyNameIndex==-1){
+            return "表格中没有找到匹配的表头";
+        }
+        for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+            Society society = new Society();
+            XSSFRow row = sheet.getRow(rowIndex);
+            short lastCellNum = row.getLastCellNum();
+            for (int cellIndex = 0; cellIndex < lastCellNum; cellIndex++) {
+                XSSFCell cell = row.getCell(cellIndex);
+                cell.setCellType(CellType.STRING);
+                String cellValue = cell.getStringCellValue();
+                if (StringUtils.isEmpty(cellValue)){
+                    continue;
+                }
+                if(cellIndex==societyNameIndex){
+                    society.setName(cellValue);
+                }
+            }
+            society.setStatus(StatusEnum.NORMAL.getCode());
+            society.setCreateTime(new Date());
+            society.setEstTime(new Date());
+            society.setScale(ScaleEnum.SCHOOL_LEVEL.getCode());
+            societyMapper.insertSelective(society);
+        }
+        return "";
     }
 
     private Example condition(SocietyDTO societyDTO) {

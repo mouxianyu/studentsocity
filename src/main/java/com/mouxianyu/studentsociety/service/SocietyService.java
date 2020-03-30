@@ -3,6 +3,7 @@ package com.mouxianyu.studentsociety.service;
 import com.mouxianyu.studentsociety.pojo.dto.SocietyDTO;
 import com.mouxianyu.studentsociety.pojo.entity.Society;
 import com.mouxianyu.studentsociety.pojo.vo.SocietyVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -92,5 +93,12 @@ public interface SocietyService {
      */
     Map<String,List<String>> countByGender(Long societyId);
 
+    /**
+     * 上传数据
+     * @param societyName
+     * @param multipartFile
+     * @return java.lang.String
+     */
+    String upload(String societyName, MultipartFile multipartFile) throws Exception;
 
 }
