@@ -51,7 +51,7 @@
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th><input type="checkbox"></th>
+                                <th><input onclick="checkAll(this)" type="checkbox"></th>
                                 <th>学号</th>
                                 <th>姓名</th>
                                 <th>专业</th>
@@ -63,7 +63,7 @@
                             <tbody th:each="user:${users}">
                             <tr>
                                 <td>
-                                    <input name="id" type="checkbox" th:value="${user.id}">
+                                    <input name="id" class="delete_check" type="checkbox" th:value="${user.id}">
                                 </td>
                                 <td th:text="${user.no}"></td>
                                 <td th:text="${user.name}"></td>

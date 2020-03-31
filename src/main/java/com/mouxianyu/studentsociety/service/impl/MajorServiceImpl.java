@@ -2,15 +2,18 @@ package com.mouxianyu.studentsociety.service.impl;
 
 import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.mapper.MajorMapper;
+import com.mouxianyu.studentsociety.pojo.dto.MajorDTO;
 import com.mouxianyu.studentsociety.pojo.entity.College;
 import com.mouxianyu.studentsociety.pojo.entity.Major;
 import com.mouxianyu.studentsociety.service.CollegeService;
 import com.mouxianyu.studentsociety.service.MajorService;
+import org.apache.ibatis.session.RowBounds;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -45,6 +48,47 @@ public class MajorServiceImpl implements MajorService {
         Example.Criteria criteria = example.createCriteria();
         criteria.andNotEqualTo("status", StatusEnum.DELETED.getCode());
         return majorMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<Major> queryByPage(MajorDTO majorDTO) {
+        Example condition = condition(majorDTO);
+        RowBounds rowBounds = new RowBounds(majorDTO.getStart(), majorDTO.getRow());
+        return majorMapper.selectByExampleAndRowBounds(condition,rowBounds);
+    }
+
+    @Override
+    public int getCountByCondition(MajorDTO majorDTO) {
+        Example condition = condition(majorDTO);
+        return majorMapper.selectCountByExample(condition);
+    }
+
+    @Override
+    public Long add(MajorDTO majorDTO) {
+        Major major = new Major();
+        BeanUtils.copyProperties(majorDTO,major);
+        major.setStatus(StatusEnum.NORMAL.getCode());
+        majorMapper.insertSelective(major);
+        return major.getId();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        majorMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public void deleteByIds(Long[] ids) {
+        for (Long id : ids) {
+            deleteById(id);
+        }
+    }
+
+    @Override
+    public void updateById(MajorDTO majorDTO) {
+        Major major = new Major();
+        BeanUtils.copyProperties(majorDTO,major);
+        majorMapper.updateByPrimaryKeySelective(major);
     }
 
     @Override
@@ -114,5 +158,19 @@ public class MajorServiceImpl implements MajorService {
         criteria.andEqualTo("name",name);
         criteria.andEqualTo("status",StatusEnum.NORMAL.getCode());
         return majorMapper.selectByExample(example);
+    }
+
+    private Example condition(MajorDTO majorDTO){
+        Example example = new Example(Major.class);
+        example.orderBy("id").desc();
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("status",StatusEnum.NORMAL.getCode());
+        if(majorDTO.getCollegeId()!=null){
+            criteria.andEqualTo("collegeId",majorDTO.getCollegeId());
+        }
+        if(!StringUtils.isEmpty(majorDTO.getName())){
+            criteria.andLike("name", "%" + majorDTO.getName() + "%");
+        }
+        return example;
     }
 }

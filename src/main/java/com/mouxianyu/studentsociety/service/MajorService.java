@@ -1,5 +1,6 @@
 package com.mouxianyu.studentsociety.service;
 
+import com.mouxianyu.studentsociety.pojo.dto.MajorDTO;
 import com.mouxianyu.studentsociety.pojo.entity.Major;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +25,45 @@ public interface MajorService {
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.Major>
      */
     List<Major> queryAll();
+
+    /**
+     * 分页查询
+     * @param majorDTO
+     * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.Major>
+     */
+    List<Major> queryByPage(MajorDTO majorDTO);
+
+    /**
+     * 按条件查询数量
+     * @param majorDTO
+     * @return int
+     */
+    int getCountByCondition(MajorDTO majorDTO);
+
+    /**
+     * 新增
+     * @param majorDTO
+     * @return java.lang.Long
+     */
+    Long add(MajorDTO majorDTO);
+
+    /**
+     * 通过id删除
+     * @param id
+     */
+    void deleteById(Long id);
+
+    /**
+     * 通过id批量删除
+     * @param ids
+     */
+    void deleteByIds(Long [] ids);
+
+    /**
+     * 根据id更新
+     * @param id
+     */
+    void updateById(MajorDTO majorDTO);
 
     /**
      * 通过学院id查询

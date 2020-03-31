@@ -22,3 +22,11 @@ function logout() {
         }
     });
 }
+
+function checkAll(obj) {
+    if($(obj).prop("checked")){
+        $("input[type='checkbox'][class='delete_check']").prop("checked",true);
+    }else {
+        $("input[type='checkbox'][class='delete_check']").prop("checked",false);
+    }
+}

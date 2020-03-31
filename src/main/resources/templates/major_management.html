@@ -15,7 +15,7 @@
         <div class="container-fluid">
             <ul class="breadcrumb">
                 <li class="breadcrumb-item"><a th:href="@{/home}">主页</a></li>
-                <li class="breadcrumb-item active">社团管理</li>
+                <li class="breadcrumb-item active">学院管理</li>
             </ul>
         </div>
     </div>
@@ -24,19 +24,16 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                    <form id="query_form" name="queryForm" class="form-inline" th:action="@{/society/queryByPage}"
+                    <form id="query_form" name="queryForm" class="form-inline" th:action="@{/major/queryByPage}"
                           method="post">
                         <div class="form-group">
-                            <label>社团名</label>
+                            <label>专业名</label>
                             <input type="text" class="form-control" name="name" th:value="${condition.name}">
                         </div>
                         <div class="form-group">
-                            <label>状态</label>
-                            <select class="form-control" name="status" th:value="${condition.status}">
+                            <label>所属学院</label>
+                            <select class="form-control" id="query_college" name="collegeId" th:value="${condition.collegeId}">
                                 <option value="">全部</option>
-                                <option value="0">正常</option>
-                                <option value="1">失效</option>
-                                <option value="3">审核中</option>
                             </select>
                         </div>
                         <div style="display: none">
@@ -54,66 +51,28 @@
                             <thead>
                             <tr>
                                 <th><input onclick="checkAll(this)" type="checkbox"></th>
-                                <th>社团名称</th>
-                                <th>成立时间</th>
-                                <th>社长</th>
-                                <th>社团人数</th>
-                                <th>规模</th>
-                                <th>状态</th>
-                                <th></th>
+                                <th>学院名称</th>
                                 <th></th>
                             </tr>
                             </thead>
-                            <tbody th:each="society:${societies}">
+                            <tbody th:each="major:${majors}">
                             <tr>
-                                <td><input name="id" type="checkbox" class="delete_check" th:value="${society.id}"></td>
-                                <td th:text="${society.name}"></td>
-                                <td th:text="${society.estTime==null?'未通过审核':#dates.format(society.estTime,'yyyy-MM-dd')}"></td>
-                                <td th:text="${society.presidentName}"></td>
-                                <td th:text="${society.userCount}"></td>
-                                <th:block th:switch="${society.scale}">
-                                    <td th:case=0>校级</td>
-                                    <td th:case=1>院级</td>
-                                    <td th:case=*>未知</td>
-                                </th:block>
-                                <th:block th:switch="${society.status}">
-                                    <td th:case=0>正常</td>
-                                    <td th:case=1>失效</td>
-                                    <td th:case=3>审核中</td>
-                                    <td th:case=*>未知</td>
-                                </th:block>
+                                <td><input name="id" class="delete_check" type="checkbox" th:value="${major.id}"></td>
+                                <td th:text="${major.name}"></td>
                                 <th>
                                     <a class="linkToggle" data-toggle="modal" data-target="#detailModal"
                                        onclick="showDetail(this,'detail')">
-                                        <input style="display: none" th:value="${society.id}">详情
+                                        <input style="display: none" th:value="${major.id}">详情
                                     </a>|
                                     <a class="linkToggle" data-toggle="modal" data-target="#updateModal"
                                        onclick="showDetail(this,'update')">
-                                        <input style="display: none" th:value="${society.id}">修改
+                                        <input style="display: none" th:value="${major.id}">修改
                                     </a>
                                 </th>
-                                <th:block th:switch="${society.status}">
-                                    <td th:case=3>
-                                        <button type="button" class="btn btn-success  btn-xs"
-                                                onclick="verifySociety(this)" th:value="${society.id}">通过审核
-                                        </button>
-                                    </td>
-                                    <td th:case=0>
-                                        <button type="button" class="btn btn-danger  btn-xs"
-                                                onclick="disableSociety(this)" th:value="${society.id}">关闭社团
-                                        </button>
-                                    </td>
-                                    <td th:case=1>
-                                        <button type="button" class="btn btn-warning  btn-xs"
-                                                onclick="unbanSociety(this)" th:value="${society.id}">重启社团
-                                        </button>
-                                    </td>
-                                    <td th:case=*></td>
-                                </th:block>
                             </tr>
                             </tbody>
                         </table>
-                        <th:block th:if="${societies.size()>0}">
+                        <th:block th:if="${majors.size()>0}">
                             <nav aria-label="Page navigation">
                                 <ul class="pagination">
                                     <li>
@@ -213,12 +172,12 @@
                     </div>
                 </div>
             </div>
-            <form method="post" th:action="@{/society/add}">
+            <form method="post" th:action="@{/major/add}">
                 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title" id="addModalLabel" style="text-align: center">新增社团</h4>
+                                <h4 class="modal-title" id="addModalLabel" style="text-align: center">新增学院</h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
@@ -229,37 +188,17 @@
                                     <input name="id" type="text" readonly class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label>社团名</label>
+                                    <label>专业名</label>
                                     <input name="name" value="" type="text" class="form-control"
-                                           placeholder="请输入社团名" required>
+                                           placeholder="请输入学院名" required>
                                 </div>
-                                <div class="form-group form-inline">
-                                    <label>社长</label>
-                                    <select name="presidentId" id="add_president"
+                                <div class="form-group">
+                                    <label>所属学院</label>
+                                    <select name="collegeId" id="add_college"
                                             class="form-control my-inline-form-control" data-live-search="true"
                                             required>
                                         <option value="">——— 请 选 择 ———</option>
                                     </select>
-                                    <label>搜索</label>
-                                    <input type="text" id="add_name_input" class="form-control my-inline-form-control"
-                                           placeholder="请输入用户名搜索" onchange="loadUsers('add')">
-                                </div>
-                                <div class="form-group">
-                                    <label>状态</label>
-                                    <select class="form-control" name="status">
-                                        <option value="3">审核中</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>规模</label>
-                                    <select class="form-control" name="scale">
-                                        <option value="0">校级</option>
-                                        <option value="1">院级</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>详情</label>
-                                    <textarea class="form-control" style="height: 100px" name="detail"></textarea>
                                 </div>
                             </div>
                             <div class=" modal-footer">
@@ -270,12 +209,12 @@
                     </div>
                 </div>
             </form>
-            <form method="post" th:action="@{/society/update}" id="updateForm">
+            <form method="post" th:action="@{/major/update}" id="updateForm">
                 <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title" id="updateModalLabel" style="text-align: center">社团信息变更</h4>
+                                <h4 class="modal-title" id="updateModalLabel" style="text-align: center">学院信息变更</h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
@@ -286,42 +225,17 @@
                                     <input id="update_id" name="id" type="text" readonly class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label>社团名称</label>
+                                    <label>专业名称</label>
                                     <input name="name" value="" type="text" class="form-control"
-                                           placeholder="请输入社团名称" id="update_name" required>
+                                           placeholder="请输入专业名称" id="update_name" required>
                                 </div>
-                                <div class="form-group form-inline">
-                                    <label>社长</label>
-                                    <select name="presidentId" id="update_president"
+                                <div class="form-group">
+                                    <label>所属学院</label>
+                                    <select name="collegeId" id="update_college"
                                             class="form-control my-inline-form-control" data-live-search="true"
                                             required>
                                         <option value="">——— 请 选 择 ———</option>
                                     </select>
-                                    <label>搜索</label>
-                                    <input type="text" id="update_name_input"
-                                           class="form-control my-inline-form-control" placeholder="请输入用户名搜索"
-                                           onchange="loadUsers('update')">
-
-                                </div>
-                                <div class="form-group">
-                                    <label>状态</label>
-                                    <select class="form-control" name="status" id="update_status" disabled>
-                                        <option value="0">正常</option>
-                                        <option value="1">失效</option>
-                                        <option value="3">审核中</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>规模</label>
-                                    <select class="form-control" name="scale" id="update_scale">
-                                        <option value="0">校级</option>
-                                        <option value="1">院级</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>详情</label>
-                                    <textarea id="update_detail" style="height: 100px" class="form-control"
-                                              name="detail"></textarea>
                                 </div>
                             </div>
                             <div class=" modal-footer">
@@ -337,7 +251,7 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title" id="detailModalLabel" style="text-align: center">社团信息详情</h4>
+                                <h4 class="modal-title" id="detailModalLabel" style="text-align: center">学院信息详情</h4>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
@@ -348,38 +262,21 @@
                                     <input id="detail_id" name="id" type="text" readonly class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label>社团名称</label>
+                                    <label>专业名称</label>
                                     <input name="name" value="" type="text" class="form-control" id="detail_name"
                                            readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label>社长</label>
-                                    <input value="" type="text" class="form-control" id="detail_president" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label>状态</label>
-                                    <select class="form-control" name="status" id="detail_status" disabled>
-                                        <option value="0">正常</option>
-                                        <option value="1">失效</option>
-                                        <option value="3">审核中</option>
+                                    <label>所属学院</label>
+                                    <select name="collegeId" id="detail_college"
+                                            class="form-control my-inline-form-control" data-live-search="true"
+                                            required disabled>
+                                        <option value="">——— 请 选 择 ———</option>
                                     </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>规模</label>
-                                    <select class="form-control" name="scale" id="detail_scale" disabled>
-                                        <option value="0">校级</option>
-                                        <option value="1">院级</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>详情</label>
-                                    <textarea style="height: 100px" id="detail_detail" class="form-control"
-                                              name="detail" readonly></textarea>
                                 </div>
                             </div>
                             <div class=" modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                                <button type="button" class="btn btn-primary" onclick="moreInfo()">更多信息</button>
                             </div>
                         </div>
                     </div>
@@ -390,6 +287,127 @@
 </div>
 <!--引入通用js-->
 <th:block th:replace="../templates/common::common-js"/>
-<script th:src="@{/my/js/societyManagement.js}"></script>
+<script>
+    $(function () {
+        $("#sidebar_major_management").addClass("active");
+        $.ajax({
+            url:"/college/queryAll",
+            success:function (data) {
+                data.forEach(function (obj,index) {
+                    $("#add_college").append("<option value="+obj.id+">"+obj.name+"</option>");
+                    $("#update_college").append("<option value="+obj.id+">"+obj.name+"</option>");
+                    $("#detail_college").append("<option value="+obj.id+">"+obj.name+"</option>");
+                    $("#query_college").append("<option value="+obj.id+">"+obj.name+"</option>");
+                })
+            },
+            error:function (error) {
+                myAlert("加载学院错误");
+                console.log(error);
+            }
+        });
+
+    });
+
+    function page(obj) {
+        $("#start").val($(obj).text());
+        $("#query_form").submit();
+    }
+
+    function prePage() {
+        var goTo = parseInt($("#start").val()) - 1;
+        if (goTo > 0) {
+            $("#start").val(goTo);
+            $("#query_form").submit();
+        }
+    }
+
+    function nextPage() {
+        var goTo = parseInt($("#start").val()) + 1;
+        if (goTo <= parseInt($("#totalPage").val())) {
+            $("#start").val(goTo);
+            $("#query_form").submit();
+        }
+    }
+
+    function goToPage() {
+        var page = $("#goto").val();
+        if (page <= 0) {
+            myAlert("请输入正确页数");
+            return;
+        }
+        if (page > parseInt($("#totalPage").val())) {
+            myAlert("超出最大页数");
+            return;
+        }
+        $("#start").val(page);
+        $("#query_form").submit();
+    }
+
+    function inputIntOnly() {
+        if (event.keyCode === 13) {
+            goToPage();
+            return;
+        }
+        if (event.keyCode < 48) {
+            return event.keyCode === 8;
+        }
+        return event.keyCode <= 57;
+    }
+
+    function deleteByIds() {
+        var objs = $("input[name='id']:checked");
+        var values = [];
+        if ($(objs).length <= 0) {
+            myAlert("请选择");
+            return;
+        }
+        $(objs).each(function (index, obj) {
+            values.push($(obj).val());
+        });
+        $.confirm({
+            title: "提 示",
+            content: "是否确定删除？",
+            type: "green",
+            buttons: {
+                确认: function () {
+                    $.ajax({
+                        url: "/major/delete",
+                        type: "post",
+                        traditional: true,
+                        data: {
+                            ids: values
+                        },
+                        success: function () {
+                            location.reload();
+                        },
+                        error: function () {
+                            myAlert("删除失败");
+                        }
+                    });
+                },
+                取消: {}
+            }
+        });
+
+    }
+
+    function showDetail(obj, method) {
+        method = "#" + method + "_";
+        var val = $(obj).children();
+        $.ajax({
+            url: "/major/" + $(val[0]).val(),
+            async: false,
+            success: function (data) {
+                $(method + "id").val(data.id);
+                $(method + "name").val(data.name);
+                $(method+"college").val(data.collegeId);
+            },
+            error: function (error) {
+                myAlert("发生异常");
+                console.log(error);
+            }
+        });
+    }
+</script>
 </body>
 </html>

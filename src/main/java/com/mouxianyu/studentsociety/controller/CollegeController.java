@@ -1,16 +1,15 @@
 package com.mouxianyu.studentsociety.controller;
 
 import com.mouxianyu.studentsociety.common.util.ExcelUtil;
+import com.mouxianyu.studentsociety.pojo.dto.CollegeDTO;
 import com.mouxianyu.studentsociety.pojo.entity.College;
 import com.mouxianyu.studentsociety.service.CollegeService;
 import org.apache.tomcat.util.http.fileupload.FileUpload;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +48,44 @@ public class CollegeController {
         }
         collegeService.addList(collegeList);
         return "";
+    }
+
+    @RequestMapping("queryByPage")
+    public String queryByPage(HttpServletRequest request, CollegeDTO collegeDTO){
+        CollegeDTO condition = new CollegeDTO();
+        BeanUtils.copyProperties(collegeDTO,condition);
+        collegeDTO.setStart((collegeDTO.getStart() - 1) * collegeDTO.getRow());
+        List<College> collegeList = collegeService.queryByPage(collegeDTO);
+        int count = collegeService.getCountByCondition(collegeDTO);
+        int totalPage = count % collegeDTO.getRow() == 0 ? count / collegeDTO.getRow() : count / collegeDTO.getRow() + 1;
+        request.setAttribute("condition", condition);
+        request.setAttribute("totalPage", totalPage);
+        request.setAttribute("colleges", collegeList);
+        return "college_management";
+    }
+
+    @RequestMapping("{id}")
+    @ResponseBody
+    public College getById(@PathVariable("id") Long id){
+        return collegeService.getById(id);
+    }
+
+    @RequestMapping("update")
+    public String update(CollegeDTO collegeDTO){
+        collegeService.updateById(collegeDTO);
+        return "redirect:/college/queryByPage";
+    }
+
+    @RequestMapping("add")
+    public String add(CollegeDTO collegeDTO){
+        collegeService.add(collegeDTO);
+        return "redirect:/college/queryByPage";
+    }
+
+    @RequestMapping("delete")
+    @ResponseBody
+    public void deleteByIds(Long[] ids){
+        collegeService.deleteByIds(ids);
     }
 
 
