@@ -1,6 +1,5 @@
 package com.mouxianyu.studentsociety.service.impl;
 
-import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
 import com.mouxianyu.studentsociety.common.util.FileUtil;
 import com.mouxianyu.studentsociety.mapper.ImgMapper;
 import com.mouxianyu.studentsociety.pojo.entity.Img;

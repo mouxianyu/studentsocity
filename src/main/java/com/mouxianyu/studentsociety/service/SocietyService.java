@@ -36,11 +36,18 @@ public interface SocietyService {
     List<SocietyVO> queryByPage(SocietyDTO societyDTO);
 
     /**
+     * 查询所有
+     * @param
+     * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.Society>
+     */
+    List<Society> queryAll();
+
+    /**
      * 根据条件查询条数
      * @param societyDTO 条件
      * @return int
      */
-    public int getCountByCondition(SocietyDTO societyDTO);
+    int getCountByCondition(SocietyDTO societyDTO);
 
     /**
      * 新建

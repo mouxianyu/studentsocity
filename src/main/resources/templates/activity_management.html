@@ -54,7 +54,7 @@
         }
 
         .update_temp{
-            opacity: 20%;
+            opacity: 50%;
         }
     </style>
 </head>
@@ -146,6 +146,32 @@
                                         <input style="display: none" th:value="${activity.id}">修改
                                     </a>
                                 </th>
+                                <th:block th:switch="${activity.status}">
+                                    <td th:case=3>
+                                        <button type="button" class="btn btn-success  btn-xs"
+                                                onclick="changeStatus(this,'pass')" th:value="${activity.id}">通过审核
+                                        </button>
+                                        <button type="button" class="btn btn-warning  btn-xs"
+                                                onclick="changeStatus(this,'reject')" th:value="${activity.id}">驳回
+                                        </button>
+                                    </td>
+                                    <td th:case=0>
+                                        <button type="button" class="btn btn-danger  btn-xs"
+                                                onclick="changeStatus(this,'cancel')" th:value="${activity.id}">取消活动
+                                        </button>
+                                    </td>
+                                    <td th:case=1>
+                                        <button type="button" class="btn btn-warning  btn-xs"
+                                                onclick="changeStatus(this,'restart')" th:value="${activity.id}">重启活动
+                                        </button>
+                                    </td>
+                                    <td th:case=4>
+                                        <button type="button" class="btn btn-info  btn-xs"
+                                                onclick="changeStatus(this,'cancelReject')" th:value="${activity.id}">取消驳回
+                                        </button>
+                                    </td>
+                                    <td th:case=*></td>
+                                </th:block>
                             </tr>
                             </tbody>
                         </table>
@@ -249,7 +275,7 @@
                     </div>
                 </div>
             </div>
-            <form method="post" th:action="@{/activity/add}">
+            <form method="post" id="addForm">
                 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -271,9 +297,17 @@
                                 </div>
                                 <div class="form-group">
                                     <label>活动规模</label>
-                                    <select name="scale" class="form-control" id="add_scale">
+                                    <select name="scale" class="form-control" id="add_scale" onchange="scaleJudge(this,'add')">
                                         <option value=0>全校级</option>
                                         <option value=1>社团级</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="add_society_select" style="display: none">
+                                    <label>举办社团</label>
+                                    <select name="societyId" class="form-control" id="add_societyId">
+                                        <th:block th:each="society:${societies}">
+                                            <option th:text="${society.name}" th:value="${society.id}"></option>
+                                        </th:block>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -298,7 +332,7 @@
                     </div>
                 </div>
             </form>
-            <form method="post" th:action="@{/activity/update}" id="updateForm">
+            <form method="post" id="updateForm">
                 <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -320,9 +354,17 @@
                                 </div>
                                 <div class="form-group">
                                     <label>活动规模</label>
-                                    <select name="scale" class="form-control" id="update_scale">
+                                    <select name="scale" class="form-control" id="update_scale" onchange="scaleJudge(this,'update')">
                                         <option value=0>全校级</option>
                                         <option value=1>社团级</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="update_society_select" style="display: none">
+                                    <label>举办社团</label>
+                                    <select name="societyId" class="form-control" id="update_societyId">
+                                        <th:block th:each="society:${societies}">
+                                            <option th:text="${society.name}" th:value="${society.id}"></option>
+                                        </th:block>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -371,9 +413,17 @@
                                 </div>
                                 <div class="form-group">
                                     <label>活动规模</label>
-                                    <select name="scale" class="form-control" id="detail_scale" disabled>
+                                    <select name="scale" class="form-control" id="detail_scale" onchange="scaleJudge(this,'detail')" disabled>
                                         <option value=0>全校级</option>
                                         <option value=1>社团级</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="detail_society_select" style="display: none">
+                                    <label>举办社团</label>
+                                    <select name="societyId" class="form-control" id="detail_societyId" disabled>
+                                        <th:block th:each="society:${societies}">
+                                            <option th:text="${society.name}" th:value="${society.id}"></option>
+                                        </th:block>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -414,6 +464,34 @@
     $(function () {
         $("#sidebar_activity_management").addClass("active");
     });
+
+    function scaleJudge(select,method) {
+        method = "#"+method+"_society_select";
+        var scale = $(select).val();
+        if(scale==0){
+            $(method).css("display","none");
+        }
+        if(scale==1){
+            $(method).css("display","block");
+        }
+    }
+
+    function changeStatus(button,method) {
+        var activityId = $(button).val();
+        $.ajax({
+            url:"/activity/"+method,
+            data:{
+                id:activityId
+            },
+            success:function () {
+                location.reload()
+            },
+            error:function (error) {
+                myAlert("操作失败");
+                console.log(error);
+            }
+        })
+    }
 
     function page(obj) {
         $("#start").val($(obj).text());
@@ -509,6 +587,10 @@
                 $(method + "id").val(data.id);
                 $(method + "title").val(data.title);
                 $(method + "content").val(data.content);
+                if(data.scale==1){
+                    $(method+"society_select").css("display","block");
+                    $(method+"societyId").val(data.societyId);
+                }
                 $(method + "scale").val(data.scale);
                 $(method + "status").val(data.status);
                 data.imgs.forEach(function (imgObj, index) {
@@ -678,8 +760,12 @@
         var title = $("#add_title").val();
         var content = $("#add_content").val();
         var scale = $("#add_scale").val();
+        var societyId = $("#add_societyId").val();
         for (var i = 0; i < addUploadFile.length; i++) {
             formData.append("file", addUploadFile[i]);
+        }
+        if(scale==1){
+            formData.append("societyId", societyId);
         }
         formData.append("title", title);
         formData.append("content", content);
@@ -726,8 +812,12 @@
         var title = $("#update_title").val();
         var content = $("#update_content").val();
         var scale = $("#update_scale").val();
+        var societyId = $("#update_societyId").val();
         for (var i = 0; i < updateUploadFile.length; i++) {
             formData.append("file", updateUploadFile[i]);
+        }
+        if(scale==1){
+            formData.append("societyId", societyId);
         }
         formData.append("id", id);
         formData.append("title", title);

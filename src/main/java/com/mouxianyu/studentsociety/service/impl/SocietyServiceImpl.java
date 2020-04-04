@@ -97,6 +97,14 @@ public class SocietyServiceImpl implements SocietyService {
     }
 
     @Override
+    public List<Society> queryAll() {
+        Example example = new Example(Society.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("status",StatusEnum.NORMAL.getCode());
+        return societyMapper.selectByExample(example);
+    }
+
+    @Override
     public int getCountByCondition(SocietyDTO societyDTO) {
         Example example = condition(societyDTO);
         return societyMapper.selectCountByExample(example);

@@ -1,9 +1,12 @@
 package com.mouxianyu.studentsociety.controller;
 
+import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.pojo.dto.ActivityDTO;
 import com.mouxianyu.studentsociety.pojo.entity.Activity;
+import com.mouxianyu.studentsociety.pojo.entity.Society;
 import com.mouxianyu.studentsociety.pojo.vo.ActivityVO;
 import com.mouxianyu.studentsociety.service.ActivityService;
+import com.mouxianyu.studentsociety.service.SocietyService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,6 +31,9 @@ public class ActivityController {
     @Autowired
     private ActivityService activityService;
 
+    @Autowired
+    private SocietyService societyService;
+
     @RequestMapping("queryByPage")
     private String toActivity(HttpServletRequest request, ActivityDTO activityDTO) {
         ActivityDTO condition = new ActivityDTO();
@@ -35,6 +42,8 @@ public class ActivityController {
         List<ActivityVO> activities = activityService.queryByPage(activityDTO);
         int count = activityService.getCountByCondition(activityDTO);
         int totalPage = count % activityDTO.getRow() == 0 ? count / activityDTO.getRow() : count / activityDTO.getRow() + 1;
+        List<Society> societies = societyService.queryAll();
+        request.setAttribute("societies",societies);
         request.setAttribute("condition", condition);
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("activities", activities);
@@ -70,4 +79,54 @@ public class ActivityController {
     public void delete(Long[] ids) {
         activityService.deleteByIds(ids);
     }
+
+    @RequestMapping("pass")
+    @ResponseBody
+    public void pass(Long id) throws IOException {
+        Activity activity = new Activity();
+        activity.setEstTime(new Date());
+        activity.setId(id);
+        activity.setStatus(StatusEnum.NORMAL.getCode());
+        activityService.updateById(activity,null);
+    }
+
+    @RequestMapping("reject")
+    @ResponseBody
+    public void reject(Long id) throws IOException {
+        Activity activity = new Activity();
+        activity.setId(id);
+        activity.setStatus(StatusEnum.REJECT.getCode());
+        activityService.updateById(activity,null);
+    }
+
+    @RequestMapping("cancel")
+    @ResponseBody
+    public void cancel(Long id) throws IOException {
+        Activity activity = new Activity();
+        activity.setId(id);
+        activity.setStatus(StatusEnum.INVALID.getCode());
+        activityService.updateById(activity,null);
+    }
+
+    @RequestMapping("restart")
+    @ResponseBody
+    public void restart(Long id) throws IOException {
+        Activity activity = new Activity();
+        activity.setId(id);
+        activity.setStatus(StatusEnum.NORMAL.getCode());
+        activityService.updateById(activity,null);
+    }
+
+
+    @RequestMapping("cancelReject")
+    @ResponseBody
+    public void cancelReject(Long id) throws IOException {
+        Activity activity = new Activity();
+        activity.setId(id);
+        activity.setStatus(StatusEnum.AUDITING.getCode());
+        activityService.updateById(activity,null);
+    }
+
+
+
 }
