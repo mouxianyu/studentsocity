@@ -86,5 +86,5 @@ public interface UserService {
      * @param multipartFile
      * @return java.lang.String
      */
-    String upload(UserImportDTO userImportDTO, MultipartFile multipartFile) throws Exception;
+    String upload(UserImportDTO userImportDTO, MultipartFile multipartFile) throws IOException;
 }

@@ -40,7 +40,7 @@ public class CollegeController {
 
     @RequestMapping("upload")
     @ResponseBody
-    public String upLoad(@RequestParam( value="file",required=false) MultipartFile multipartFile,String collegeName) throws Exception {
+    public String upLoad(@RequestParam( value="file",required=false) MultipartFile multipartFile,String collegeName) throws IOException {
         InputStream inputStream = multipartFile.getInputStream();
         List<College> collegeList = ExcelUtil.uploadCollege(inputStream, collegeName);
         if(collegeList==null){

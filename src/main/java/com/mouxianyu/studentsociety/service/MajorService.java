@@ -78,7 +78,7 @@ public interface MajorService {
      * @param collegeName
      * @return java.lang.String
      */
-    String upload(MultipartFile multipartFile, String collegeName, String majorName) throws Exception;
+    String upload(MultipartFile multipartFile, String collegeName, String majorName) throws IOException;
 
     /**
      * 通过姓名查询

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class SocietyController {
     }
     @RequestMapping("upload")
     @ResponseBody
-    public String upload(String societyName,@RequestParam( value="file",required=false) MultipartFile multipartFile) throws Exception {
+    public String upload(String societyName,@RequestParam( value="file",required=false) MultipartFile multipartFile) throws IOException {
         return societyService.upload(societyName,multipartFile);
     }
 

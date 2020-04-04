@@ -6,7 +6,7 @@ spring:
       max-file-size: 10MB
       max-request-size: 100MB
   datasource:
-    url: jdbc:mysql://localhost:3306/student_society
+    url: jdbc:mysql://localhost:3306/student_society?serverTimezone=UTC
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -17,7 +17,7 @@ mybatis:
 
 mouxianyu:
   img-path:
-    activity: C:\\mine\\毕设\\项目\\img\\activity
-    avatar: C:\\mine\\毕设\\项目\\img\\avatar
-    society: C:\\mine\\毕设\\项目\\img\\society
-    news: C:\\mine\\毕设\\项目\\img\\news
+    activity: C:\\mine\\毕设\\项目\\img\\activity\\
+    avatar: C:\\mine\\毕设\\项目\\img\\avatar\\
+    society: C:\\mine\\毕设\\项目\\img\\society\\
+    news: C:\\mine\\毕设\\项目\\img\\news\\

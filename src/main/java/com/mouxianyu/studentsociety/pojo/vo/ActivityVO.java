@@ -1,10 +1,12 @@
 package com.mouxianyu.studentsociety.pojo.vo;
 
+import com.mouxianyu.studentsociety.pojo.entity.Img;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @description: TODO
@@ -78,4 +80,9 @@ public class ActivityVO implements Serializable {
      * 状态
      */
     private Integer status;
+
+    /**
+     * 活动包含图片
+     */
+    private List<Img> imgs;
 }

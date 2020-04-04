@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -39,7 +40,7 @@ public class MajorController {
 
     @RequestMapping("upload")
     @ResponseBody
-    public String upload(@RequestParam( value="file",required=false) MultipartFile multipartFile, String collegeName,String majorName) throws Exception {
+    public String upload(@RequestParam( value="file",required=false) MultipartFile multipartFile, String collegeName,String majorName) throws IOException {
         return majorService.upload(multipartFile,collegeName,majorName);
     }
 

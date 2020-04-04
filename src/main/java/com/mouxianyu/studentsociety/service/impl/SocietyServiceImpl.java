@@ -22,6 +22,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -242,7 +243,7 @@ public class SocietyServiceImpl implements SocietyService {
     }
 
     @Override
-    public String upload(String societyName, MultipartFile multipartFile) throws Exception {
+    public String upload(String societyName, MultipartFile multipartFile) throws IOException {
         int societyNameIndex =-1;
         InputStream inputStream = multipartFile.getInputStream();
         XSSFWorkbook book = new XSSFWorkbook(inputStream);

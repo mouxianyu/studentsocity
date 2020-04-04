@@ -10,6 +10,14 @@
             margin: 10px 18px 0 18px;
         }
 
+        #detail_img_pre_div {
+            margin: 10px 18px 0 18px;
+        }
+
+        #update_img_pre_div {
+            margin: 10px 18px 0 18px;
+        }
+
         .img_wrap {
             display: inline-block;
             position: relative;
@@ -43,6 +51,10 @@
 
         .img_wrap img {
             height: 100px;
+        }
+
+        .update_temp{
+            opacity: 20%;
         }
     </style>
 </head>
@@ -302,14 +314,36 @@
                                     <input id="update_id" name="id" type="text" readonly class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label>学院名称</label>
-                                    <input name="name" value="" type="text" class="form-control"
-                                           placeholder="请输入社团名称" id="update_name" required>
+                                    <label>活动名称</label>
+                                    <input name="title" value="" type="text" class="form-control" id="update_title"
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <label>活动规模</label>
+                                    <select name="scale" class="form-control" id="update_scale">
+                                        <option value=0>全校级</option>
+                                        <option value=1>社团级</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>活动内容</label>
+                                    <textarea class="form-control" name="content" required
+                                              id="update_content"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>活动图片</label>
+                                    <input id="update_img_file" type="file" accept="image/*" name="file"
+                                           class="form-control"
+                                           multiple onchange="readImgUpdate(event)" style="display: none">
+                                    <button class="btn btn-primary" type="button" onclick="addImgUpdate()">添加图片</button>
+                                    <button class="btn btn-default" type="button" onclick="cleanImgUpdate()">清空</button>
+                                    <div id="update_img_pre_div">
+                                    </div>
                                 </div>
                             </div>
                             <div class=" modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                                <button type="submit" class="btn btn-primary">保存</button>
+                                <button type="button" class="btn btn-primary" onclick="updateActivity()">保存</button>
                             </div>
                         </div>
                     </div>
@@ -356,6 +390,11 @@
                                         <option value=4>已驳回</option>
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label>活动图片</label>
+                                    <div id="detail_img_pre_div">
+                                    </div>
+                                </div>
                             </div>
                             <div class=" modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -370,7 +409,8 @@
 <!--引入通用js-->
 <th:block th:replace="../templates/common::common-js"/>
 <script>
-    var uploadFile = [];
+    var addUploadFile = [];
+    var updateUploadFile = [];
     $(function () {
         $("#sidebar_activity_management").addClass("active");
     });
@@ -433,7 +473,7 @@
         });
         $.confirm({
             title: "提 示",
-            content: "是否确定删除？删除将删除其下所有专业",
+            content: "是否确定删除？",
             type: "green",
             buttons: {
                 确认: function () {
@@ -461,15 +501,24 @@
     function showDetail(obj, method) {
         method = "#" + method + "_";
         var val = $(obj).children();
+        $(method + "img_pre_div").empty();
         $.ajax({
-            url: "/activity/" + $(val[0]).val(),
-            async: false,
+            url: "/activity/more/" + $(val[0]).val(),
+            async: true,
             success: function (data) {
                 $(method + "id").val(data.id);
                 $(method + "title").val(data.title);
                 $(method + "content").val(data.content);
                 $(method + "scale").val(data.scale);
                 $(method + "status").val(data.status);
+                data.imgs.forEach(function (imgObj, index) {
+                    if (method === "#detail_") {
+                        $(method + "img_pre_div").append("<div class='img_wrap'><img alt='图片' src='/img/activity/" + imgObj.relName + "'></div>");
+                    }
+                    if (method === "#update_") {
+                        $(method + "img_pre_div").append("<div class='img_wrap'><i onclick='deleteOneImgWithDataBase(this," + imgObj.id + ")' class='fa fa-trash-o' aria-hidden='true'></i><img alt='图片' src='/img/activity/" + imgObj.relName + "'></div>");
+                    }
+                });
             },
             error: function (error) {
                 myAlert("发生异常");
@@ -482,6 +531,10 @@
         $("#img_file").click();
     }
 
+    function addImgUpdate() {
+        $("#update_img_file").click();
+    }
+
     function readImg(event) {
         var files = event.target.files, file;
         if (files && files.length > 0) {
@@ -491,8 +544,8 @@
                     myAlert('图片大小不能超过 2MB!');
                     return false;
                 }
-                if (uploadFile.length < 12) {
-                    uploadFile.push(file);
+                if (addUploadFile.length < 12) {
+                    addUploadFile.push(file);
                 } else {
                     myAlert("最多上传12张图片");
                     return false;
@@ -502,7 +555,28 @@
                 $("#add_img_pre_div").append("<div class='img_wrap'><i onclick='deleteOneImg(this)' class='fa fa-trash-o' aria-hidden='true'></i><img alt='图片' src='" + imgURL + "'></div>");
             }
         }
-        var formData = new FormData();
+    }
+
+    function readImgUpdate(event) {
+        var files = event.target.files, file;
+        if (files && files.length > 0) {
+            for (var i = 0; i < files.length; i++) {
+                file = files[i];
+                if (file.size > 1024 * 1024 * 2) {
+                    myAlert('图片大小不能超过 2MB!');
+                    return false;
+                }
+                if ($("#update_img_pre_div").children().length < 12) {
+                    updateUploadFile.push(file);
+                } else {
+                    myAlert("最多上传12张图片");
+                    return false;
+                }
+                var URL = window.URL || window.webkitURL;
+                var imgURL = URL.createObjectURL(file);
+                $("#update_img_pre_div").append("<div class='img_wrap update_temp'><i onclick='deleteOneImgUpdate(this)' class='fa fa-trash-o' aria-hidden='true'></i><img alt='图片' src='" + imgURL + "'></div>");
+            }
+        }
     }
 
     function cleanImg() {
@@ -518,7 +592,80 @@
             buttons: {
                 确定: function () {
                     $("#add_img_pre_div").empty();
-                    uploadFile = [];
+                    addUploadFile = [];
+                },
+                取消: {}
+            }
+        });
+    }
+
+    function cleanImgUpdate() {
+        var imgDiv = $("#update_img_pre_div");
+        var objId = $("#update_id").val();
+        if (imgDiv.children().length <= 0) {
+            myAlert("未选择图片");
+            return;
+        }
+        $.confirm({
+            title: "提 示",
+            content: "是否清空图片",
+            type: "green",
+            buttons: {
+                确定: function () {
+
+                    $.ajax({
+                        url: "/img/deleteByTypeAndObjId",
+                        data: {
+                            objId: objId,
+                            type: 0
+                        },
+                        success: function () {
+                            $("#update_img_pre_div").empty();
+                            updateUploadFile = [];
+                        },
+                        error: function (error) {
+                            myAlert("发生异常");
+                            console.log(error);
+                        }
+                    })
+                },
+                取消: {}
+            }
+        });
+    }
+
+
+    function deleteOneImg(icon) {
+        var imgDiv = $(icon).parent();
+        var index = imgDiv.index();
+        imgDiv.remove();
+        addUploadFile.splice(index, 1);
+    }
+
+    function deleteOneImgUpdate(icon) {
+        var imgDiv = $(icon).parent();
+        var index = imgDiv.index(".update_temp");
+        imgDiv.remove();
+        updateUploadFile.splice(index,1);
+    }
+
+    function deleteOneImgWithDataBase(icon, id) {
+        $.confirm({
+            title: "提 示",
+            type: "green",
+            content: "是否删除图片？",
+            buttons: {
+                确认: function () {
+                    $.ajax({
+                        url: "/img/delete/" + id,
+                        success: function () {
+                            var imgDiv = $(icon).parent()
+                            imgDiv.remove();
+                        }, error: function (error) {
+                            myAlert("发生异常");
+                            console.log(error);
+                        }
+                    })
                 },
                 取消: {}
             }
@@ -526,20 +673,13 @@
 
     }
 
-    function deleteOneImg(icon) {
-        var imgDiv=$(icon).parent()
-        var index = imgDiv.index();
-        imgDiv.remove();
-        uploadFile.splice(index,1);
-    }
-    
     function addNewActivity() {
         var formData = new FormData();
         var title = $("#add_title").val();
         var content = $("#add_content").val();
         var scale = $("#add_scale").val();
-        for(var i=0;i<uploadFile.length;i++){
-            formData.append("file", uploadFile[i]);
+        for (var i = 0; i < addUploadFile.length; i++) {
+            formData.append("file", addUploadFile[i]);
         }
         formData.append("title", title);
         formData.append("content", content);
@@ -552,7 +692,6 @@
             myAlert("请填写活动内容");
             return;
         }
-        console.log(uploadFile);
         $.confirm({
             title: "提 示",
             type: "green",
@@ -567,11 +706,56 @@
                     processData: false,
                     contentType: false
                 }).done(function (msg) {
-                    if (msg === "") {
-                        self.setContentAppend("保存成功");
-                    } else {
-                        self.setContentAppend(msg);
-                    }
+                    self.setContentAppend("保存成功");
+                }).fail(function (error) {
+                    self.setContentAppend("保存失败");
+                    console.log(error);
+                });
+            },
+            buttons: {
+                关闭: function () {
+                    location.reload();
+                }
+            }
+        });
+    }
+
+    function updateActivity() {
+        var formData = new FormData();
+        var id =$("#update_id").val();
+        var title = $("#update_title").val();
+        var content = $("#update_content").val();
+        var scale = $("#update_scale").val();
+        for (var i = 0; i < updateUploadFile.length; i++) {
+            formData.append("file", updateUploadFile[i]);
+        }
+        formData.append("id", id);
+        formData.append("title", title);
+        formData.append("content", content);
+        formData.append("scale", scale);
+        if (title === "") {
+            myAlert("请填写活动标题");
+            return;
+        }
+        if (content === "") {
+            myAlert("请填写活动内容");
+            return;
+        }
+        $.confirm({
+            title: "提 示",
+            type: "green",
+            content: function () {
+                var self = this;
+                return $.ajax({
+                    type: 'post',
+                    url: "/activity/update",
+                    data: formData,
+                    cache: false,
+                    traditional: true,
+                    processData: false,
+                    contentType: false
+                }).done(function () {
+                    self.setContentAppend("保存成功");
                 }).fail(function (error) {
                     self.setContentAppend("保存失败");
                     console.log(error);

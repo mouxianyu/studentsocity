@@ -9,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class ExcelUtil {
      * @param collegeName
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.College>
      */
-    public static List<College> uploadCollege(InputStream inputStream, String collegeName) throws Exception {
+    public static List<College> uploadCollege(InputStream inputStream, String collegeName) throws IOException {
         int collegeNameIndex = -1;
         List<College> collegeList = new ArrayList<>();
         XSSFWorkbook book = new XSSFWorkbook(inputStream);

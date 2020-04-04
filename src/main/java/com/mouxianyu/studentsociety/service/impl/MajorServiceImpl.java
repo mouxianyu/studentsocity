@@ -100,7 +100,7 @@ public class MajorServiceImpl implements MajorService {
     }
 
     @Override
-    public String upload(MultipartFile multipartFile, String collegeName, String majorName) throws Exception {
+    public String upload(MultipartFile multipartFile, String collegeName, String majorName) throws IOException {
         int collegeNameIndex = -1;
         int majorNameIndex =-1;
         InputStream inputStream = multipartFile.getInputStream();

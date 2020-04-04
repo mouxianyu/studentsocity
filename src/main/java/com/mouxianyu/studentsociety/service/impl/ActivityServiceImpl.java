@@ -1,22 +1,29 @@
 package com.mouxianyu.studentsociety.service.impl;
 
+import com.mouxianyu.studentsociety.common.config.ImgConfig;
+import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
 import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.mapper.ActivityMapper;
 import com.mouxianyu.studentsociety.pojo.dto.ActivityDTO;
 import com.mouxianyu.studentsociety.pojo.entity.Activity;
+import com.mouxianyu.studentsociety.pojo.entity.Img;
 import com.mouxianyu.studentsociety.pojo.entity.Society;
 import com.mouxianyu.studentsociety.pojo.entity.User;
 import com.mouxianyu.studentsociety.pojo.vo.ActivityVO;
 import com.mouxianyu.studentsociety.service.ActivityService;
+import com.mouxianyu.studentsociety.service.ImgService;
 import com.mouxianyu.studentsociety.service.SocietyService;
 import com.mouxianyu.studentsociety.service.UserService;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +43,12 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Autowired
     private SocietyService societyService;
+
+    @Autowired
+    private ImgConfig imgConfig;
+
+    @Autowired
+    private ImgService imgService;
 
 
     @Override
@@ -65,7 +78,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public ActivityVO getByIdMore(Long id) {
         Activity activity = getById(id);
-        return toVOCondition(activity);
+        return toVOConditionWithImg(activity);
     }
 
     @Override
@@ -74,6 +87,7 @@ public class ActivityServiceImpl implements ActivityService {
         activity.setId(id);
         activity.setStatus(StatusEnum.DELETED.getCode());
         activityMapper.updateByPrimaryKeySelective(activity);
+        imgService.deleteByTypeAndObjId(id, ObjTypeEnum.ACTIVITY.getCode());
     }
 
     @Override
@@ -84,18 +98,31 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public void updateById(Activity activity) {
+    @Transactional(rollbackFor = Exception.class)
+    public void updateById(Activity activity, MultipartFile[] multipartFiles) throws IOException {
         activity.setModifyTime(new Date());
         activityMapper.updateByPrimaryKeySelective(activity);
+        if (multipartFiles != null) {
+            if(multipartFiles.length>0){
+                for (MultipartFile multipartFile : multipartFiles) {
+                    imgService.add(multipartFile,imgConfig.getActivity(),ObjTypeEnum.ACTIVITY.getCode(),activity.getId());
+                }
+            }
+        }
+
     }
 
     @Override
-    public Long add(Activity activity) {
+    @Transactional(rollbackFor = Exception.class)
+    public Long add(Activity activity, MultipartFile[] multipartFiles) throws IOException {
         activity.setCreateTime(new Date());
-        if(activity.getStatus()==null){
+        if (activity.getStatus() == null) {
             activity.setStatus(StatusEnum.AUDITING.getCode());
         }
         activityMapper.insertSelective(activity);
+        for (MultipartFile multipartFile : multipartFiles) {
+            imgService.add(multipartFile,imgConfig.getActivity(),ObjTypeEnum.ACTIVITY.getCode(),activity.getId());
+        }
         return activity.getId();
     }
 
@@ -120,7 +147,7 @@ public class ActivityServiceImpl implements ActivityService {
         return example;
     }
 
-    private ActivityVO toVOCondition(Activity activity){
+    private ActivityVO toVOCondition(Activity activity) {
         ActivityVO activityVO = new ActivityVO();
         BeanUtils.copyProperties(activity, activityVO);
         if (activity.getCreateId() != null) {
@@ -134,6 +161,15 @@ public class ActivityServiceImpl implements ActivityService {
             if (society != null) {
                 activityVO.setSocietyName(society.getName());
             }
+        }
+        return activityVO;
+    }
+
+    private ActivityVO toVOConditionWithImg(Activity activity) {
+        ActivityVO activityVO = toVOCondition(activity);
+        List<Img> imgs = imgService.queryByTypeObjId(activity.getId(), ObjTypeEnum.ACTIVITY.getCode());
+        if (imgs != null && imgs.size() > 0) {
+            activityVO.setImgs(imgs);
         }
         return activityVO;
     }

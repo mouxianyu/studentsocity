@@ -28,6 +28,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -174,7 +175,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String upload(UserImportDTO userImportDTO, MultipartFile multipartFile) throws Exception {
+    public String upload(UserImportDTO userImportDTO, MultipartFile multipartFile) throws IOException {
         int stuNoIndex = -1;
         int stuNameIndex = -1;
         int stuMajorIndex = -1;

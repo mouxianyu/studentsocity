@@ -5,6 +5,7 @@ import com.mouxianyu.studentsociety.pojo.entity.Society;
 import com.mouxianyu.studentsociety.pojo.vo.SocietyVO;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -99,6 +100,6 @@ public interface SocietyService {
      * @param multipartFile
      * @return java.lang.String
      */
-    String upload(String societyName, MultipartFile multipartFile) throws Exception;
+    String upload(String societyName, MultipartFile multipartFile) throws IOException;
 
 }

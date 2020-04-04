@@ -3,7 +3,9 @@ package com.mouxianyu.studentsociety.service;
 import com.mouxianyu.studentsociety.pojo.dto.ActivityDTO;
 import com.mouxianyu.studentsociety.pojo.entity.Activity;
 import com.mouxianyu.studentsociety.pojo.vo.ActivityVO;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -13,6 +15,7 @@ import java.util.List;
 public interface ActivityService {
     /**
      * 分页查询
+     *
      * @param activityDTO
      * @return
      */
@@ -20,6 +23,7 @@ public interface ActivityService {
 
     /**
      * 按条件查询条数
+     *
      * @param activityDTO
      * @return int
      */
@@ -27,6 +31,7 @@ public interface ActivityService {
 
     /**
      * 根据id查询
+     *
      * @param id
      * @return com.mouxianyu.studentsociety.pojo.entity.Activity
      */
@@ -34,6 +39,7 @@ public interface ActivityService {
 
     /**
      * 根据id查询
+     *
      * @param id
      * @return com.mouxianyu.studentsociety.pojo.vo.ActivityVO
      */
@@ -41,6 +47,7 @@ public interface ActivityService {
 
     /**
      * 通过id查询
+     *
      * @param id
      * @return void
      */
@@ -48,6 +55,7 @@ public interface ActivityService {
 
     /**
      * 批量根据id删除
+     *
      * @param ids
      * @return void
      */
@@ -55,15 +63,17 @@ public interface ActivityService {
 
     /**
      * 根据id修改
+     *
      * @param activity
      * @return void
      */
-    void updateById(Activity activity);
+    void updateById(Activity activity, MultipartFile[] multipartFiles) throws IOException;
 
     /**
      * 新增
+     *
      * @param activity
      * @return java.lang.Long
      */
-    Long add(Activity activity);
+    Long add(Activity activity, MultipartFile[] multipartFiles) throws IOException;
 }

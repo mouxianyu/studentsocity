@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -69,7 +70,7 @@ public class UserController {
 
     @RequestMapping("upload")
     @ResponseBody
-    public String upload(UserImportDTO userImportDTO, @RequestParam( value="file",required=false)MultipartFile multipartFile) throws Exception {
+    public String upload(UserImportDTO userImportDTO, @RequestParam( value="file",required=false)MultipartFile multipartFile) throws IOException {
         return userService.upload(userImportDTO,multipartFile);
     }
 

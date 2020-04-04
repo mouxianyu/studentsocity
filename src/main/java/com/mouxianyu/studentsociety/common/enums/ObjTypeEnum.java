@@ -9,15 +9,25 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum  ActivityScaleEnum {
+public enum ObjTypeEnum {
     /**
-     * 校级
+     * 活动
      */
-    SCHOOL(0,"校级"),
+    ACTIVITY(0,"活动"),
     /**
-     * 社团级
+     * 社团
      */
-    SOCIETY(1,"社团级"),
+    SOCIETY(1,"社团"),
+
+    /**
+     * 头像
+     */
+    AVATAR(2,"头像"),
+
+    /**
+     * 新闻
+     */
+    NEWS(3,"新闻")
     ;
 
     /**

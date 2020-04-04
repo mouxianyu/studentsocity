@@ -1,7 +1,5 @@
 package com.mouxianyu.studentsociety.controller;
 
-import com.mouxianyu.studentsociety.common.config.ImgConfig;
-import com.mouxianyu.studentsociety.common.util.UploadUtil;
 import com.mouxianyu.studentsociety.pojo.dto.ActivityDTO;
 import com.mouxianyu.studentsociety.pojo.entity.Activity;
 import com.mouxianyu.studentsociety.pojo.vo.ActivityVO;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -28,11 +27,8 @@ public class ActivityController {
     @Autowired
     private ActivityService activityService;
 
-    @Autowired
-    private ImgConfig imgConfig;
-
     @RequestMapping("queryByPage")
-    private String toActivity(HttpServletRequest request, ActivityDTO activityDTO){
+    private String toActivity(HttpServletRequest request, ActivityDTO activityDTO) {
         ActivityDTO condition = new ActivityDTO();
         BeanUtils.copyProperties(activityDTO, condition);
         activityDTO.setStart((activityDTO.getStart() - 1) * activityDTO.getRow());
@@ -47,36 +43,31 @@ public class ActivityController {
 
     @RequestMapping("{id}")
     @ResponseBody
-    public Activity getById(@PathVariable("id") Long id){
+    public Activity getById(@PathVariable("id") Long id) {
         return activityService.getById(id);
     }
 
     @RequestMapping("more/{id}")
     @ResponseBody
-    public Activity getByIdMore(@PathVariable("id") Long id){
-        return activityService.getById(id);
+    public ActivityVO getByIdMore(@PathVariable("id") Long id) {
+        return activityService.getByIdMore(id);
     }
 
     @RequestMapping("add")
     @ResponseBody
-    public void add(Activity activity,@RequestParam( value="file",required=false) MultipartFile[] multipartFiles) throws Exception {
-        for (MultipartFile multipartFile : multipartFiles) {
-            String filename = multipartFile.getOriginalFilename();
-            String filePath = UploadUtil.upload(multipartFile, imgConfig.getActivity());
-            System.out.println(filePath);
-            System.out.println(filename);
-        }
-        activityService.add(activity);
+    public void add(Activity activity, @RequestParam(value = "file", required = false) MultipartFile[] multipartFiles) throws IOException {
+        activityService.add(activity, multipartFiles);
     }
 
     @RequestMapping("update")
-    public void update(Activity activity){
-        activityService.updateById(activity);
+    @ResponseBody
+    public void update(Activity activity, @RequestParam(value = "file", required = false) MultipartFile[] multipartFiles) throws IOException {
+        activityService.updateById(activity, multipartFiles);
     }
 
     @RequestMapping("delete")
     @ResponseBody
-    public void delete(Long[] ids){
+    public void delete(Long[] ids) {
         activityService.deleteByIds(ids);
     }
 }
