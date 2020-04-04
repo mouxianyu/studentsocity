@@ -2,15 +2,9 @@ $(function () {
     $("#sidebar_society_management").addClass("active");
 });
 var ctx = 'society_chart';
-var backgroundColorsSample = [
-    'rgba(255, 99, 132, 0.2)',
-    'rgba(54, 162, 235, 0.2)',
-    'rgba(255, 206, 86, 0.2)',
-    'rgba(75, 192, 192, 0.2)',
-    'rgba(153, 102, 255, 0.2)',
-    'rgba(255, 159, 64, 0.2)'
-];
-var borderColorSample = [
+var lineCtx = "lineChart";
+var polarCtx = "polarArea";
+var bgColorSample = [
     'rgba(255, 99, 132, 1)',
     'rgba(54, 162, 235, 1)',
     'rgba(255, 206, 86, 1)',
@@ -20,21 +14,23 @@ var borderColorSample = [
 ];
 var firstLoad = true;
 var chart;
+var lineChart;
+var polarChart;
 
 $(function () {
-    loadChart("society/countByCollege", "学院分布统计");
+    loadChart("society/countByCollege", "学 院 分 布 统 计");
 });
 
 function loadChart(url, chartName) {
+    $("#chart_name").text(chartName);
     url = "/" + url + "/";
     $.ajax({
         url: url + $("#society_id").val(),
         success: function (data) {
             var currentBackgroundColors = [];
-            var currentBorderColors = [];
+            var currentBgColors = [];
             for (var i = 0; i < data.names.length; i++) {
-                currentBackgroundColors.push(backgroundColorsSample[i % 6]);
-                currentBorderColors.push(borderColorSample[i % 6])
+                currentBgColors.push(bgColorSample[i % 6])
             }
             if (firstLoad) {
                 chart = new Chart(ctx, {
@@ -43,32 +39,85 @@ function loadChart(url, chartName) {
                         labels: data.names,
                         datasets: [{
                             data: data.counts,
-                            backgroundColor: currentBackgroundColors,
-                            borderColor: currentBorderColors,
-                            borderWidth: 1
+                            backgroundColor: currentBgColors
+                        }]
+                    }
+                });
+                polarChart = new Chart(polarCtx,{
+                    type: 'polarArea',
+                    data: {
+                        labels: data.names,
+                        datasets: [{
+                            data: data.counts,
+                            backgroundColor: currentBgColors
+                        }]
+                    }
+                });
+                lineChart = new Chart(lineCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.names,
+                        datasets: [{
+                            label: '折线图',
+                            data: data.counts,
+                            type: "line",
+                            fill: false,
+                            lineTension: 0,
+                            backgroundColor: 'rgba(153, 102, 255, 1)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 2
+                        }, {
+                            label: '条形图',
+                            data: data.counts,
+                            backgroundColor: currentBgColors
                         }]
                     },
                     options: {
-                        title: {
-                            text: chartName,
-                            display: true,
-                            fontSize: 18,
-                            padding: 20
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
                         }
                     }
-                });
+                })
                 firstLoad = false;
             } else {
                 chart.data = {
                     labels: data.names,
                     datasets: [{
                         data: data.counts,
-                        backgroundColor: currentBackgroundColors,
-                        borderColor: currentBorderColors
+                        backgroundColor: currentBgColors
                     }]
                 };
-                chart.options.title.text = chartName;
+                lineChart.data = {
+                    labels: data.names,
+                    datasets: [{
+                        label: '折线图',
+                        data: data.counts,
+                        type: "line",
+                        fill: false,
+                        lineTension: 0,
+                        backgroundColor: 'rgba(153, 102, 255, 1)',
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 2
+                    }, {
+                        label: '条形图',
+                        data: data.counts,
+                        backgroundColor: currentBgColors
+                    }]
+                };
+                polarChart.data = {
+                    labels: data.names,
+                    datasets: [{
+                        data: data.counts,
+                        backgroundColor: currentBgColors
+                    }]
+                };
                 chart.update();
+                polarChart.update();
+                lineChart.update();
             }
         }
     });

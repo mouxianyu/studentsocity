@@ -27,15 +27,45 @@
             <div class="row">
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                     <input id="society_id" style="display: none" th:value="${society.id}">
-                    <button class="btn btn-primary" type="button" onclick="gotoTable()">列表信息</button>
-                    <button class="btn btn-primary" type="button" onclick="loadChart('society/countByCollege','学院分布统计')">学院统计
+                    <button class="btn btn-primary" type="button" onclick="loadChart('society/countByCollege','学 院 分 布 统 计')">学院统计
                     </button>
-                    <button class="btn btn-primary" type="button" onclick="loadChart('society/countByMajor','专业分布统计')">专业统计
+                    <button class="btn btn-primary" type="button" onclick="loadChart('society/countByMajor','专 业 分 布 统 计')">专业统计
                     </button>
-                    <button class="btn btn-primary" type="button" onclick="loadChart('society/countByGrade','年级分布统计')">年级统计</button>
-                    <button class="btn btn-primary" type="button" onclick="loadChart('society/countByGender','性别分布统计')">性别统计</button>
+                    <button class="btn btn-primary" type="button" onclick="loadChart('society/countByGrade','年 级 分 布 统 计')">年级统计</button>
+                    <button class="btn btn-primary" type="button" onclick="loadChart('society/countByGender','性 别 分 布 统 计')">性别统计</button>
                     <br><br>
-                    <canvas id="society_chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="dashboard-header section-padding">
+        <div class="container-fluid">
+            <div class="row d-flex align-items-md-stretch">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card project-progress">
+
+                        <p style="font-size: 12px">环形图</p>
+                        <div class="pie-chart">
+                            <canvas id="society_chart" width="100%" height="100%"> </canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card project-progress">
+                        <p style="font-size: 12px">极区图</p>
+                        <div class="pie-chart">
+                            <canvas id="polarArea" width="100%" height="100%"> </canvas>
+                        </div>
+                    </div>
+                </div>
+                <!-- Line Chart -->
+                <div class="col-lg-6 col-md-12 flex-lg-last flex-md-first align-self-baseline">
+                    <div class="card sales-report">
+                        <p  style="font-size: 12px">柱状折线图</p>
+                        <div class="line-chart">
+                            <canvas id="lineChart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
