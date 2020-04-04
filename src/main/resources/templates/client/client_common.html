@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="common-header(title)">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, width=device-width">
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" th:href="@{/client/css/style.css}">
+    <style>
+        ion-icon {
+            font-size: 30px;
+        }
+    </style>
+</th:block>
+
+<th:block th:fragment="header_nav">
+    <div class="appHeader">
+<!--        <div class="left">-->
+<!--            <a href="javascript:;" class="icon toggleSidebar">-->
+<!--                <i class="icon ion-ios-menu"></i>-->
+<!--            </a>-->
+<!--        </div>-->
+        <div class="pageTitle">
+            <img th:src="@{/img/logo.png}" alt="Bitter" class="image">
+        </div>
+        <div class="right">
+            <label for="searchInput" class="mb-0 icon toggleSearchbox">
+                <i class="icon ion-ios-search"></i>
+            </label>
+        </div>
+    </div>
+    <div class="searchBox">
+        <form>
+            <span class="inputIcon">
+                <i class="icon ion-ios-search"></i>
+            </span>
+            <input type="text" class="form-control" id="searchInput" placeholder="搜索...">
+            <a href="javascript:;" class="toggleSearchbox closeButton">
+                <i class="icon ion-ios-close-circle"></i>
+            </a>
+        </form>
+    </div>
+</th:block>
+
+<th:block th:fragment="bottom_buttom">
+    <div class="appBottomMenu">
+        <div class="item active">
+            <a href="index.html">
+                <p>
+                    <ion-icon name="home-outline"></ion-icon>
+                </p>
+            </a>
+        </div>
+        <div class="item">
+            <a href="pages.html">
+                <p>
+                    <ion-icon name="planet-outline"></ion-icon>
+                </p>
+            </a>
+        </div>
+        <div class="item">
+            <a href="components.html">
+                <p>
+                    <ion-icon name="person-outline"></ion-icon>
+                </p>
+            </a>
+        </div>
+    </div>
+<!--    <div class="sidebarWrapper">-->
+<!--        <div class="overlay toggleSidebar"></div>-->
+<!--        <nav class="sidebar">-->
+<!--            <div class="profilebox">-->
+<!--                <img th:src="@{/img/avatar-7.jpg}" alt="avatar" class="avatar">-->
+<!--                <h2 class="title">Gaspar Antunes</h2>-->
+<!--                <h5 class="lead">-->
+<!--                    <i class="icon ion-ios-pin mr-1"></i>-->
+<!--                    Chicago-->
+<!--                </h5>-->
+<!--                <div class="button">-->
+<!--                    <a href="#">-->
+<!--                        <i class="icon ion-ios-settings"></i>-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="sidebarGroup">-->
+<!--                <ul class="sidebarMenu">-->
+<!--                    <li>-->
+<!--                        <a href="social-home.html">-->
+<!--                            <i class="icon ion-ios-people"></i>-->
+<!--                            Social-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <a href="social-chat.html">-->
+<!--                            <i class="icon ion-ios-chatboxes"></i>-->
+<!--                            Chat-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <a href="pages.html">-->
+<!--                            <i class="icon ion-ios-apps"></i>-->
+<!--                            Pages-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <a href="components.html">-->
+<!--                            <i class="icon ion-ios-analytics"></i>-->
+<!--                            Components-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <a href="blog-home.html">-->
+<!--                            <i class="icon ion-ios-book"></i>-->
+<!--                            Magazine - Blog-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                    <li>-->
+<!--                        <a href="page-login.html">-->
+<!--                            <i class="icon ion-ios-lock"></i>-->
+<!--                            Login-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </nav>-->
+<!--    </div>-->
+</th:block>
+
+<th:block th:fragment="common-js">
+    <!-- Jquery -->
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <!-- Bootstrap-->
+    <script src="https://cdn.bootcss.com/popper.js/1.16.1/popper.js"></script>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet">
+    <!-- Owl Carousel -->
+    <script src="https://cdn.bootcss.com/OwlCarousel2/2.3.4/owl.carousel.js"></script>
+    <!-- Main Js File -->
+    <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+    <script th:src="@{/client/js/app.js}"></script>
+</th:block>

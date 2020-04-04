@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<!--引入导航栏-->
+<th:block th:replace="../templates/client/client_common::header_nav"/>
+
+<div id="appCapsule">
+    <div class="appContent">
+        <!-- Card Overlay Carousel -->
+        <div class="cardOverlayCarousel owl-carousel mt-2 mb-4">
+            <!-- item -->
+            <div class="item">
+                <a href="blog-post.html" class="card card-overlay text-white">
+                    <img th:src="@{/img/photo8.jpg}" class="card-img img-fluid" alt="image">
+                    <div class="card-img-overlay">
+                        <div class="header row">
+                            <div class="col-8">TRAVEL</div>
+                            <div class="col-4 text-right">
+                                <i class="icon ion-ios-heart"></i> 523
+                            </div>
+                        </div>
+                        <div class="content">
+                            <h1>Top 10 Travel Bloggers You Should Already Be Following</h1>
+                            <footer>
+                                <div class="author">
+                                    <img th:src="@{/img/avatar-7.jpg}" alt="avatar">
+                                    Marti Valencia
+                                </div>
+                                <div class="date">
+                                    5 hours ago
+                                </div>
+                            </footer>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- * item -->
+            <!-- item -->
+            <div class="item">
+                <a href="blog-post.html" class="card card-overlay text-white">
+                    <img th:src="@{/img/photo8.jpg}" class="card-img img-fluid" alt="image">
+                    <div class="card-img-overlay">
+                        <div class="header row">
+                            <div class="col-8">EVENTS</div>
+                            <div class="col-4 text-right">
+                                <i class="icon ion-ios-heart"></i> 12K
+                            </div>
+                        </div>
+                        <div class="content">
+                            <h1>The World's Largest Pillow Fight is Also a Festival</h1>
+                            <footer>
+                                <div class="author">
+                                    <img th:src="@{/img/avatar-7.jpg}" alt="avatar">
+                                    Sofie Fulloway
+                                </div>
+                                <div class="date">
+                                    2 hours ago
+                                </div>
+                            </footer>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- * item -->
+            <!-- item -->
+            <div class="item">
+                <a href="blog-post.html" class="card card-overlay text-white">
+                    <img th:src="@{/img/photo8.jpg}" class="card-img img-fluid" alt="image">
+                    <div class="card-img-overlay">
+                        <div class="header row">
+                            <div class="col-8">SPORTS</div>
+                            <div class="col-4 text-right">
+                                <i class="icon ion-ios-heart"></i> 12K
+                            </div>
+                        </div>
+                        <div class="content">
+                            <h1>Juxon Julio praises Peri’s resilience after testing week</h1>
+                            <footer>
+                                <div class="author">
+                                    <img th:src="@{/img/avatar-7.jpg}" alt="avatar">
+                                    Jackie Pearson
+                                </div>
+                                <div class="date">
+                                    2 hours ago
+                                </div>
+                            </footer>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- * item -->
+            <!-- item -->
+            <div class="item">
+                <a href="blog-post.html" class="card card-overlay text-white">
+                    <img th:src="@{/img/photo8.jpg}" class="card-img img-fluid" alt="image">
+                    <div class="card-img-overlay">
+                        <div class="header row">
+                            <div class="col-8">WORLD</div>
+                            <div class="col-4 text-right">
+                                <i class="icon ion-ios-heart"></i> 12K
+                            </div>
+                        </div>
+                        <div class="content">
+                            <h1>Best of Skyscrapers in the World</h1>
+                            <footer>
+                                <div class="author">
+                                    <img th:src="@{/img/avatar-7.jpg}" alt="avatar">
+                                    Vincent Hunt
+                                </div>
+                                <div class="date">
+                                    2 hours ago
+                                </div>
+                            </footer>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- * item -->
+        </div>
+        <!-- * Card Overlay Carousel -->
+
+        <div class="divider mt-2 mb-4"></div>
+        <!-- Button Carousel -->
+        <div class="buttonCarousel owl-carousel">
+            <div class="item">
+                <a href="#">
+                    <div class="imgWrapper">
+                        <img th:src="@{/img/product4.jpg}" class="card-img img-fluid" alt="image">
+                    </div>
+                    <strong>Headphones</strong>
+                </a>
+            </div>
+            <div class="item">
+                <a href="#">
+                    <div class="imgWrapper">
+                        <img th:src="@{/img/product4.jpg}" class="card-img img-fluid" alt="image">
+                    </div>
+                    <strong>Furniture</strong>
+                </a>
+            </div>
+            <div class="item">
+                <a href="#">
+                    <div class="imgWrapper">
+                        <img th:src="@{/img/product4.jpg}" class="card-img img-fluid" alt="image">
+                    </div>
+                    <strong>Watch</strong>
+                </a>
+            </div>
+            <div class="item">
+                <a href="#">
+                    <div class="imgWrapper">
+                        <img th:src="@{/img/product4.jpg}" class="card-img img-fluid" alt="image">
+                    </div>
+                    <strong>Camera</strong>
+                </a>
+            </div>
+            <div class="item">
+                <a href="#">
+                    <div class="imgWrapper">
+                        <img th:src="@{/img/product4.jpg}" class="card-img img-fluid" alt="image">
+                    </div>
+                    <strong>Computer</strong>
+                </a>
+            </div>
+            <div class="item">
+                <a href="#">
+                    <div class="imgWrapper">
+                        <img th:src="@{/img/product4.jpg}" class="card-img img-fluid" alt="image">
+                    </div>
+                    <strong>Fruits</strong>
+                </a>
+            </div>
+            <div class="item">
+                <a href="#">
+                    <div class="imgWrapper">
+                        <img th:src="@{/img/product4.jpg}" class="card-img img-fluid" alt="image">
+                    </div>
+                    <strong>Pencil</strong>
+                </a>
+            </div>
+        </div>
+        <!-- Button Carousel -->
+
+        <div class="divider mt-2 mb-4"></div>
+
+        <div class="sectionTitle mb-2">
+            <div class="text-muted">Overview</div>
+            <div class="title">
+                <h1>Products</h1>
+                <a href="blog-category.html">View All</a>
+            </div>
+            <div class="lead">
+                Bitter is using modern design style. Simple and elegant design lines.
+            </div>
+        </div>
+        <!-- item list -->
+        <div class="itemList">
+            <div class="item">
+                <div class="image">
+                    <img th:src="@{/img/product4.jpg}" alt="image">
+                </div>
+                <div class="text">
+                    <h4 class="title">Pinky Glasses</h4>
+                    <div class="text-muted">Simple and elegant design line and has stunning looks</div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="image">
+                    <img th:src="@{/img/product4.jpg}" alt="image">
+                </div>
+                <div class="text">
+                    <h4 class="title">Yellowish Headphone</h4>
+                    <div class="text-muted">Perfect spacing and perfect color sheme.</div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="image">
+                    <img th:src="@{/img/product4.jpg}" alt="image">
+                </div>
+                <div class="text">
+                    <h4 class="title">Hybrid</h4>
+                    <div class="text-muted">Just what you need for perfect hybrid app design.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider mt-4 mb-4"></div>
+
+        <div class="sectionTitle mb-2">
+            <div class="text-muted">Lastest</div>
+            <div class="title">
+                <h1>Blogs</h1>
+                <a href="blog-category.html">View All</a>
+            </div>
+        </div>
+
+        <!-- post list -->
+        <div class="row">
+            <!-- item -->
+            <div class="col-6">
+                <a href="blog-post.html" class="postItem">
+                    <div class="imageWrapper">
+                        <img th:src="@{/img/photo8.jpg}" alt="image" class="image">
+                        <div class="badge badge-warning">SPORT</div>
+                    </div>
+                    <h2 class="title">Juxon praises Peri’s resilience after testing week</h2>
+                    <footer>
+                        <img th:src="@{/img/avatar-7.jpg}" alt="avatar" class="avatar">
+                        25 Sep 2019
+                    </footer>
+                </a>
+            </div>
+            <!-- * item -->
+            <!-- item -->
+            <div class="col-6">
+                <a href="blog-post.html" class="postItem">
+                    <div class="imageWrapper">
+                        <img th:src="@{/img/photo8.jpg}" alt="image" class="image">
+                        <div class="badge badge-success">TRAVEL</div>
+                    </div>
+                    <h2 class="title">Top 10 Travel Bloggers You Should Follow</h2>
+                    <footer>
+                        <img th:src="@{/img/avatar-7.jpg}" alt="avatar" class="avatar">
+                        21 Sep 2019
+                    </footer>
+                </a>
+            </div>
+            <!-- * item -->
+            <!-- item -->
+            <div class="col-6">
+                <a href="blog-post.html" class="postItem">
+                    <div class="imageWrapper">
+                        <img th:src="@{/img/photo8.jpg}" alt="image" class="image">
+                        <div class="badge badge-danger">FOODS</div>
+                    </div>
+                    <h2 class="title">Is Orange Juice the Enemy of the Disease?</h2>
+                    <footer>
+                        <img th:src="@{/img/avatar-7.jpg}" alt="avatar" class="avatar">
+                        15 Sep 2019
+                    </footer>
+                </a>
+            </div>
+            <!-- * item -->
+            <!-- item -->
+            <div class="col-6">
+                <a href="blog-post.html" class="postItem">
+                    <div class="imageWrapper">
+                        <img th:src="@{/img/photo8.jpg}" alt="image" class="image">
+                        <div class="badge badge-info">HEALTH</div>
+                    </div>
+                    <h2 class="title">Check the Best Selling Furniture of This Year</h2>
+                    <footer>
+                        <img th:src="@{/img/avatar-7.jpg}" alt="avatar" class="avatar">
+                        12 Sep 2019
+                    </footer>
+                </a>
+            </div>
+            <!-- * item -->
+        </div>
+        <!-- * post list -->
+        <!-- * item list -->
+    </div>
+</div>
+
+<th:block th:replace="../templates/client/client_common::bottom_buttom"/>
+
+<!--引入通用js-->
+<th:block th:replace="../templates/client/client_common::common-js"/>
+</body>
+</html>

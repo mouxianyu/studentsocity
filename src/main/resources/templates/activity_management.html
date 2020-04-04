@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/common::common-header('学生社团管理系统')"/>
+    <!--引入自己的css-->
+    <style>
+        #add_img_pre_div {
+            margin: 10px 18px 0 18px;
+        }
+
+        .img_wrap {
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            height: 100px;
+            width: 100px;
+            border-radius: 2px;
+            box-shadow: 1px 1px 2px gray;
+            margin: 2px;
+        }
+
+        .img_wrap:hover {
+            box-shadow: 2px 2px 6px gray;
+        }
+
+        .img_wrap:hover i {
+            display: inline;
+        }
+
+        .img_wrap i {
+            cursor: pointer;
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: none;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .img_wrap img {
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+<!--引入导航栏-->
+<th:block th:replace="../templates/common::navigation"/>
+<div class="page">
+    <th:block th:replace="../templates/common::common-pageHeader"/>
+    <div class="breadcrumb-holder">
+        <div class="container-fluid">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/home}">主页</a></li>
+                <li class="breadcrumb-item active">活动管理</li>
+            </ul>
+        </div>
+    </div>
+    <br>
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <form id="query_form" name="queryForm" class="form-inline" th:action="@{/activity/queryByPage}"
+                          method="post">
+                        <div class="form-group">
+                            <label>活动名</label>
+                            <input type="text" class="form-control" name="name" th:value="${condition.title}">
+                        </div>
+                        <div style="display: none">
+                            <input type="text" id="start" name="start" th:value="${condition.start}">
+                            <input type="text" id="row" name="row" th:value="${condition.row}">
+                            <input type="text" id="totalPage" th:value="${totalPage}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">查询</button>
+                    </form>
+                    <br>
+                    <input class="btn btn-primary" type="button" value="新增" data-toggle="modal" data-target="#addModal">
+                    <input class="btn btn-primary" type="button" value="删除" onclick="deleteByIds()">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th><input onclick="checkAll(this)" type="checkbox"></th>
+                                <th>活动名称</th>
+                                <th>活动规模</th>
+                                <th>举办社团</th>
+                                <th>状态</th>
+                                <th>申请人</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody th:each="activity:${activities}">
+                            <tr>
+                                <td><input name="id" type="checkbox" class="delete_check" th:value="${activity.id}">
+                                </td>
+                                <td th:text="${activity.title}"></td>
+                                <th:block th:switch="${activity.scale}">
+                                    <td th:case=0>全校级</td>
+                                    <td th:case=1>社团级</td>
+                                    <td th:case=*>未知</td>
+                                </th:block>
+                                <th:block th:switch="${activity.scale}">
+                                    <td th:case=0>全校</td>
+                                    <th:block th:case=1>
+                                        <td th:if="${activity.societyName==null}">未知</td>
+                                        <td th:if="${activity.societyName!=null}"
+                                            th:text="${activity.societyName}"></td>
+                                    </th:block>
+                                    <td th:case=*>未知</td>
+                                </th:block>
+                                <th:block th:switch="${activity.status}">
+                                    <td th:case=0>正常</td>
+                                    <td th:case=1>失效</td>
+                                    <td th:case=3>审核中</td>
+                                    <td th:case=4>已驳回</td>
+                                    <td th:case=*>未知</td>
+                                </th:block>
+                                <th:block th:switch="${activity.createName}">
+                                    <td th:case="null">未知</td>
+                                    <td th:case=* th:text="${activity.createName}"></td>
+                                </th:block>
+                                <th>
+                                    <a class="linkToggle" data-toggle="modal" data-target="#detailModal"
+                                       onclick="showDetail(this,'detail')">
+                                        <input style="display: none" th:value="${activity.id}">详情
+                                    </a>|
+                                    <a class="linkToggle" data-toggle="modal" data-target="#updateModal"
+                                       onclick="showDetail(this,'update')">
+                                        <input style="display: none" th:value="${activity.id}">修改
+                                    </a>
+                                </th>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <th:block th:if="${activities.size()>0}">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <li>
+                                        <a onclick="prePage()" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <th:block th:if="${totalPage<=5}">
+                                        <th:block th:each="i:${#numbers.sequence(1,totalPage)}">
+                                            <li th:if="${i==condition.start}" class="active"><a onclick="page(this)"
+                                                                                                th:text="${i}"></a></li>
+                                            <li th:if="${i!=condition.start}"><a onclick="page(this)"
+                                                                                 th:text="${i}"></a></li>
+                                        </th:block>
+                                    </th:block>
+
+                                    <th:block th:if="${totalPage>5 && totalPage<7}">
+                                        <th:block th:if="${condition.start<4}">
+                                            <th:block th:each="i:${#numbers.sequence(1,4)}">
+                                                <li th:if="${i==condition.start}" class="active"><a onclick="page(this)"
+                                                                                                    th:text="${i}"></a>
+                                                </li>
+                                                <li th:if="${i!=condition.start}"><a onclick="page(this)"
+                                                                                     th:text="${i}"></a>
+                                                </li>
+                                            </th:block>
+                                            <li><a>...</a></li>
+                                            <li><a onclick="page(this)" th:text="${totalPage}"></a>
+                                        </th:block>
+                                        <th:block th:if="${condition.start>=4}">
+                                            <li><a onclick="page(this)">1</a>
+                                            <li><a>...</a></li>
+                                            <th:block th:each="i:${#numbers.sequence(totalPage-3,totalPage)}">
+                                                <li th:if="${i==condition.start}" class="active"><a onclick="page(this)"
+                                                                                                    th:text="${i}"></a>
+                                                </li>
+                                                <li th:if="${i!=condition.start}"><a onclick="page(this)"
+                                                                                     th:text="${i}"></a>
+                                                </li>
+                                            </th:block>
+                                        </th:block>
+                                    </th:block>
+
+                                    <th:block th:if="${totalPage>=7}">
+                                        <th:block th:if="${condition.start<4}">
+                                            <th:block th:each="i:${#numbers.sequence(1,4)}">
+                                                <li th:if="${i==condition.start}" class="active"><a onclick="page(this)"
+                                                                                                    th:text="${i}"></a>
+                                                </li>
+                                                <li th:if="${i!=condition.start}"><a onclick="page(this)"
+                                                                                     th:text="${i}"></a>
+                                                </li>
+                                            </th:block>
+                                            <li><a>...</a></li>
+                                            <li><a onclick="page(this)" th:text="${totalPage}"></a>
+                                        </th:block>
+                                        <th:block th:if="${condition.start>=4 && condition.start<=totalPage-3}">
+                                            <li><a onclick="page(this)">1</a>
+                                            <li><a>...</a></li>
+                                            <th:block
+                                                    th:each="i:${#numbers.sequence(condition.start-1,condition.start+1)}">
+                                                <li th:if="${i==condition.start}" class="active"><a onclick="page(this)"
+                                                                                                    th:text="${i}"></a>
+                                                </li>
+                                                <li th:if="${i!=condition.start}"><a onclick="page(this)"
+                                                                                     th:text="${i}"></a>
+                                                </li>
+                                            </th:block>
+                                            <li><a>...</a></li>
+                                            <li><a onclick="page(this)" th:text="${totalPage}"></a>
+                                        </th:block>
+                                        <th:block th:if="${condition.start>totalPage-3}">
+                                            <li><a onclick="page(this)">1</a>
+                                            <li><a>...</a></li>
+                                            <th:block th:each="i:${#numbers.sequence(totalPage-3,totalPage)}">
+                                                <li th:if="${i==condition.start}" class="active"><a onclick="page(this)"
+                                                                                                    th:text="${i}"></a>
+                                                </li>
+                                                <li th:if="${i!=condition.start}"><a onclick="page(this)"
+                                                                                     th:text="${i}"></a>
+                                                </li>
+                                            </th:block>
+                                        </th:block>
+                                    </th:block>
+                                    <li>
+                                        <a onclick="nextPage()" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                    <li><a><input onkeydown="return inputIntOnly()" id="goto"
+                                                  style="width: 30px;height: 20px;"
+                                                  type="number"></a></li>
+                                    <li><a onclick="goToPage()">跳转</a></li>
+                                </ul>
+                            </nav>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+            <form method="post" th:action="@{/activity/add}">
+                <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="addModalLabel" style="text-align: center">新增学院</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group" style="display: none">
+                                    <label>ID</label>
+                                    <input id="add_id" name="id" type="text" readonly class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>活动名称</label>
+                                    <input name="title" value="" type="text" class="form-control" id="add_title"
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <label>活动规模</label>
+                                    <select name="scale" class="form-control" id="add_scale">
+                                        <option value=0>全校级</option>
+                                        <option value=1>社团级</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>活动内容</label>
+                                    <textarea class="form-control" name="content" required id="add_content"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>活动图片</label>
+                                    <input id="img_file" type="file" accept="image/*" name="file" class="form-control"
+                                           multiple onchange="readImg(event)" style="display: none">
+                                    <button class="btn btn-primary" type="button" onclick="addImg()">添加图片</button>
+                                    <button class="btn btn-default" type="button" onclick="cleanImg()">清空</button>
+                                    <div id="add_img_pre_div">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=" modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                <button type="button" onclick="addNewActivity()" class="btn btn-primary">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <form method="post" th:action="@{/activity/update}" id="updateForm">
+                <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="updateModalLabel" style="text-align: center">学院信息变更</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group" style="display: none">
+                                    <label>ID</label>
+                                    <input id="update_id" name="id" type="text" readonly class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>学院名称</label>
+                                    <input name="name" value="" type="text" class="form-control"
+                                           placeholder="请输入社团名称" id="update_name" required>
+                                </div>
+                            </div>
+                            <div class=" modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                <button type="submit" class="btn btn-primary">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <form method="post" id="detailForm">
+                <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="detailModalLabel" style="text-align: center">活动详情</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group" style="display: none">
+                                    <label>ID</label>
+                                    <input id="detail_id" name="id" type="text" readonly class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>活动名称</label>
+                                    <input name="title" value="" type="text" class="form-control" id="detail_title"
+                                           readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>活动规模</label>
+                                    <select name="scale" class="form-control" id="detail_scale" disabled>
+                                        <option value=0>全校级</option>
+                                        <option value=1>社团级</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>活动内容</label>
+                                    <textarea class="form-control" name="content" readonly id="detail_content">
+                                    </textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>活动状态</label>
+                                    <select name="status" class="form-control" id="detail_status" disabled>
+                                        <option value=0>正常</option>
+                                        <option value=1>失效</option>
+                                        <option value=3>审核中</option>
+                                        <option value=4>已驳回</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class=" modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+<!--引入通用js-->
+<th:block th:replace="../templates/common::common-js"/>
+<script>
+    var uploadFile = [];
+    $(function () {
+        $("#sidebar_activity_management").addClass("active");
+    });
+
+    function page(obj) {
+        $("#start").val($(obj).text());
+        $("#query_form").submit();
+    }
+
+    function prePage() {
+        var goTo = parseInt($("#start").val()) - 1;
+        if (goTo > 0) {
+            $("#start").val(goTo);
+            $("#query_form").submit();
+        }
+    }
+
+    function nextPage() {
+        var goTo = parseInt($("#start").val()) + 1;
+        if (goTo <= parseInt($("#totalPage").val())) {
+            $("#start").val(goTo);
+            $("#query_form").submit();
+        }
+    }
+
+    function goToPage() {
+        var page = $("#goto").val();
+        if (page <= 0) {
+            myAlert("请输入正确页数");
+            return;
+        }
+        if (page > parseInt($("#totalPage").val())) {
+            myAlert("超出最大页数");
+            return;
+        }
+        $("#start").val(page);
+        $("#query_form").submit();
+    }
+
+    function inputIntOnly() {
+        if (event.keyCode === 13) {
+            goToPage();
+            return;
+        }
+        if (event.keyCode < 48) {
+            return event.keyCode === 8;
+        }
+        return event.keyCode <= 57;
+    }
+
+    function deleteByIds() {
+        var objs = $("input[name='id']:checked");
+        var values = [];
+        if ($(objs).length <= 0) {
+            myAlert("请选择");
+            return;
+        }
+        $(objs).each(function (index, obj) {
+            values.push($(obj).val());
+        });
+        $.confirm({
+            title: "提 示",
+            content: "是否确定删除？删除将删除其下所有专业",
+            type: "green",
+            buttons: {
+                确认: function () {
+                    $.ajax({
+                        url: "/activity/delete",
+                        type: "post",
+                        traditional: true,
+                        data: {
+                            ids: values
+                        },
+                        success: function () {
+                            location.reload();
+                        },
+                        error: function () {
+                            myAlert("删除失败");
+                        }
+                    });
+                },
+                取消: {}
+            }
+        });
+
+    }
+
+    function showDetail(obj, method) {
+        method = "#" + method + "_";
+        var val = $(obj).children();
+        $.ajax({
+            url: "/activity/" + $(val[0]).val(),
+            async: false,
+            success: function (data) {
+                $(method + "id").val(data.id);
+                $(method + "title").val(data.title);
+                $(method + "content").val(data.content);
+                $(method + "scale").val(data.scale);
+                $(method + "status").val(data.status);
+            },
+            error: function (error) {
+                myAlert("发生异常");
+                console.log(error);
+            }
+        });
+    }
+
+    function addImg() {
+        $("#img_file").click();
+    }
+
+    function readImg(event) {
+        var files = event.target.files, file;
+        if (files && files.length > 0) {
+            for (var i = 0; i < files.length; i++) {
+                file = files[i];
+                if (file.size > 1024 * 1024 * 2) {
+                    myAlert('图片大小不能超过 2MB!');
+                    return false;
+                }
+                if (uploadFile.length < 12) {
+                    uploadFile.push(file);
+                } else {
+                    myAlert("最多上传12张图片");
+                    return false;
+                }
+                var URL = window.URL || window.webkitURL;
+                var imgURL = URL.createObjectURL(file);
+                $("#add_img_pre_div").append("<div class='img_wrap'><i onclick='deleteOneImg(this)' class='fa fa-trash-o' aria-hidden='true'></i><img alt='图片' src='" + imgURL + "'></div>");
+            }
+        }
+        var formData = new FormData();
+    }
+
+    function cleanImg() {
+        var imgDiv = $("#add_img_pre_div");
+        if (imgDiv.children().length <= 0) {
+            myAlert("未选择图片");
+            return;
+        }
+        $.confirm({
+            title: "提 示",
+            content: "是否清空图片",
+            type: "green",
+            buttons: {
+                确定: function () {
+                    $("#add_img_pre_div").empty();
+                    uploadFile = [];
+                },
+                取消: {}
+            }
+        });
+
+    }
+
+    function deleteOneImg(icon) {
+        var imgDiv=$(icon).parent()
+        var index = imgDiv.index();
+        imgDiv.remove();
+        uploadFile.splice(index,1);
+    }
+    
+    function addNewActivity() {
+        var formData = new FormData();
+        var title = $("#add_title").val();
+        var content = $("#add_content").val();
+        var scale = $("#add_scale").val();
+        for(var i=0;i<uploadFile.length;i++){
+            formData.append("file", uploadFile[i]);
+        }
+        formData.append("title", title);
+        formData.append("content", content);
+        formData.append("scale", scale);
+        if (title === "") {
+            myAlert("请填写活动标题");
+            return;
+        }
+        if (content === "") {
+            myAlert("请填写活动内容");
+            return;
+        }
+        console.log(uploadFile);
+        $.confirm({
+            title: "提 示",
+            type: "green",
+            content: function () {
+                var self = this;
+                return $.ajax({
+                    type: 'post',
+                    url: "/activity/add",
+                    data: formData,
+                    cache: false,
+                    traditional: true,
+                    processData: false,
+                    contentType: false
+                }).done(function (msg) {
+                    if (msg === "") {
+                        self.setContentAppend("保存成功");
+                    } else {
+                        self.setContentAppend(msg);
+                    }
+                }).fail(function (error) {
+                    self.setContentAppend("保存失败");
+                    console.log(error);
+                });
+            },
+            buttons: {
+                关闭: function () {
+                    location.reload();
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

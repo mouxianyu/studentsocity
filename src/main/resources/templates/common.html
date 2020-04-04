@@ -56,9 +56,7 @@
                             class="fa fa-address-card-o"></i>学生管理</a></li>
                     <li id="sidebar_society_management"><a th:href="@{/society/queryByPage}"> <i
                             class="icon-interface-windows"></i>社团管理</a></li>
-                    <li id="sidebar_college_management"><a th:href="@{/college/queryByPage}"> <i class="fa fa-university"></i>学院管理</a></li>
-                    <li id="sidebar_major_management"><a th:href="@{/major/queryByPage}"> <i class="fa fa-hospital-o"></i>专业管理</a></li>
-                    <li><a href="login.html"> <i class="icon-presentation"></i>活动管理</a></li>
+                    <li id="siderbar_activity_management"><a th:href="@{/activity/queryByPage}"> <i class="icon-presentation"></i>活动管理</a></li>
                     <li><a href="#"> <i class="fa fa-newspaper-o"></i>新闻管理</a></li>
                 </ul>
             </div>
@@ -66,6 +64,8 @@
                 <h5 class="sidenav-heading">其 他</h5>
                 <ul id="side-admin-menu" class="side-menu list-unstyled">
                     <li id="sidebar_zone"><a th:href="@{/user/zone}"> <i class="icon-user"> </i>个人中心</a></li>
+                    <li id="sidebar_college_management"><a th:href="@{/college/queryByPage}"> <i class="fa fa-university"></i>学院管理</a></li>
+                    <li id="sidebar_major_management"><a th:href="@{/major/queryByPage}"> <i class="fa fa-hospital-o"></i>专业管理</a></li>
                     <li><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i
                             class="fa fa-upload"></i>数据导入</a>
                         <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
@@ -75,8 +75,6 @@
                             <li><a th:href="@{/society/toImport}">社团数据导入</a></li>
                         </ul>
                     </li>
-                    <li><a href="#"> <i class="icon-flask"> </i>日志</a></li>
-                    <li><a href="#"> <i class="icon-page"> </i>关于</a></li>
                 </ul>
             </div>
         </div>

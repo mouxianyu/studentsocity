@@ -28,7 +28,12 @@ public enum StatusEnum {
     /**
      * 审核中
      */
-    AUDITING(3,"审核中")
+    AUDITING(3,"审核中"),
+
+    /**
+     * 驳回
+     */
+    REJECT(4,"驳回"),
     ;
 
     /**

@@ -1,6 +1,10 @@
 server:
   port: 80
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
   datasource:
     url: jdbc:mysql://localhost:3306/student_society
     username: root
@@ -10,3 +14,10 @@ spring:
     cache: false
 mybatis:
   type-aliases-package: com.mouxianyu.studentsociety.pojo.entity
+
+mouxianyu:
+  img-path:
+    activity: C:\\mine\\毕设\\项目\\img\\activity
+    avatar: C:\\mine\\毕设\\项目\\img\\avatar
+    society: C:\\mine\\毕设\\项目\\img\\society
+    news: C:\\mine\\毕设\\项目\\img\\news
