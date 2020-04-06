@@ -1,13 +1,16 @@
 package com.mouxianyu.studentsociety.controller;
 
 import com.mouxianyu.studentsociety.common.constant.Constant;
+import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
 import com.mouxianyu.studentsociety.pojo.dto.UserDTO;
 import com.mouxianyu.studentsociety.pojo.dto.UserImportDTO;
 import com.mouxianyu.studentsociety.pojo.entity.College;
+import com.mouxianyu.studentsociety.pojo.entity.Img;
 import com.mouxianyu.studentsociety.pojo.entity.Major;
 import com.mouxianyu.studentsociety.pojo.entity.User;
 import com.mouxianyu.studentsociety.pojo.vo.UserVO;
 import com.mouxianyu.studentsociety.service.CollegeService;
+import com.mouxianyu.studentsociety.service.ImgService;
 import com.mouxianyu.studentsociety.service.MajorService;
 import com.mouxianyu.studentsociety.service.UserService;
 import org.springframework.beans.BeanUtils;
@@ -40,6 +43,9 @@ public class UserController {
 
     @Autowired
     private CollegeService collegeService;
+
+    @Autowired
+    private ImgService imgService;
 
 
     @RequestMapping("{id}")
@@ -153,12 +159,24 @@ public class UserController {
         return "redirect:/user/queryByPage";
     }
 
+    @RequestMapping("uploadAvatar")
+    @ResponseBody
+    public void uploadAvatar(HttpServletRequest request,@RequestParam(required=false)MultipartFile avatarFile) throws IOException {
+        User user =(User)request.getSession().getAttribute(Constant.USER);
+        Img img = userService.uploadImg(user.getId(), avatarFile);
+        request.getSession().setAttribute(Constant.AVATAR,img.getRelName());
+    }
+
     private void updateSession(HttpServletRequest request,User user){
         HttpSession session = request.getSession();
         Major major = majorService.getById(user.getMajor());
         College college = collegeService.getById(major.getCollegeId());
-        session.setAttribute("USER",user);
-        session.setAttribute("MAJOR",major.getName());
-        session.setAttribute("COLLEGE",college.getName());
+        List<Img> imgs = imgService.queryByTypeObjId(user.getId(), ObjTypeEnum.AVATAR.getCode());
+        session.setAttribute(Constant.USER,user);
+        session.setAttribute(Constant.MAJOR,major.getName());
+        session.setAttribute(Constant.COLLEGE,college.getName());
+        if(imgs!=null&&imgs.size()>0){
+            session.setAttribute(Constant.AVATAR,imgs.get(0).getRelName());
+        }
     }
 }

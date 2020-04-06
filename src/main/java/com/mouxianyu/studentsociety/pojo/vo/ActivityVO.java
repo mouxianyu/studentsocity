@@ -62,6 +62,11 @@ public class ActivityVO implements Serializable {
     private String createName;
 
     /**
+     * 创建人头像
+     */
+    private String createAvatar;
+
+    /**
      * 创建时间
      */
     private Date createTime;

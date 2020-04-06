@@ -97,4 +97,9 @@ public class UserVO implements Serializable {
      * 状态
      */
     private Integer status;
+
+    /**
+     * 头像名
+     */
+    private String avatarImgName;
 }

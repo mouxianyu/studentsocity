@@ -1,5 +1,6 @@
 package com.mouxianyu.studentsociety.service.impl;
 
+import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
 import com.mouxianyu.studentsociety.common.enums.ScaleEnum;
 import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.common.enums.UserSocietyRelationEnum;
@@ -47,6 +48,9 @@ public class SocietyServiceImpl implements SocietyService {
     @Autowired
     private MajorService majorService;
 
+    @Autowired
+    private ImgService imgService;
+
     @Override
     public Society getById(Long id) {
         return societyMapper.selectByPrimaryKey(id);
@@ -91,6 +95,26 @@ public class SocietyServiceImpl implements SocietyService {
             }
             int userCount = relUserSocietyService.countBySocietyId(societyVO.getId());
             societyVO.setUserCount(userCount);
+            societyVOS.add(societyVO);
+        }
+        return societyVOS;
+    }
+
+    @Override
+    public List<SocietyVO> queryByPageWithImg(SocietyDTO societyDTO) {
+        Example example = condition(societyDTO);
+        RowBounds rowBounds = new RowBounds(societyDTO.getStart(), societyDTO.getRow());
+        List<SocietyVO> societyVOS = new ArrayList<>();
+        List<Society> societies = societyMapper.selectByExampleAndRowBounds(example, rowBounds);
+        for (Society society : societies) {
+            SocietyVO societyVO = new SocietyVO();
+            BeanUtils.copyProperties(society, societyVO);
+            List<Img> imgs = imgService.queryByTypeObjId(society.getId(), ObjTypeEnum.SOCIETY.getCode());
+            if(imgs!=null){
+                if(imgs.size()>0){
+                    societyVO.setImgName(imgs.get(0).getRelName());
+                }
+            }
             societyVOS.add(societyVO);
         }
         return societyVOS;

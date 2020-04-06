@@ -1,5 +1,6 @@
 package com.mouxianyu.studentsociety.controller;
 
+import com.mouxianyu.studentsociety.common.constant.Constant;
 import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.common.enums.UserSocietyRelationEnum;
 import com.mouxianyu.studentsociety.pojo.dto.SocietyDTO;
@@ -125,7 +126,7 @@ public class SocietyController {
     @RequestMapping("join/{id}")
     @ResponseBody
     public String join(HttpServletRequest request, @PathVariable("id") Long societyId){
-        User user = (User) request.getSession().getAttribute("USER");
+        User user = (User) request.getSession().getAttribute(Constant.USER);
         RelUserSociety relUserSociety = relUserSocietyService.getByUserIdAndSocietyId(user.getId(), societyId);
         if(relUserSociety!=null){
             return "您已经加入或申请过该社团";
@@ -141,7 +142,7 @@ public class SocietyController {
     @RequestMapping("mySociety")
     public String mySociety(HttpServletRequest request){
         List<SocietyVO> societyVOS = new ArrayList<>();
-        User user = (User) request.getSession().getAttribute("USER");
+        User user = (User) request.getSession().getAttribute(Constant.USER);
         List<RelUserSociety> relUserSocieties = relUserSocietyService.queryByUserId(user.getId());
         for (RelUserSociety relUserSociety : relUserSocieties) {
             SocietyVO societyVO = societyService.getByIdMore(relUserSociety.getSocietyId());

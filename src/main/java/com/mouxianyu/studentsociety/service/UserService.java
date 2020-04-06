@@ -2,6 +2,7 @@ package com.mouxianyu.studentsociety.service;
 
 import com.mouxianyu.studentsociety.pojo.dto.UserDTO;
 import com.mouxianyu.studentsociety.pojo.dto.UserImportDTO;
+import com.mouxianyu.studentsociety.pojo.entity.Img;
 import com.mouxianyu.studentsociety.pojo.entity.User;
 import com.mouxianyu.studentsociety.pojo.vo.UserVO;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ public interface UserService {
 
     /**
      * 通过id查询
+     *
      * @param id 主键
      * @return com.mouxianyu.studentsociety.pojo.entity.User
      */
@@ -24,6 +26,7 @@ public interface UserService {
 
     /**
      * 通过编号查询
+     *
      * @param userNo
      * @return com.mouxianyu.studentsociety.pojo.entity.User
      */
@@ -31,12 +34,14 @@ public interface UserService {
 
     /**
      * 查询所有
+     *
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.User>
      */
     List<User> queryAll(UserDTO userDTO);
 
     /**
      * 通过社团id查询
+     *
      * @param societyId
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.vo.UserVO>
      */
@@ -44,6 +49,7 @@ public interface UserService {
 
     /**
      * 分页查询
+     *
      * @param userDTO 查询条件
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.User>
      */
@@ -51,6 +57,7 @@ public interface UserService {
 
     /**
      * 根据条件查询条数
+     *
      * @param userDTO 条件
      * @return int
      */
@@ -58,33 +65,45 @@ public interface UserService {
 
     /**
      * 根据id删除
+     *
      * @param id 主键
      */
     void deleteById(Long id);
 
     /**
      * 通过id更新
+     *
      * @param userDTO 更新
      */
     void updateById(UserDTO userDTO);
 
     /**
      * 根据id批量删除
+     *
      * @param ids
      */
     void deleteByIds(Long[] ids);
 
     /**
      * 新增
+     *
      * @param userDTO
      */
     void add(UserDTO userDTO);
 
     /**
      * 导入上传数据
+     *
      * @param userImportDTO
      * @param multipartFile
      * @return java.lang.String
      */
     String upload(UserImportDTO userImportDTO, MultipartFile multipartFile) throws IOException;
+
+    /**
+     * 上传头像
+     * @param id
+     * @param multipartFile
+     */
+    Img uploadImg(Long id, MultipartFile multipartFile) throws IOException;
 }

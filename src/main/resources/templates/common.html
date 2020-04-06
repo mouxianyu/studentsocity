@@ -39,8 +39,9 @@
             <!-- Sidebar Header    -->
             <div class="sidenav-header d-flex align-items-center justify-content-center">
                 <!-- User Info-->
-                <div class="sidenav-header-inner text-center"><img th:src="@{/img/avatar-7.jpg}" alt="管理员"
-                                                                   class="img-fluid rounded-circle">
+                <div class="sidenav-header-inner text-center">
+                    <img th:if="${session.AVATAR==null}" th:src="@{/img/avatar-default.jpg}" alt="管理员" class="img-fluid rounded-circle">
+                    <img th:if="${session.AVATAR!=null}" th:src="@{'/img/avatar/'+${session.AVATAR}}" alt="管理员" class="img-fluid rounded-circle">
                     <h2 class="h5" th:text="${session.USER.name}" th:if="${session.USER!=null}"></h2>
                 </div>
                 <!-- Small Brand information, appears on minimized sidebar-->
@@ -56,7 +57,7 @@
                             class="fa fa-address-card-o"></i>学生管理</a></li>
                     <li id="sidebar_society_management"><a th:href="@{/society/queryByPage}"> <i
                             class="icon-interface-windows"></i>社团管理</a></li>
-                    <li id="siderbar_activity_management"><a th:href="@{/activity/queryByPage}"> <i class="icon-presentation"></i>活动管理</a></li>
+                    <li id="sidebar_activity_management"><a th:href="@{/activity/queryByPage}"> <i class="icon-presentation"></i>活动管理</a></li>
                     <li><a href="#"> <i class="fa fa-newspaper-o"></i>新闻管理</a></li>
                 </ul>
             </div>

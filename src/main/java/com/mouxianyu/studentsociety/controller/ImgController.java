@@ -37,17 +37,17 @@ public class ImgController {
 
     @RequestMapping(value = "society/{imgName}", method = RequestMethod.GET)
     public void readSocietyImg(@PathVariable String imgName, HttpServletResponse response) throws IOException {
-        readImg(imgConfig.getActivity(),imgName,response);
+        readImg(imgConfig.getSociety(),imgName,response);
     }
 
     @RequestMapping(value = "avatar/{imgName}", method = RequestMethod.GET)
     public void readAvatarImg(@PathVariable String imgName, HttpServletResponse response) throws IOException {
-        readImg(imgConfig.getActivity(),imgName,response);
+        readImg(imgConfig.getAvatar(),imgName,response);
     }
 
     @RequestMapping(value = "news/{imgName}", method = RequestMethod.GET)
     public void readNewsImg(@PathVariable String imgName, HttpServletResponse response) throws IOException {
-        readImg(imgConfig.getActivity(),imgName,response);
+        readImg(imgConfig.getNews(),imgName,response);
     }
 
     @RequestMapping("delete/{id}")

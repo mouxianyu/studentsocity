@@ -1,9 +1,11 @@
 package com.mouxianyu.studentsociety.controller;
 
+import com.mouxianyu.studentsociety.common.constant.Constant;
 import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.pojo.dto.ActivityDTO;
 import com.mouxianyu.studentsociety.pojo.entity.Activity;
 import com.mouxianyu.studentsociety.pojo.entity.Society;
+import com.mouxianyu.studentsociety.pojo.entity.User;
 import com.mouxianyu.studentsociety.pojo.vo.ActivityVO;
 import com.mouxianyu.studentsociety.service.ActivityService;
 import com.mouxianyu.studentsociety.service.SocietyService;
@@ -43,7 +45,7 @@ public class ActivityController {
         int count = activityService.getCountByCondition(activityDTO);
         int totalPage = count % activityDTO.getRow() == 0 ? count / activityDTO.getRow() : count / activityDTO.getRow() + 1;
         List<Society> societies = societyService.queryAll();
-        request.setAttribute("societies",societies);
+        request.setAttribute("societies", societies);
         request.setAttribute("condition", condition);
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("activities", activities);
@@ -64,13 +66,21 @@ public class ActivityController {
 
     @RequestMapping("add")
     @ResponseBody
-    public void add(Activity activity, @RequestParam(value = "file", required = false) MultipartFile[] multipartFiles) throws IOException {
+    public void add(Activity activity, @RequestParam(value = "file", required = false) MultipartFile[] multipartFiles, HttpServletRequest request) throws IOException {
+        User user = (User) request.getSession().getAttribute(Constant.USER);
+        if (user != null) {
+            activity.setCreateId(user.getId());
+        }
         activityService.add(activity, multipartFiles);
     }
 
     @RequestMapping("update")
     @ResponseBody
-    public void update(Activity activity, @RequestParam(value = "file", required = false) MultipartFile[] multipartFiles) throws IOException {
+    public void update(HttpServletRequest request, Activity activity, @RequestParam(value = "file", required = false) MultipartFile[] multipartFiles) throws IOException {
+        User user = (User) request.getSession().getAttribute(Constant.USER);
+        if (user != null) {
+            activity.setModifyId(user.getId());
+        }
         activityService.updateById(activity, multipartFiles);
     }
 
@@ -82,51 +92,70 @@ public class ActivityController {
 
     @RequestMapping("pass")
     @ResponseBody
-    public void pass(Long id) throws IOException {
+    public void pass(HttpServletRequest request, Long id) throws IOException {
         Activity activity = new Activity();
         activity.setEstTime(new Date());
         activity.setId(id);
         activity.setStatus(StatusEnum.NORMAL.getCode());
-        activityService.updateById(activity,null);
+        User user = (User) request.getSession().getAttribute(Constant.USER);
+        if (user != null) {
+            activity.setModifyId(user.getId());
+        }
+        activityService.updateById(activity, null);
     }
 
     @RequestMapping("reject")
     @ResponseBody
-    public void reject(Long id) throws IOException {
+    public void reject(HttpServletRequest request, Long id) throws IOException {
         Activity activity = new Activity();
         activity.setId(id);
         activity.setStatus(StatusEnum.REJECT.getCode());
-        activityService.updateById(activity,null);
+        User user = (User) request.getSession().getAttribute(Constant.USER);
+        if (user != null) {
+            activity.setModifyId(user.getId());
+        }
+        activityService.updateById(activity, null);
     }
 
     @RequestMapping("cancel")
     @ResponseBody
-    public void cancel(Long id) throws IOException {
+    public void cancel(HttpServletRequest request, Long id) throws IOException {
         Activity activity = new Activity();
         activity.setId(id);
         activity.setStatus(StatusEnum.INVALID.getCode());
-        activityService.updateById(activity,null);
+        User user = (User) request.getSession().getAttribute(Constant.USER);
+        if (user != null) {
+            activity.setModifyId(user.getId());
+        }
+        activityService.updateById(activity, null);
     }
 
     @RequestMapping("restart")
     @ResponseBody
-    public void restart(Long id) throws IOException {
+    public void restart(HttpServletRequest request, Long id) throws IOException {
         Activity activity = new Activity();
         activity.setId(id);
         activity.setStatus(StatusEnum.NORMAL.getCode());
-        activityService.updateById(activity,null);
+        User user = (User) request.getSession().getAttribute(Constant.USER);
+        if (user != null) {
+            activity.setModifyId(user.getId());
+        }
+        activityService.updateById(activity, null);
     }
 
 
     @RequestMapping("cancelReject")
     @ResponseBody
-    public void cancelReject(Long id) throws IOException {
+    public void cancelReject(HttpServletRequest request, Long id) throws IOException {
         Activity activity = new Activity();
         activity.setId(id);
         activity.setStatus(StatusEnum.AUDITING.getCode());
-        activityService.updateById(activity,null);
+        User user = (User) request.getSession().getAttribute(Constant.USER);
+        if (user != null) {
+            activity.setModifyId(user.getId());
+        }
+        activityService.updateById(activity, null);
     }
-
 
 
 }

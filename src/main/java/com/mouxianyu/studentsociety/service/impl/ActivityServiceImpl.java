@@ -65,6 +65,19 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    public List<ActivityVO> queryByPageWithImg(ActivityDTO activityDTO) {
+        List<ActivityVO> activityVOS = new ArrayList<>();
+        Example example = condition(activityDTO);
+        RowBounds rowBounds = new RowBounds(activityDTO.getStart(), activityDTO.getRow());
+        List<Activity> activities = activityMapper.selectByExampleAndRowBounds(example, rowBounds);
+        for (Activity activity : activities) {
+            ActivityVO activityVO = toVOConditionWithImg(activity);
+            activityVOS.add(activityVO);
+        }
+        return activityVOS;
+    }
+
+    @Override
     public int getCountByCondition(ActivityDTO activityDTO) {
         Example example = condition(activityDTO);
         return activityMapper.selectCountByExample(example);
@@ -170,6 +183,10 @@ public class ActivityServiceImpl implements ActivityService {
         List<Img> imgs = imgService.queryByTypeObjId(activity.getId(), ObjTypeEnum.ACTIVITY.getCode());
         if (imgs != null && imgs.size() > 0) {
             activityVO.setImgs(imgs);
+        }
+        List<Img> avatar = imgService.queryByTypeObjId(activity.getCreateId(), ObjTypeEnum.AVATAR.getCode());
+        if (avatar != null && avatar.size() > 0) {
+            activityVO.setCreateAvatar(avatar.get(0).getRelName());
         }
         return activityVO;
     }

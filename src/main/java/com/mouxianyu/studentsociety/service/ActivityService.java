@@ -22,6 +22,13 @@ public interface ActivityService {
     List<ActivityVO> queryByPage(ActivityDTO activityDTO);
 
     /**
+     * 分页查询，包含图片
+     * @param activityDTO
+     * @return java.util.List<com.mouxianyu.studentsociety.pojo.vo.ActivityVO>
+     */
+    List<ActivityVO> queryByPageWithImg(ActivityDTO activityDTO);
+
+    /**
      * 按条件查询条数
      *
      * @param activityDTO

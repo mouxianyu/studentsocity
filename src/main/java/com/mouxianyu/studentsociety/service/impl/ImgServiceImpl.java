@@ -23,17 +23,12 @@ public class ImgServiceImpl implements ImgService {
     private ImgMapper imgMapper;
 
     @Override
-    public Long add(MultipartFile multipartFile, String fileDir, Integer objType, Long objId) throws IOException {
-        String originalFilename = multipartFile.getOriginalFilename();
-        String newFileName = FileUtil.upload(multipartFile, fileDir);
-        Img img = new Img();
+    public Img add(MultipartFile multipartFile, String fileDir, Integer objType, Long objId) throws IOException {
+        Img img = uploadAndGetImg(multipartFile, fileDir);
         img.setObjId(objId);
-        img.setName(originalFilename);
-        img.setUrl(fileDir + newFileName);
-        img.setRelName(newFileName);
         img.setType(objType);
         imgMapper.insertSelective(img);
-        return img.getId();
+        return img;
     }
 
     @Override
@@ -70,8 +65,13 @@ public class ImgServiceImpl implements ImgService {
 
 
     @Override
-    public void updateById(Img img) {
+    public Img updateById(MultipartFile multipartFile, String fileDir,Long id)throws IOException {
+        Img img = uploadAndGetImg(multipartFile, fileDir);
+        img.setId(id);
+        Img oldImg = getById(id);
+        FileUtil.delete(oldImg.getUrl());
         imgMapper.updateByPrimaryKeySelective(img);
+        return img;
     }
 
     @Override
@@ -87,5 +87,15 @@ public class ImgServiceImpl implements ImgService {
         criteria.andEqualTo("objId", objId);
         List<Img> imgs = imgMapper.selectByExample(example);
         return imgs;
+    }
+
+    private Img uploadAndGetImg(MultipartFile multipartFile, String fileDir) throws IOException{
+        String originalFilename = multipartFile.getOriginalFilename();
+        String newFileName = FileUtil.upload(multipartFile, fileDir);
+        Img img = new Img();
+        img.setName(originalFilename);
+        img.setUrl(fileDir + newFileName);
+        img.setRelName(newFileName);
+        return img;
     }
 }

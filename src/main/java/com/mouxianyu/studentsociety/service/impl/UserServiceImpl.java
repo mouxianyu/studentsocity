@@ -1,20 +1,17 @@
 package com.mouxianyu.studentsociety.service.impl;
 
+import com.mouxianyu.studentsociety.common.config.ImgConfig;
 import com.mouxianyu.studentsociety.common.constant.Constant;
 import com.mouxianyu.studentsociety.common.enums.AuthTypeEnum;
+import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
 import com.mouxianyu.studentsociety.common.enums.StatusEnum;
+import com.mouxianyu.studentsociety.common.util.FileUtil;
 import com.mouxianyu.studentsociety.mapper.UserMapper;
 import com.mouxianyu.studentsociety.pojo.dto.UserDTO;
 import com.mouxianyu.studentsociety.pojo.dto.UserImportDTO;
-import com.mouxianyu.studentsociety.pojo.entity.College;
-import com.mouxianyu.studentsociety.pojo.entity.Major;
-import com.mouxianyu.studentsociety.pojo.entity.RelUserSociety;
-import com.mouxianyu.studentsociety.pojo.entity.User;
+import com.mouxianyu.studentsociety.pojo.entity.*;
 import com.mouxianyu.studentsociety.pojo.vo.UserVO;
-import com.mouxianyu.studentsociety.service.CollegeService;
-import com.mouxianyu.studentsociety.service.MajorService;
-import com.mouxianyu.studentsociety.service.RelUserSocietyService;
-import com.mouxianyu.studentsociety.service.UserService;
+import com.mouxianyu.studentsociety.service.*;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -33,6 +30,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @description: TODO
@@ -51,6 +49,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RelUserSocietyService relUserSocietyService;
+
+    @Autowired
+    private ImgService imgService;
+
+    @Autowired
+    private ImgConfig imgConfig;
 
     @Override
     public User getById(Long id) {
@@ -276,6 +280,16 @@ public class UserServiceImpl implements UserService {
             userMapper.insertSelective(user);
         }
         return "";
+    }
+
+    @Override
+    public Img uploadImg(Long id, MultipartFile multipartFile) throws IOException {
+        List<Img> imgs = imgService.queryByTypeObjId(id, ObjTypeEnum.AVATAR.getCode());
+        if(imgs!=null&&imgs.size()>0){
+            return imgService.updateById(multipartFile,imgConfig.getAvatar(),imgs.get(0).getId());
+        }else {
+            return imgService.add(multipartFile, imgConfig.getAvatar(), ObjTypeEnum.AVATAR.getCode(), id);
+        }
     }
 
     private Example condition(UserDTO userDTO) {

@@ -17,7 +17,7 @@ public interface ImgService {
      * 添加
      * @return java.lang.Long
      */
-    Long add(MultipartFile multipartFiles, String fileDir, Integer objType, Long objId) throws IOException;
+    Img add(MultipartFile multipartFiles, String fileDir, Integer objType, Long objId) throws IOException;
 
     /**
      * 根据id删除
@@ -41,10 +41,9 @@ public interface ImgService {
 
     /**
      * 根据id更新
-     * @param img
      * @return void
      */
-    void updateById(Img img);
+    Img updateById(MultipartFile multipartFile, String fileDir,Long id) throws IOException;
 
     /**
      * 根据id查询

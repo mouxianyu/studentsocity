@@ -2,6 +2,8 @@ $(function () {
     $("#sidebar_zone").addClass("active");
 });
 
+
+
 function modify(button) {
     $(button).css("display", "none");
     $("#save_btn").css("display", "inline");
@@ -55,13 +57,22 @@ function changePassword() {
         data:{
             id: $("#update_id").val(),
             oldPassword: oldPassword,
-            newPassword: newPassword,
+            newPassword: newPassword
         },
         success:function (data) {
 
             if(data===""){
-                myAlert("修改成功")
-                window.location.reload();
+                $.confirm({
+                    title:'提示',
+                    content:'修改成功',
+                    type:'green',
+                    buttons:{
+                        确认:function () {
+                            window.location.reload();
+                        }
+                    }
+                })
+
             }else {
                 myAlert(data);
             }

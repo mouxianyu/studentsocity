@@ -86,4 +86,9 @@ public class SocietyVO implements Serializable {
      * 与社团的关系状态
      */
     private Integer relationStatus;
+
+    /**
+     * 社团图像
+     */
+    private String imgName;
 }
