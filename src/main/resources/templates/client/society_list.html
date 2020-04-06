@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/client/client_common::common-header('所有社团')"/>
+    <!--引入自己的css-->
+    <style>
+        .text-muted{
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<!--引入导航栏-->
+<div class="appHeader">
+    <div class="pageTitle">所有社团</div>
+    <div class="right">
+        <label for="searchInput" class="mb-0 icon toggleSearchbox">
+            <i class="icon ion-ios-search"></i>
+        </label>
+    </div>
+    <div class="searchBox">
+        <form>
+            <span class="inputIcon">
+                <i class="icon ion-ios-search"></i>
+            </span>
+            <input type="text" class="form-control" id="searchInput" placeholder="搜索...">
+            <a class="toggleSearchbox closeButton">
+                <i class="icon ion-ios-close-circle"></i>
+            </a>
+        </form>
+    </div>
+</div>
+
+<div id="appCapsule">
+    <div class="appContent">
+        <div class="divider mt-2 mb-4"></div>
+        <div class="itemList" id="society_list">
+            <th:block th:each="society:${societies}">
+                <div class="item" th:onclick="'goToSocietyMore('+${society.id}+')'">
+                    <div class="image">
+                        <img th:if="${#lists.isEmpty(society.imgs)}" th:src="@{/img/society-default.jpg}" alt="image">
+                        <th:block th:if="${not #lists.isEmpty(society.imgs)}" th:each="img,stat:${society.imgs}">
+                            <img th:if="${stat.first}" th:src="@{'/img/society/'+${society.imgName}}" alt="image">
+                        </th:block>
+                    </div>
+                    <div class="text">
+                        <h4 class="title" th:text="${society.name}">社团名</h4>
+                        <div class="text-muted" th:text="${society.detail}">社团详情</div>
+                    </div>
+                </div>
+                <div class="divider mt-2 mb-4"></div>
+            </th:block>
+        </div>
+        <div class="mt-2 mb-2">
+            <a style="color: white" id="btn-loadMore" onclick="loadMore()" class="btn btn-primary btn-lg btn-block">加载更多</a>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="../templates/client/client_common::bottom_buttom"/>
+
+<!--引入通用js-->
+<th:block th:replace="../templates/client/client_common::common-js"/>
+<script>
+    var host;
+    $(function () {
+        $("#btn-society").addClass("active");
+        var curWwwPath=window.document.location.href;
+        var pathName=window.document.location.pathname;
+        var pos=curWwwPath.indexOf(pathName);
+        host=curWwwPath.substring(0,pos);
+    })
+
+    function goToSocietyMore(id) {
+        window.location.href="/client/society/"+id;
+    }
+
+    function loadMore() {
+        var socialList=$("#society_list");
+        $.ajax({
+            url:"/client/society/load",
+            data:{
+                start:$(".itemList .item").length
+            },
+            success:function (data) {
+                if(data.length<6){
+                    mobileAlert("已加载全部社团");
+                    $("#btn-loadMore").css("display","none");
+                }
+                data.forEach(function (obj,index) {
+                    var item =$("<div>").attr("class","item").attr("onclick","goToSocietyMore("+obj.id+")");
+                    var imgDiv = $("<div>").attr("class","image");
+                    var image =$("<img>");
+                    var text = $("<div>").attr("class","text");
+                    var title =$("<h4>").attr("class","title").text(obj.name);
+                    var textMuted =$("<div>").attr("class","text-muted").text(obj.detail);
+                    if(data.imgs!=null){
+                        image.attr("src",host+"/img/society/"+data.imgs[0]).attr("alt","image");
+                    }else {
+                        image.attr("src",host+"/img/society-default.jpg").attr("alt","image");
+                    }
+                    text.append(title);
+                    text.append(textMuted);
+                    imgDiv.append(image);
+                    item.append(imgDiv);
+                    item.append(text);
+                    socialList.append(item);
+                    socialList.append("<div class='divider mt-2 mb-4'></div>");
+                })
+            },
+            error:function (error) {
+                mobileAlert("加载失败");
+                console.log(error)
+            }
+        });
+    }
+</script>
+</body>
+</html>

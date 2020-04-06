@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<div class="appHeader">
+    <div class="left">
+        <a href="#" class="icon goBack">
+            <i class="icon ion-ios-arrow-back"></i>
+        </a>
+    </div>
+    <div class="pageTitle" th:text="${society.name}">Blog Post</div>
+</div>
+<div id="appCapsule">
+    <div class="appContent">
+        <!-- title -->
+        <h1 class="title-lg mt-2 mb-2" th:text="${society.name}"></h1>
+        <!-- * title -->
+
+        <!-- post header -->
+        <div class="postHeader mb-2">
+            <div>
+                <a style="color: white" class="badge badge-primary">成立时间</a>
+            </div>
+            <div th:text="${#dates.format(society.estTime,'yyyy/MM/dd')}"></div>
+        </div>
+        <!-- * post header-->
+
+        <!-- post body -->
+        <div class="postBody">
+            <figure>
+                <img th:if="${#lists.isEmpty(society.imgs)}" th:src="@{/img/society-default.jpg}" alt="image">
+                <th:block th:if="${not #lists.isEmpty(society.imgs)}" th:each="img,stat:${society.imgs}">
+                    <img th:if="${stat.first}" th:src="@{'/img/society/'+${society.imgName}}" alt="image">
+                </th:block>
+                <figcaption th:text="${society.detail}"></figcaption>
+            </figure>
+        </div>
+        <!-- * post body -->
+
+        <!-- author -->
+        <div class="postAuthor mt-3">
+            <img th:if="${#strings.isEmpty(society.presidentAvatar)}" th:src="@{/img/avatar-default.jpg}" alt="avatar"
+                 class="avatar">
+            <img th:if="${not #strings.isEmpty(society.presidentAvatar)}"
+                 th:src="@{'/img/avatar/'+${society.presidentAvatar}}" alt="avatar" class="avatar">
+            <div>
+                <strong th:text="${society.presidentName}"></strong>
+                <div class="text-muted">社 长</div>
+            </div>
+        </div>
+        <!-- * author -->
+        <div class="row mt-2">
+            <div class="col-6">
+                <a style="color: white" class="btn btn-primary btn-block">管理社团</a>
+            </div>
+            <div class="col-6">
+                <a style="color: white" class="btn btn-danger btn-block">申请加入</a>
+            </div>
+        </div>
+        <div class="divider mt-2 mb-4"></div>
+    </div>
+</div>
+
+<th:block th:replace="../templates/client/client_common::bottom_buttom"/>
+
+<!--引入通用js-->
+<th:block th:replace="../templates/client/client_common::common-js"/>
+</body>
+</html>

@@ -100,6 +100,7 @@ public class SocietyController {
         RelUserSociety oldPresident = relUserSocietyService.getBySocietyIdAndRelation(societyDTO.getId(), UserSocietyRelationEnum.PRESIDENT.getCode());
         if(oldPresident!=null){
             oldPresident.setUserId(presidentId);
+            oldPresident.setStatus(StatusEnum.NORMAL.getCode());
             relUserSocietyService.updateById(oldPresident);
         }else {
             RelUserSociety newRel = new RelUserSociety();
@@ -118,6 +119,7 @@ public class SocietyController {
         RelUserSociety relUserSociety = new RelUserSociety();
         relUserSociety.setSocietyId(societyId);
         relUserSociety.setUserId(presidentId);
+        relUserSociety.setStatus(StatusEnum.NORMAL.getCode());
         relUserSociety.setRelation(UserSocietyRelationEnum.PRESIDENT.getCode());
         relUserSocietyService.add(relUserSociety);
         return "redirect:/society/queryByPage";

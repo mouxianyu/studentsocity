@@ -1,10 +1,12 @@
 package com.mouxianyu.studentsociety.pojo.vo;
 
+import com.mouxianyu.studentsociety.pojo.entity.Img;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @description: TODO
@@ -33,6 +35,11 @@ public class SocietyVO implements Serializable {
      * 社长名
      */
     private String presidentName;
+
+    /**
+     * 社长头像
+     */
+    private String presidentAvatar;
 
     /**
      * 副社长id
@@ -90,5 +97,5 @@ public class SocietyVO implements Serializable {
     /**
      * 社团图像
      */
-    private String imgName;
+    private List<Img> imgs;
 }

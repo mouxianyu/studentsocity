@@ -40,8 +40,12 @@
             <div class="sidenav-header d-flex align-items-center justify-content-center">
                 <!-- User Info-->
                 <div class="sidenav-header-inner text-center">
-                    <img th:if="${session.AVATAR==null}" th:src="@{/img/avatar-default.jpg}" alt="管理员" class="img-fluid rounded-circle">
-                    <img th:if="${session.AVATAR!=null}" th:src="@{'/img/avatar/'+${session.AVATAR}}" alt="管理员" class="img-fluid rounded-circle">
+                    <a th:href="@{/user/zone}">
+                        <img th:if="${session.AVATAR==null}" th:src="@{/img/avatar-default.jpg}" alt="管理员"
+                             class="img-fluid rounded-circle">
+                        <img th:if="${session.AVATAR!=null}" th:src="@{'/img/avatar/'+${session.AVATAR}}" alt="管理员"
+                             class="img-fluid rounded-circle">
+                    </a>
                     <h2 class="h5" th:text="${session.USER.name}" th:if="${session.USER!=null}"></h2>
                 </div>
                 <!-- Small Brand information, appears on minimized sidebar-->
@@ -57,7 +61,8 @@
                             class="fa fa-address-card-o"></i>学生管理</a></li>
                     <li id="sidebar_society_management"><a th:href="@{/society/queryByPage}"> <i
                             class="icon-interface-windows"></i>社团管理</a></li>
-                    <li id="sidebar_activity_management"><a th:href="@{/activity/queryByPage}"> <i class="icon-presentation"></i>活动管理</a></li>
+                    <li id="sidebar_activity_management"><a th:href="@{/activity/queryByPage}"> <i
+                            class="icon-presentation"></i>活动管理</a></li>
                     <li><a href="#"> <i class="fa fa-newspaper-o"></i>新闻管理</a></li>
                 </ul>
             </div>
@@ -65,8 +70,10 @@
                 <h5 class="sidenav-heading">其 他</h5>
                 <ul id="side-admin-menu" class="side-menu list-unstyled">
                     <li id="sidebar_zone"><a th:href="@{/user/zone}"> <i class="icon-user"> </i>个人中心</a></li>
-                    <li id="sidebar_college_management"><a th:href="@{/college/queryByPage}"> <i class="fa fa-university"></i>学院管理</a></li>
-                    <li id="sidebar_major_management"><a th:href="@{/major/queryByPage}"> <i class="fa fa-hospital-o"></i>专业管理</a></li>
+                    <li id="sidebar_college_management"><a th:href="@{/college/queryByPage}"> <i
+                            class="fa fa-university"></i>学院管理</a></li>
+                    <li id="sidebar_major_management"><a th:href="@{/major/queryByPage}"> <i
+                            class="fa fa-hospital-o"></i>专业管理</a></li>
                     <li><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i
                             class="fa fa-upload"></i>数据导入</a>
                         <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
@@ -93,46 +100,41 @@
                                 class="text-primary">学生社团</strong><span>管理系统</span></div>
                     </a></div>
                     <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
-                        <!-- Notifications dropdown-->
-                        <li class="nav-item dropdown"><a id="notifications" rel="nofollow" data-target="#" href="#"
-                                                         data-toggle="dropdown" aria-haspopup="true"
-                                                         aria-expanded="false" class="nav-link"><i
-                                class="fa fa-bell"></i><span class="badge badge-warning">12</span></a>
-                            <ul aria-labelledby="notifications" class="dropdown-menu">
-                                <li><a rel="nofollow" href="#" class="dropdown-item">
-                                    <div class="notification d-flex justify-content-between">
-                                        <div class="notification-content"><i class="fa fa-envelope"></i>You have 6 new
-                                            messages
-                                        </div>
-                                        <div class="notification-time"><small>4 minutes ago</small></div>
+                        <ul aria-labelledby="notifications" class="dropdown-menu">
+                            <li><a rel="nofollow" href="#" class="dropdown-item">
+                                <div class="notification d-flex justify-content-between">
+                                    <div class="notification-content"><i class="fa fa-envelope"></i>You have 6 new
+                                        messages
                                     </div>
-                                </a></li>
-                                <li><a rel="nofollow" href="#" class="dropdown-item">
-                                    <div class="notification d-flex justify-content-between">
-                                        <div class="notification-content"><i class="fa fa-twitter"></i>You have 2
-                                            followers
-                                        </div>
-                                        <div class="notification-time"><small>4 minutes ago</small></div>
+                                    <div class="notification-time"><small>4 minutes ago</small></div>
+                                </div>
+                            </a></li>
+                            <li><a rel="nofollow" href="#" class="dropdown-item">
+                                <div class="notification d-flex justify-content-between">
+                                    <div class="notification-content"><i class="fa fa-twitter"></i>You have 2
+                                        followers
                                     </div>
-                                </a></li>
-                                <li><a rel="nofollow" href="#" class="dropdown-item">
-                                    <div class="notification d-flex justify-content-between">
-                                        <div class="notification-content"><i class="fa fa-upload"></i>Server Rebooted
-                                        </div>
-                                        <div class="notification-time"><small>4 minutes ago</small></div>
+                                    <div class="notification-time"><small>4 minutes ago</small></div>
+                                </div>
+                            </a></li>
+                            <li><a rel="nofollow" href="#" class="dropdown-item">
+                                <div class="notification d-flex justify-content-between">
+                                    <div class="notification-content"><i class="fa fa-upload"></i>Server Rebooted
                                     </div>
-                                </a></li>
-                                <li><a rel="nofollow" href="#" class="dropdown-item">
-                                    <div class="notification d-flex justify-content-between">
-                                        <div class="notification-content"><i class="fa fa-twitter"></i>You have 2
-                                            followers
-                                        </div>
-                                        <div class="notification-time"><small>10 minutes ago</small></div>
+                                    <div class="notification-time"><small>4 minutes ago</small></div>
+                                </div>
+                            </a></li>
+                            <li><a rel="nofollow" href="#" class="dropdown-item">
+                                <div class="notification d-flex justify-content-between">
+                                    <div class="notification-content"><i class="fa fa-twitter"></i>You have 2
+                                        followers
                                     </div>
-                                </a></li>
-                                <li><a rel="nofollow" href="#" class="dropdown-item all-notifications text-center">
-                                    <strong> <i class="fa fa-bell"></i>view all notifications </strong></a></li>
-                            </ul>
+                                    <div class="notification-time"><small>10 minutes ago</small></div>
+                                </div>
+                            </a></li>
+                            <li><a rel="nofollow" href="#" class="dropdown-item all-notifications text-center">
+                                <strong> <i class="fa fa-bell"></i>view all notifications </strong></a></li>
+                        </ul>
                         </li>
                         <!-- Log out-->
                         <li class="nav-item">
@@ -166,6 +168,10 @@
     <script th:src="@{/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js}"></script>
     <!-- Main File-->
     <script th:src="@{/public/js/front.js}"></script>
+    <script src="https://cdn.bootcss.com/iScroll/5.2.0/iscroll-zoom.js"></script>
+    <script src="https://cdn.bootcss.com/hammer.js/2.0.8/hammer.js"></script>
+    <script th:src="@{/public/js/lrz.all.bundle.js}"></script>
+    <script th:src="@{/public/js/PhotoClip.js}"></script>
     <!--    my-->
     <script th:src="@{/my/js/main.js}"></script>
 </th:block>

@@ -161,9 +161,9 @@ public class UserController {
 
     @RequestMapping("uploadAvatar")
     @ResponseBody
-    public void uploadAvatar(HttpServletRequest request,@RequestParam(required=false)MultipartFile avatarFile) throws IOException {
+    public void uploadAvatar(HttpServletRequest request,@RequestParam(required=false)MultipartFile imgFile) throws IOException {
         User user =(User)request.getSession().getAttribute(Constant.USER);
-        Img img = userService.uploadImg(user.getId(), avatarFile);
+        Img img = userService.uploadImg(user.getId(), imgFile);
         request.getSession().setAttribute(Constant.AVATAR,img.getRelName());
     }
 

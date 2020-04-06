@@ -5,54 +5,6 @@
     <!--引入通用头部和css-->
     <th:block th:replace="../templates/common::common-header('学生社团管理系统')"/>
     <!--引入自己的css-->
-    <style>
-        .cover-wrap {
-            display: none;
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 10000000;
-            text-align: center;
-        }
-
-        .cover-wrap .cover-frame {
-            width: 900px;
-            height: 600px;
-            margin: 50px auto;
-            background-color: #FFFFFF;
-            overflow: hidden;
-            border-radius: 4px;
-        }
-
-        #clipArea {
-            margin: 10px;
-            height: 520px;
-        "
-        }
-
-        #view {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto;
-            border-radius: 10px;
-            box-shadow: 1px 1px 4px gray;
-            background: url("/img/add.png") no-repeat;
-        }
-
-        #avatarFile {
-            cursor: pointer;
-            opacity: 0;
-            filter: alpha(opacity=0);
-            position: absolute;
-            top: 16px;
-            left: 100px;
-            width: 100px;
-            height: 100px;
-        }
-    </style>
 </head>
 <body>
 <!--引入导航栏-->
@@ -202,12 +154,12 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <div id="view"></div>
-                            <input type="file" id="avatarFile">
+                            <input type="file" id="imgFile" accept="image/*">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary" onclick="saveImg()">保存</button>
+                        <button type="button" class="btn btn-primary" onclick="saveImg('/user/uploadAvatar')">保存</button>
                     </div>
                 </div>
             </div>
@@ -225,78 +177,8 @@
 </div>
 <!--引入通用js-->
 <th:block th:replace="../templates/common::common-js"/>
-<script src="https://cdn.bootcss.com/iScroll/5.2.0/iscroll-zoom.js"></script>
-<script src="https://cdn.bootcss.com/hammer.js/2.0.8/hammer.js"></script>
-<script th:src="@{/public/js/lrz.all.bundle.js}"></script>
-<script th:src="@{/public/js/jquery.photoClip.min.js}"></script>
 <script th:src="@{/my/js/myZone.js}"></script>
 <script>
-    var avatarFile;
-    var clipArea = new bjj.PhotoClip("#clipArea", {
-        size: [260, 260],
-        outputSize: [260, 260],
-        file: "#avatarFile",
-        view: "#view",
-        ok: "#clipBtn",
-        loadStart: function () {
-            $('.cover-wrap').fadeIn();
-        },
-        loadComplete: function () {
-        },
-        clipFinish: function (dataURL) {
-            $('.cover-wrap').fadeOut();
-            $('#view').css('background-size', '100% 100%');
-            var newFile = dataURLtoFile(dataURL, "a.jpg");
-            avatarFile = newFile;
-        }
-    });
-
-    function coverFadeOut() {
-        $('.cover-wrap').fadeOut();
-    }
-
-    function dataURLtoFile(dataurl, filename) {
-        var arr = dataurl.split(',');
-        var mime = arr[0].match(/:(.*?);/)[1];
-        var bstr = atob(arr[1]);
-        var n = bstr.length;
-        var u8arr = new Uint8Array(n);
-        while (n--) {
-            u8arr[n] = bstr.charCodeAt(n);
-        }
-        return new File([u8arr], filename, {type: mime});
-    }
-
-    function saveImg() {
-        var formData = new FormData();
-        formData.append("avatarFile", avatarFile);
-        $.confirm({
-            title: "提 示",
-            type: "green",
-            content: function () {
-                var self = this;
-                return $.ajax({
-                    type: 'post',
-                    url: "/user/uploadAvatar",
-                    data: formData,
-                    cache: false,
-                    traditional: true,
-                    processData: false,
-                    contentType: false
-                }).done(function (msg) {
-                    self.setContentAppend("保存成功");
-                }).fail(function (error) {
-                    self.setContentAppend("保存失败");
-                    console.log(error);
-                });
-            },
-            buttons: {
-                关闭: function () {
-                    location.reload();
-                }
-            }
-        });
-    }
 </script>
 </body>
 </html>

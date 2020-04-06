@@ -66,6 +66,10 @@ public class SocietyServiceImpl implements SocietyService {
         if (president != null) {
             societyVO.setPresidentId(president.getUserId());
             User user = userService.getById(president.getUserId());
+            List<Img> imgs = imgService.queryByTypeObjId(president.getUserId(), ObjTypeEnum.AVATAR.getCode());
+            if(imgs!=null&&imgs.size()>0){
+                societyVO.setPresidentAvatar(imgs.get(0).getRelName());
+            }
             societyVO.setPresidentName(user.getName());
         }
         if (vicePresident != null) {
@@ -75,6 +79,8 @@ public class SocietyServiceImpl implements SocietyService {
         }
         int userCount = relUserSocietyService.countBySocietyId(id);
         societyVO.setUserCount(userCount);
+        List<Img> imgs = imgService.queryByTypeObjId(id, ObjTypeEnum.SOCIETY.getCode());
+        societyVO.setImgs(imgs);
         return societyVO;
     }
 
@@ -112,7 +118,7 @@ public class SocietyServiceImpl implements SocietyService {
             List<Img> imgs = imgService.queryByTypeObjId(society.getId(), ObjTypeEnum.SOCIETY.getCode());
             if(imgs!=null){
                 if(imgs.size()>0){
-                    societyVO.setImgName(imgs.get(0).getRelName());
+                    societyVO.setImgs(imgs);
                 }
             }
             societyVOS.add(societyVO);
