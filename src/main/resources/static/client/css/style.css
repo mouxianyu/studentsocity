@@ -8451,7 +8451,7 @@ body.sidebarActive {
         line-height: 1.3em;
         margin-top: 3px; }
   .listView a.listItem {
-    background-image: url("../img/icon/arrow.svg");
+    background-image: url("/img/arrow.svg");
     background-repeat: no-repeat;
     background-position: right 20px center; }
     .listView a.listItem:active {

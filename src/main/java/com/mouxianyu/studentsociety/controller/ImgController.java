@@ -1,15 +1,18 @@
 package com.mouxianyu.studentsociety.controller;
 
 import com.mouxianyu.studentsociety.common.config.ImgConfig;
+import com.mouxianyu.studentsociety.common.constant.Constant;
+import com.mouxianyu.studentsociety.pojo.entity.Img;
+import com.mouxianyu.studentsociety.pojo.entity.User;
 import com.mouxianyu.studentsociety.service.ImgService;
+import com.mouxianyu.studentsociety.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +31,9 @@ public class ImgController {
 
     @Autowired
     private ImgService imgService;
+
+    @Autowired
+    private UserService userService;
 
 
     @RequestMapping(value = "activity/{imgName}", method = RequestMethod.GET)
@@ -60,6 +66,20 @@ public class ImgController {
     @ResponseBody
     public void deleteByTypeAndObjId(Long objId,Integer type){
         imgService.deleteByTypeAndObjId(objId,type);
+    }
+
+    @RequestMapping("upload")
+    @ResponseBody
+    public void uploadImg(HttpServletRequest request, @RequestParam(required=false) MultipartFile imgFile, @PathVariable Integer type) throws IOException{
+
+    }
+
+    @RequestMapping("uploadAvatar")
+    @ResponseBody
+    public void uploadAvatar(HttpServletRequest request,@RequestParam(required=false) MultipartFile imgFile) throws IOException {
+        User user =(User)request.getSession().getAttribute(Constant.USER);
+        Img img = userService.uploadImg(user.getId(), imgFile);
+        request.getSession().setAttribute(Constant.AVATAR,img.getRelName());
     }
 
 

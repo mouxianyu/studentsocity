@@ -108,3 +108,19 @@ function mobileAlert(text) {
         content: text
     });
 }
+
+function mobileAlertThenReload(text) {
+    $(document).dialog({
+        type: 'confirm',
+        titleShow: false,
+        content: text,
+        buttons:[
+            {
+                name:"确定",
+                callback:function () {
+                    location.reload();
+                }
+            }
+        ]
+    });
+}

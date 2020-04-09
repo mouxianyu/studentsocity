@@ -5,6 +5,26 @@
     <!--引入通用头部和css-->
     <th:block th:replace="../templates/common::common-header('学生社团管理系统')"/>
     <!--引入自己的css-->
+    <style>
+        #view {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            border-radius: 15px;
+            box-shadow: 1px 1px 4px gray;
+            background: url("/img/add.png") no-repeat;
+        }
+        #imgFile {
+            cursor: pointer;
+            opacity: 0;
+            filter: alpha(opacity=0);
+            position: absolute;
+            top: 16px;
+            left: 100px;
+            width: 100px;
+            height: 100px;
+        }
+    </style>
 </head>
 <body>
 <!--引入导航栏-->

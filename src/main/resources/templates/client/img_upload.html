@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
+    <!--引入自己的css-->
+    <style>
+        #view {
+            width: 100%;
+            padding-top: 100%;
+            margin: 0 !important;
+            background: url("/img/add.svg") no-repeat;
+        }
+        #imgFile {
+            cursor: pointer;
+            opacity: 0;
+            filter: alpha(opacity=0);
+            position: absolute;
+            width: 100%;
+            padding-top: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="appHeader">
+    <div class="left">
+        <a href="#" class="icon goBack">
+            <i class="icon ion-ios-arrow-back"></i>
+        </a>
+    </div>
+    <div class="pageTitle">上传图片</div>
+</div>
+<div id="appCapsule">
+    <div class="appContent">
+        <div class="card mb-3 mt-2">
+            <div id="view" class="mb-3 mt-2"></div>
+            <input type="file" id="imgFile" accept="image/*">
+            <div class="card-body">
+                <a th:onclick="'saveImg('+${type}+')'" class="btn btn-primary">保存</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="cover-wrap">
+    <div class="cover-frame">
+        <div id="clipArea"></div>
+        <div class="btn-area">
+            <button id="clipBtn" class="btn btn-success">裁剪</button>
+            <button class="btn btn-default" onclick="coverFadeOut()">取消</button>
+        </div>
+    </div>
+</div>
+<th:block th:replace="../templates/client/client_common::bottom_buttom"/>
+
+<!--引入通用js-->
+<th:block th:replace="../templates/client/client_common::common-js"/>
+</body>
+</html>

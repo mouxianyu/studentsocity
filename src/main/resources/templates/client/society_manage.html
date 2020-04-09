@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<div class="appHeader">
+    <div class="left">
+        <a href="#" class="icon goBack">
+            <i class="icon ion-ios-arrow-back"></i>
+        </a>
+    </div>
+    <div class="pageTitle" th:text="${society.name}"></div>
+</div>
+<div id="appCapsule">
+    <div class="appContent">
+        <div class="card mb-3 mt-2" onclick="toUploadImgPage()">
+            <img th:if="${#lists.isEmpty(society.imgs)}" th:src="@{/img/society-default.jpg}" class="card-img-top"
+                 alt="image">
+            <th:block th:if="${not #lists.isEmpty(society.imgs)}" th:each="img,stat:${society.imgs}">
+                <img th:if="${stat.first}" th:src="@{'/img/society/'+${society.imgName}}" class="card-img-top"
+                     alt="image">
+            </th:block>
+            <div class="card-body">
+                <h5 class="card-title" th:text="${society.name}">Card with Image</h5>
+                <p class="card-text" th:text="${society.detail}">Some quick example text to build on the card title and
+                    make up the bulk of the
+                    card's content.</p>
+            </div>
+        </div>
+        <br>
+        <div class="divider mt-2 mb-4"></div>
+        <div class="contentBox long mb-3">
+            <h5 class="title">社员管理</h5>
+            <div class="contentBox-body">
+
+                <!-- listview -->
+                <div class="listView">
+                    <a href="splash-iconed.html" class="listItem">
+                        <div class="image">
+                            <div class="iconBox bg-success">
+                                <i class="icon ion-ios-browsers"></i>
+                            </div>
+                        </div>
+                        <div class="text">
+                            <div>
+                                <strong>所有人员</strong>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="splash-imaged.html" class="listItem">
+                        <div class="image">
+                            <div class="iconBox bg-success">
+                                <i class="icon ion-ios-browsers"></i>
+                            </div>
+                        </div>
+                        <div class="text">
+                            <div>
+                                <strong>申请管理</strong>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="slider-page.html" class="listItem">
+                        <div class="image">
+                            <div class="iconBox bg-success">
+                                <i class="icon ion-ios-albums"></i>
+                            </div>
+                        </div>
+                        <div class="text">
+                            <div>
+                                <strong>Slider</strong>
+                            </div>
+                        </div>
+                    </a>
+
+                </div>
+                <!-- * listview -->
+
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:replace="../templates/client/client_common::bottom_buttom"/>
+
+<!--引入通用js-->
+<th:block th:replace="../templates/client/client_common::common-js"/>
+<script>
+    function toUploadImgPage() {
+        window.location.href="/client/toUploadImg";
+    }
+</script>
+</body>
+</html>

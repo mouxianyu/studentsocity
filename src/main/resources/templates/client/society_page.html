@@ -55,11 +55,18 @@
         </div>
         <!-- * author -->
         <div class="row mt-2">
-            <div class="col-6">
-                <a style="color: white" class="btn btn-primary btn-block">管理社团</a>
+            <div class="col-6" style="margin: 0 auto" th:if="${session.USER.id==society.presidentId}">
+                <a style="color: white" class="btn btn-primary btn-block" th:onclick="'manageSociety('+${society.id}+')'">管理社团</a>
             </div>
-            <div class="col-6">
-                <a style="color: white" class="btn btn-danger btn-block">申请加入</a>
+            <div class="col-6" style="margin: 0 auto" th:if="${society.relationStatus==null}">
+                <a style="color: white" th:onclick="'joinInSociety('+${society.id}+')'"
+                   class="btn btn-info btn-block">申请加入</a>
+            </div>
+            <div class="col-6" style="margin: 0 auto" th:if="${society.relationStatus==3}">
+                <a style="color: white" class="btn btn-warning btn-block">申请中</a>
+            </div>
+            <div class="col-6" style="margin: 0 auto" th:if="${society.relationStatus==0&&session.USER.id!=society.presidentId}">
+                <a style="color: white" class="btn btn-success btn-block">已加入</a>
             </div>
         </div>
         <div class="divider mt-2 mb-4"></div>
@@ -70,5 +77,27 @@
 
 <!--引入通用js-->
 <th:block th:replace="../templates/client/client_common::common-js"/>
+<script>
+    function joinInSociety(id) {
+        $.ajax({
+            url: "/society/join/" + id,
+            success: function (data) {
+                if (data === '') {
+                    mobileAlertThenReload("申请成功");
+                } else {
+                    mobileAlertThenReload("申请成功");
+                }
+            },
+            error: function (error) {
+                mobileAlert("后台异常");
+                console.log(error);
+            }
+        });
+    }
+
+    function manageSociety(id) {
+        window.location.href="/client/society/manage/"+id;
+    }
+</script>
 </body>
 </html>
