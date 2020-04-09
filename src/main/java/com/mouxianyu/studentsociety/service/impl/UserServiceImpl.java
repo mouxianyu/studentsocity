@@ -282,16 +282,6 @@ public class UserServiceImpl implements UserService {
         return "";
     }
 
-    @Override
-    public Img uploadImg(Long id, MultipartFile multipartFile) throws IOException {
-        List<Img> imgs = imgService.queryByTypeObjId(id, ObjTypeEnum.AVATAR.getCode());
-        if(imgs!=null&&imgs.size()>0){
-            return imgService.updateById(multipartFile,imgConfig.getAvatar(),imgs.get(0).getId());
-        }else {
-            return imgService.add(multipartFile, imgConfig.getAvatar(), ObjTypeEnum.AVATAR.getCode(), id);
-        }
-    }
-
     private Example condition(UserDTO userDTO) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();

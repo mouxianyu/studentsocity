@@ -35,7 +35,7 @@
             <figure>
                 <img th:if="${#lists.isEmpty(society.imgs)}" th:src="@{/img/society-default.jpg}" alt="image">
                 <th:block th:if="${not #lists.isEmpty(society.imgs)}" th:each="img,stat:${society.imgs}">
-                    <img th:if="${stat.first}" th:src="@{'/img/society/'+${society.imgName}}" alt="image">
+                    <img th:if="${stat.first}" th:src="@{'/img/society/'+${img.relName}}" alt="image">
                 </th:block>
                 <figcaption th:text="${society.detail}"></figcaption>
             </figure>

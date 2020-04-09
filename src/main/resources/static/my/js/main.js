@@ -34,9 +34,13 @@ function dataURLtoFile(dataurl, filename) {
     return new File([u8arr], filename, {type: mime});
 }
 
-function saveImg(url) {
+function saveImg(objType, objId) {
     var formData = new FormData();
     formData.append("imgFile", imgFile);
+    formData.append("objType", objType);
+    if(objId!==undefined){
+        formData.append("objId", objId);
+    }
     $.confirm({
         title: "提 示",
         type: "green",
@@ -44,7 +48,7 @@ function saveImg(url) {
             var self = this;
             return $.ajax({
                 type: 'post',
-                url: url,
+                url: '/img/upload',
                 data: formData,
                 cache: false,
                 traditional: true,
@@ -65,36 +69,59 @@ function saveImg(url) {
     });
 }
 
+function saveImgMobile(objType, objId) {
+    var formData = new FormData();
+    formData.append("imgFile", imgFile);
+    formData.append("objType", objType);
+    if(objId!==undefined){
+        formData.append("objId", objId);
+    }
+    $.ajax({
+        type: 'post',
+        url: '/img/upload',
+        data: formData,
+        cache: false,
+        traditional: true,
+        processData: false,
+        contentType: false,
+        success:function () {
+            mobileAlert("上传成功");
+        },
+        error:function (error) {
+            mobileAlert("上传失败");
+            console.log(error);
+        }
+    });
+}
+
 function myAlert(text) {
     $.dialog({
         icon: 'glyphicon glyphicon-alert',
-        title : "提 示",
+        title: "提 示",
         content: text,
-        type : 'green'
+        type: 'green'
     });
 }
 
 function logout() {
     $.confirm({
-        title:"提 示",
-        content:"是否退出？退出后需重新登录",
-        type:"green",
-        buttons:{
-            确认:function () {
-                window.location.href='/user/toLogin'
+        title: "提 示",
+        content: "是否退出？退出后需重新登录",
+        type: "green",
+        buttons: {
+            确认: function () {
+                window.location.href = '/user/toLogin'
             },
-            取消:{
-
-            }
+            取消: {}
         }
     });
 }
 
 function checkAll(obj) {
-    if($(obj).prop("checked")){
-        $("input[type='checkbox'][class='delete_check']").prop("checked",true);
-    }else {
-        $("input[type='checkbox'][class='delete_check']").prop("checked",false);
+    if ($(obj).prop("checked")) {
+        $("input[type='checkbox'][class='delete_check']").prop("checked", true);
+    } else {
+        $("input[type='checkbox'][class='delete_check']").prop("checked", false);
     }
 }
 
@@ -114,13 +141,23 @@ function mobileAlertThenReload(text) {
         type: 'confirm',
         titleShow: false,
         content: text,
-        buttons:[
+        buttons: [
             {
-                name:"确定",
-                callback:function () {
+                name: "确定",
+                callback: function () {
                     location.reload();
                 }
             }
         ]
     });
+}
+
+function postLinkTo(url,data) {
+    var form =$("<form>").attr("method","post").attr("action",url).css("display","none");
+    data.forEach(function (obj,key) {
+        var input=$("<input>").attr("name",key).val(obj);
+        form.append(input);
+    })
+    $("body").append(form);
+    form.submit();
 }

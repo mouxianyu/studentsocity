@@ -37,7 +37,7 @@
             <div id="view" class="mb-3 mt-2"></div>
             <input type="file" id="imgFile" accept="image/*">
             <div class="card-body">
-                <a th:onclick="'saveImg('+${type}+')'" class="btn btn-primary">保存</a>
+                <a style="color: white" th:onclick="'saveImgMobile('+${objType}+','+${objId}+')'" class="btn btn-primary">保存</a>
             </div>
         </div>
     </div>

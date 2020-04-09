@@ -2,6 +2,7 @@ package com.mouxianyu.studentsociety.controller;
 
 import com.mouxianyu.studentsociety.common.config.ImgConfig;
 import com.mouxianyu.studentsociety.common.constant.Constant;
+import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
 import com.mouxianyu.studentsociety.pojo.entity.Img;
 import com.mouxianyu.studentsociety.pojo.entity.User;
 import com.mouxianyu.studentsociety.service.ImgService;
@@ -70,17 +71,24 @@ public class ImgController {
 
     @RequestMapping("upload")
     @ResponseBody
-    public void uploadImg(HttpServletRequest request, @RequestParam(required=false) MultipartFile imgFile, @PathVariable Integer type) throws IOException{
-
+    public void uploadImg(HttpServletRequest request, @RequestParam(required=false) MultipartFile imgFile, Integer objType,Long objId) throws IOException{
+        if(objType== ObjTypeEnum.AVATAR.getCode()){
+            User user= (User)request.getSession().getAttribute(Constant.USER);
+            objId=user.getId();
+            Img img = imgService.uploadImgForSingleImg(objId, objType, imgFile);
+            request.getSession().setAttribute(Constant.AVATAR,img.getRelName());
+        }else {
+            imgService.uploadImgForSingleImg(objId, objType, imgFile);
+        }
     }
 
-    @RequestMapping("uploadAvatar")
-    @ResponseBody
-    public void uploadAvatar(HttpServletRequest request,@RequestParam(required=false) MultipartFile imgFile) throws IOException {
-        User user =(User)request.getSession().getAttribute(Constant.USER);
-        Img img = userService.uploadImg(user.getId(), imgFile);
-        request.getSession().setAttribute(Constant.AVATAR,img.getRelName());
+    @RequestMapping("toUploadPage")
+    public String uploadImg(Integer objType ,Integer objId, HttpServletRequest request){
+        request.setAttribute("objType",objType);
+        request.setAttribute("objId",objId);
+        return "client/img_upload";
     }
+
 
 
     /**

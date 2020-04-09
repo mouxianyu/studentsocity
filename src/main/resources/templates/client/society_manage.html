@@ -17,11 +17,11 @@
 </div>
 <div id="appCapsule">
     <div class="appContent">
-        <div class="card mb-3 mt-2" onclick="toUploadImgPage()">
+        <div class="card mb-3 mt-2" th:onclick="'toUploadImgPage('+${society.id}+')'">
             <img th:if="${#lists.isEmpty(society.imgs)}" th:src="@{/img/society-default.jpg}" class="card-img-top"
                  alt="image">
             <th:block th:if="${not #lists.isEmpty(society.imgs)}" th:each="img,stat:${society.imgs}">
-                <img th:if="${stat.first}" th:src="@{'/img/society/'+${society.imgName}}" class="card-img-top"
+                <img th:if="${stat.first}" th:src="@{'/img/society/'+${img.relName}}" class="card-img-top"
                      alt="image">
             </th:block>
             <div class="card-body">
@@ -29,6 +29,7 @@
                 <p class="card-text" th:text="${society.detail}">Some quick example text to build on the card title and
                     make up the bulk of the
                     card's content.</p>
+                <a style="float: right" th:onclick="'updateSociety('+${society.id}+')'">修改信息</a>
             </div>
         </div>
         <br>
@@ -79,8 +80,6 @@
                     </a>
 
                 </div>
-                <!-- * listview -->
-
             </div>
         </div>
     </div>
@@ -90,8 +89,15 @@
 <!--引入通用js-->
 <th:block th:replace="../templates/client/client_common::common-js"/>
 <script>
-    function toUploadImgPage() {
-        window.location.href="/client/toUploadImg";
+    function toUploadImgPage(objId) {
+        var map = new Map();
+        map.set("objId",objId);
+        map.set("objType",1);
+        postLinkTo("/img/toUploadPage",map);
+    }
+
+    function updateSociety(id) {
+
     }
 </script>
 </body>

@@ -154,11 +154,11 @@
         <div class="buttonCarousel owl-carousel">
             <th:block th:each="society:${societies}">
                 <div class="item">
-                    <a href="#">
+                    <a th:href="@{'/client/society/'+${society.id}}">
                         <div class="imgWrapper">
                             <img th:if="${society.imgs==null}" th:src="@{/img/society-default.jpg}" class="card-img img-fluid" alt="image">
                             <th:block th:if="${society.imgs!=null}" th:each="img,stat:${society.imgs}">
-                                <img th:if="${stat.first}" th:src="@{'/img/society/'+${society.imgName}}" class="card-img img-fluid" alt="image">
+                                <img th:if="${stat.first}" th:src="@{'/img/society/'+${img.relName}}" class="card-img img-fluid" alt="image">
                             </th:block>
                         </div>
                         <strong th:text="${society.name}"></strong>

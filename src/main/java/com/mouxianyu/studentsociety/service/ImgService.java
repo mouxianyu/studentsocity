@@ -58,4 +58,13 @@ public interface ImgService {
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.Img>
      */
     List<Img> queryByTypeObjId(Long objId, Integer objType);
+
+    /**
+     * 上传的一张固定图片
+     * @param objId
+     * @param objType
+     * @param multipartFile
+     * @return com.mouxianyu.studentsociety.pojo.entity.Img
+     */
+    Img uploadImgForSingleImg(Long objId,Integer objType ,MultipartFile multipartFile) throws IOException;
 }

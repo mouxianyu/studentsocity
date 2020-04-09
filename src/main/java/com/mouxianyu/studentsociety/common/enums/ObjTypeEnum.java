@@ -38,4 +38,13 @@ public enum ObjTypeEnum {
      * 名称
      */
     private String name;
+
+    public static ObjTypeEnum getByCode(int code){
+        for (ObjTypeEnum objTypeEnum:values()){
+            if(objTypeEnum.getCode()==code){
+                return objTypeEnum;
+            }
+        }
+        return null;
+    }
 }

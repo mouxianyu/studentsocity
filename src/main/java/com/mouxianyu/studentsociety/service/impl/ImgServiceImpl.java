@@ -1,5 +1,7 @@
 package com.mouxianyu.studentsociety.service.impl;
 
+import com.mouxianyu.studentsociety.common.config.ImgConfig;
+import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
 import com.mouxianyu.studentsociety.common.util.FileUtil;
 import com.mouxianyu.studentsociety.mapper.ImgMapper;
 import com.mouxianyu.studentsociety.pojo.entity.Img;
@@ -21,6 +23,9 @@ import java.util.List;
 public class ImgServiceImpl implements ImgService {
     @Autowired
     private ImgMapper imgMapper;
+
+    @Autowired
+    private ImgConfig imgConfig;
 
     @Override
     public Img add(MultipartFile multipartFile, String fileDir, Integer objType, Long objId) throws IOException {
@@ -65,7 +70,7 @@ public class ImgServiceImpl implements ImgService {
 
 
     @Override
-    public Img updateById(MultipartFile multipartFile, String fileDir,Long id)throws IOException {
+    public Img updateById(MultipartFile multipartFile, String fileDir, Long id) throws IOException {
         Img img = uploadAndGetImg(multipartFile, fileDir);
         img.setId(id);
         Img oldImg = getById(id);
@@ -89,7 +94,40 @@ public class ImgServiceImpl implements ImgService {
         return imgs;
     }
 
-    private Img uploadAndGetImg(MultipartFile multipartFile, String fileDir) throws IOException{
+    @Override
+    public Img uploadImgForSingleImg(Long objId, Integer objType, MultipartFile multipartFile) throws IOException {
+        List<Img> imgs = queryByTypeObjId(objId, objType);
+        String filePath = null;
+        ObjTypeEnum objTypeEnum = ObjTypeEnum.getByCode(objType);
+        if (objTypeEnum != null) {
+            switch (objTypeEnum) {
+                case AVATAR:
+                    filePath = imgConfig.getAvatar();
+                    break;
+                case SOCIETY:
+                    filePath = imgConfig.getSociety();
+                    break;
+                case NEWS:
+                    filePath = imgConfig.getNews();
+                    break;
+                case ACTIVITY:
+                    filePath = imgConfig.getActivity();
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (filePath != null) {
+            if (imgs != null && imgs.size() > 0) {
+                return updateById(multipartFile, filePath, imgs.get(0).getId());
+            } else {
+                return add(multipartFile, filePath, objType, objId);
+            }
+        }
+        return null;
+    }
+
+    private Img uploadAndGetImg(MultipartFile multipartFile, String fileDir) throws IOException {
         String originalFilename = multipartFile.getOriginalFilename();
         String newFileName = FileUtil.upload(multipartFile, fileDir);
         Img img = new Img();

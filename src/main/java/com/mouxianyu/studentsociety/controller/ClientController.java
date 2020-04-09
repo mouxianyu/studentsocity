@@ -106,14 +106,4 @@ public class ClientController {
         request.setAttribute("society",society);
         return "client/society_manage";
     }
-
-    @RequestMapping("toUploadImg/{type}")
-    public String uploadImg(@PathVariable int type , HttpServletRequest request){
-        if(ObjTypeEnum.SOCIETY.getCode()==type){
-
-        }
-        String url=null;
-        request.setAttribute("url",url);
-        return "client/img_upload";
-    }
 }

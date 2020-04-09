@@ -159,13 +159,6 @@ public class UserController {
         return "redirect:/user/queryByPage";
     }
 
-    @RequestMapping("uploadAvatar")
-    @ResponseBody
-    public void uploadAvatar(HttpServletRequest request,@RequestParam(required=false)MultipartFile imgFile) throws IOException {
-        User user =(User)request.getSession().getAttribute(Constant.USER);
-        Img img = userService.uploadImg(user.getId(), imgFile);
-        request.getSession().setAttribute(Constant.AVATAR,img.getRelName());
-    }
 
     private void updateSession(HttpServletRequest request,User user){
         HttpSession session = request.getSession();

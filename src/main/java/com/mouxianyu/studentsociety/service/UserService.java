@@ -100,10 +100,4 @@ public interface UserService {
      */
     String upload(UserImportDTO userImportDTO, MultipartFile multipartFile) throws IOException;
 
-    /**
-     * 上传头像
-     * @param id
-     * @param multipartFile
-     */
-    Img uploadImg(Long id, MultipartFile multipartFile) throws IOException;
 }
