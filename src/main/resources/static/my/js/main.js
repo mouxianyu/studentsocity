@@ -36,6 +36,10 @@ function dataURLtoFile(dataurl, filename) {
 
 function saveImg(objType, objId) {
     var formData = new FormData();
+    if(imgFile==undefined){
+        myAlert("请选择文件");
+        return;
+    }
     formData.append("imgFile", imgFile);
     formData.append("objType", objType);
     if(objId!==undefined){
@@ -71,6 +75,10 @@ function saveImg(objType, objId) {
 
 function saveImgMobile(objType, objId) {
     var formData = new FormData();
+    if(imgFile==undefined){
+        mobileAlert("请选择文件");
+        return;
+    }
     formData.append("imgFile", imgFile);
     formData.append("objType", objType);
     if(objId!==undefined){
@@ -85,7 +93,7 @@ function saveImgMobile(objType, objId) {
         processData: false,
         contentType: false,
         success:function () {
-            mobileAlert("上传成功");
+            mobileAlertThenBack("上传成功");
         },
         error:function (error) {
             mobileAlert("上传失败");
@@ -146,6 +154,22 @@ function mobileAlertThenReload(text) {
                 name: "确定",
                 callback: function () {
                     location.reload();
+                }
+            }
+        ]
+    });
+}
+
+function mobileAlertThenBack(text) {
+    $(document).dialog({
+        type: 'confirm',
+        titleShow: false,
+        content: text,
+        buttons: [
+            {
+                name: "确定",
+                callback: function () {
+                    window.location.href = document.referrer;
                 }
             }
         ]

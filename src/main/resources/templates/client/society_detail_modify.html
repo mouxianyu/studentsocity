@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<div class="appHeader">
+    <div class="left">
+        <a href="#" class="icon goBack">
+            <i class="icon ion-ios-arrow-back"></i>
+        </a>
+    </div>
+    <div class="pageTitle">修改社团信息</div>
+</div>
+<div id="appCapsule">
+    <div class="appContent">
+        <div class="card mt-2 mb-3">
+            <div class="card-body">
+                <h5 class="card-title">社团介绍</h5>
+                <div class="form-group" style="display: none">
+                    <input id="society_Id" type="text" class="form-control" th:value="${society.id}"
+                           placeholder="Default Input" name="id">
+                </div>
+                <div class="form-group">
+                    <textarea id="society_detail" rows="12" class="form-control" th:text="${society.detail}"
+                              placeholder="请输入..." name="detail"></textarea>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="updateSociety()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="../templates/client/client_common::bottom_buttom"/>
+
+<!--引入通用js-->
+<th:block th:replace="../templates/client/client_common::common-js"/>
+<script>
+    function updateSociety() {
+        $.ajax({
+            type: "post",
+            url: "/client/society/update",
+            data: {
+                id: $("#society_Id").val(),
+                detail: $("#society_detail").val()
+            },
+            success: function () {
+                mobileAlertThenBack("保存成功");
+            },
+            error: function () {
+                mobileAlert("保存失败");
+            }
+        })
+    }
+</script>
+</body>
+</html>

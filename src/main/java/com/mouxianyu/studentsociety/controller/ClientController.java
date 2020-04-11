@@ -7,6 +7,7 @@ import com.mouxianyu.studentsociety.pojo.dto.ActivityDTO;
 import com.mouxianyu.studentsociety.pojo.dto.SocietyDTO;
 import com.mouxianyu.studentsociety.pojo.entity.Img;
 import com.mouxianyu.studentsociety.pojo.entity.RelUserSociety;
+import com.mouxianyu.studentsociety.pojo.entity.Society;
 import com.mouxianyu.studentsociety.pojo.entity.User;
 import com.mouxianyu.studentsociety.pojo.vo.ActivityVO;
 import com.mouxianyu.studentsociety.pojo.vo.SocietyVO;
@@ -105,5 +106,18 @@ public class ClientController {
         SocietyVO society = societyService.getByIdMore(id);
         request.setAttribute("society",society);
         return "client/society_manage";
+    }
+
+    @RequestMapping("society/toModifyPage")
+    public String toUpdateSociety(Long societyId,HttpServletRequest request){
+        Society society = societyService.getById(societyId);
+        request.setAttribute("society",society);
+        return "client/society_detail_modify";
+    }
+
+    @RequestMapping("society/update")
+    @ResponseBody
+    public void updateSociety(SocietyDTO societyDTO){
+        societyService.updateById(societyDTO);
     }
 }
