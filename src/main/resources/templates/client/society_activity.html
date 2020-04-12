@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
+    <!--引入自己的css-->
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="appHeader">
+    <div class="left">
+        <a href="#" class="icon goBack">
+            <i class="icon ion-ios-arrow-back"></i>
+        </a>
+    </div>
+    <div class="pageTitle">社团活动</div>
+    <div class="right">
+        <a href="#" class="icon">
+            <i class="icon ion-md-add"></i>
+        </a>
+    </div>
+</div>
+<div id="appCapsule">
+    <div class="appContent">
+        <div class="listView detailed">
+            <a href="#" class="listItem" th:each="activity:${activities}">
+                <div class="image">
+                    <img th:if="${#lists.isEmpty(activity.imgs)}" th:src="@{/img/avatar-default.jpg}"
+                         alt="image">
+                    <th:block th:if="${not #lists.isEmpty(activity.imgs)}" th:each="img,stat:${activity.imgs}">
+                        <img th:if="${stat.first}" th:src="@{'/img/activity/'+${img.relName}}"
+                             alt="image">
+                    </th:block>
+                </div>
+                <div class="text">
+                    <div>
+                        <strong th:text="${activity.title}"></strong>
+                        <div class="text-muted">
+                            <span th:text="${activity.content}"></span>
+                        </div>
+                    </div>
+                </div>
+                <th:block th:switch="${activity.status}">
+                    <span th:case="3" class="badge badge-outline-warning mr-1 mb-1">审核中</span>
+                    <span th:case="0" class="badge badge-outline-success mr-1 mb-1">已通过</span>
+                    <span th:case="4" class="badge badge-outline-danger mr-1 mb-1">已驳回</span>
+                    <span th:case="1" class="badge badge-outline-dark mr-1 mb-1">已失效</span>
+                </th:block>
+            </a>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="../templates/client/client_common::bottom_buttom"/>
+
+<!--引入通用js-->
+<th:block th:replace="../templates/client/client_common::common-js"/>
+</body>
+</html>

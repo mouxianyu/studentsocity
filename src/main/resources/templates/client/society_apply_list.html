@@ -45,7 +45,9 @@
                     </div>
                 </div>
                 <div>
-                    <button class="btn btn-success btn-sm mb-1" style="width: 60px" type="button">同意</button>
+                    <button th:onclick="'consentToApply('+${user.id}+','+${societyId}+')'" class="btn btn-success btn-sm mb-1"
+                            style="width: 60px" type="button">同意
+                    </button>
                 </div>
             </div>
         </div>
@@ -56,5 +58,23 @@
 
 <!--引入通用js-->
 <th:block th:replace="../templates/client/client_common::common-js"/>
+<script>
+    function consentToApply(userId, societyId) {
+        $.ajax({
+            url: "/client/society/consentApply",
+            type: "post",
+            data: {
+                userId: userId,
+                societyId: societyId
+            },
+            success: function () {
+                window.location.reload();
+            },
+            error: function () {
+                mobileAlert("后台服务器错误");
+            }
+        })
+    }
+</script>
 </body>
 </html>

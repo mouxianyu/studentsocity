@@ -65,7 +65,7 @@
                         </div>
                     </a>
 
-                    <a href="slider-page.html" class="listItem">
+                    <a th:onclick="'toActivityList('+${society.id}+')'" class="listItem">
                         <div class="image">
                             <div class="iconBox bg-success">
                                 <i class="icon ion-ios-albums"></i>
@@ -111,6 +111,12 @@
         var map = new Map();
         map.set("id", id);
         postLinkTo("/client/society/apply", map);
+    }
+
+    function toActivityList(id) {
+        var map = new Map();
+        map.set("societyId", id);
+        postLinkTo("/client/society/activities", map);
     }
 </script>
 </body>

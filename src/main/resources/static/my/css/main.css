@@ -4,6 +4,10 @@ input::-webkit-inner-spin-button {
     margin: 0;
 }
 
+a {
+    text-decoration-line: none !important;
+}
+
 .linkToggle {
     cursor: pointer;
     color: #2d9f50 !important;

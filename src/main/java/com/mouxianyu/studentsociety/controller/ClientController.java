@@ -83,7 +83,7 @@ public class ClientController {
     public List<SocietyVO> loadSociety(int start){
         SocietyDTO societyDTO = new SocietyDTO();
         societyDTO.setStart(start);
-        societyDTO.setRow(8);
+        societyDTO.setRow(5);
         societyDTO.setStatus(StatusEnum.NORMAL.getCode());
         return societyService.queryByPageWithImg(societyDTO);
     }
@@ -122,7 +122,7 @@ public class ClientController {
         societyService.updateById(societyDTO);
     }
 
-    @RequestMapping("/society/allUser")
+    @RequestMapping("society/allUser")
     public String allSocietyUser(SocietyDTO societyDTO,HttpServletRequest request){
         societyDTO.setStatus(StatusEnum.NORMAL.getCode());
         List<UserVO> userVOS = userService.queryBySocietyIdAndCondition(societyDTO);
@@ -130,11 +130,43 @@ public class ClientController {
         return "client/society_user_list";
     }
 
-    @RequestMapping("/society/apply")
+    @RequestMapping("society/apply")
     public String applyUser(SocietyDTO societyDTO,HttpServletRequest request){
         societyDTO.setStatus(StatusEnum.AUDITING.getCode());
         List<UserVO> userVOS = userService.queryBySocietyIdAndCondition(societyDTO);
         request.setAttribute("users",userVOS);
+        request.setAttribute("societyId",societyDTO.getId());
         return "client/society_apply_list";
+    }
+
+    @RequestMapping("society/consentApply")
+    @ResponseBody
+    public void consentApply(Long userId,Long societyId){
+        RelUserSociety oldRelation = relUserSocietyService.getByUserIdAndSocietyId(userId, societyId);
+        RelUserSociety newRelation = new RelUserSociety();
+        newRelation.setId(oldRelation.getId());
+        newRelation.setStatus(StatusEnum.NORMAL.getCode());
+        relUserSocietyService.updateById(newRelation);
+    }
+
+    @RequestMapping("society/activities")
+    public String societyActivityList(Long societyId,HttpServletRequest request){
+        ActivityDTO activityDTO = new ActivityDTO();
+        activityDTO.setSocietyId(societyId);
+        activityDTO.setStart(0);
+        activityDTO.setRow(5);
+        List<ActivityVO> activityVOS = activityService.queryByPageWithImg(activityDTO);
+        request.setAttribute("activities",activityVOS);
+        return "client/society_activity";
+    }
+
+    @RequestMapping("society/activity/load")
+    @ResponseBody
+    public List<ActivityVO> activityLoad(Long societyId, int start){
+        ActivityDTO activityDTO = new ActivityDTO();
+        activityDTO.setSocietyId(societyId);
+        activityDTO.setStart(start);
+        activityDTO.setRow(5);
+        return activityService.queryByPageWithImg(activityDTO);
     }
 }
