@@ -48,14 +48,16 @@ public class SocietyController {
     public SocietyVO getById(@PathVariable("id") Long id) {
         return societyService.getByIdMore(id);
     }
+
     @RequestMapping("toImport")
-    public String toUpload(){
+    public String toUpload() {
         return "society_import";
     }
+
     @RequestMapping("upload")
     @ResponseBody
-    public String upload(String societyName,@RequestParam( value="file",required=false) MultipartFile multipartFile) throws IOException {
-        return societyService.upload(societyName,multipartFile);
+    public String upload(String societyName, @RequestParam(value = "file", required = false) MultipartFile multipartFile) throws IOException {
+        return societyService.upload(societyName, multipartFile);
     }
 
     @RequestMapping("queryByPage")
@@ -74,7 +76,10 @@ public class SocietyController {
 
     @RequestMapping("queryUserBySocietyId/{id}")
     public String queryUserBySocietyId(HttpServletRequest request, @PathVariable("id") Long societyId) {
-        List<UserVO> userVOS = userService.queryBySocietyId(societyId);
+        SocietyDTO societyDTO = new SocietyDTO();
+        societyDTO.setId(societyId);
+        societyDTO.setStatus(StatusEnum.NORMAL.getCode());
+        List<UserVO> userVOS = userService.queryBySocietyIdAndCondition(societyDTO);
         Society society = societyService.getById(societyId);
         request.setAttribute("users", userVOS);
         request.setAttribute("society", society);
@@ -98,10 +103,16 @@ public class SocietyController {
     public String update(SocietyDTO societyDTO, Long presidentId) {
         societyService.updateById(societyDTO);
         RelUserSociety oldPresident = relUserSocietyService.getBySocietyIdAndRelation(societyDTO.getId(), UserSocietyRelationEnum.PRESIDENT.getCode());
-        if(oldPresident!=null){
-            oldPresident.setUserId(presidentId);
+        if (oldPresident != null) {
+            oldPresident.setRelation(UserSocietyRelationEnum.MEMBER.getCode());
             oldPresident.setStatus(StatusEnum.NORMAL.getCode());
             relUserSocietyService.updateById(oldPresident);
+        }
+        RelUserSociety oldRelation = relUserSocietyService.getByUserIdAndSocietyId(presidentId, societyDTO.getId());
+        if(oldRelation!=null){
+            oldRelation.setRelation(UserSocietyRelationEnum.PRESIDENT.getCode());
+            oldRelation.setStatus(StatusEnum.NORMAL.getCode());
+            relUserSocietyService.updateById(oldRelation);
         }else {
             RelUserSociety newRel = new RelUserSociety();
             newRel.setUserId(presidentId);
@@ -110,6 +121,7 @@ public class SocietyController {
             newRel.setStatus(StatusEnum.NORMAL.getCode());
             relUserSocietyService.add(newRel);
         }
+
         return "redirect:/society/queryByPage";
     }
 
@@ -127,10 +139,10 @@ public class SocietyController {
 
     @RequestMapping("join/{id}")
     @ResponseBody
-    public String join(HttpServletRequest request, @PathVariable("id") Long societyId){
+    public String join(HttpServletRequest request, @PathVariable("id") Long societyId) {
         User user = (User) request.getSession().getAttribute(Constant.USER);
         RelUserSociety relUserSociety = relUserSocietyService.getByUserIdAndSocietyId(user.getId(), societyId);
-        if(relUserSociety!=null){
+        if (relUserSociety != null) {
             return "您已经加入或申请过该社团";
         }
         RelUserSociety newRelUserSociety = new RelUserSociety();
@@ -142,7 +154,7 @@ public class SocietyController {
     }
 
     @RequestMapping("mySociety")
-    public String mySociety(HttpServletRequest request){
+    public String mySociety(HttpServletRequest request) {
         List<SocietyVO> societyVOS = new ArrayList<>();
         User user = (User) request.getSession().getAttribute(Constant.USER);
         List<RelUserSociety> relUserSocieties = relUserSocietyService.queryByUserId(user.getId());
@@ -151,7 +163,7 @@ public class SocietyController {
             societyVO.setRelationStatus(relUserSociety.getStatus());
             societyVOS.add(societyVO);
         }
-        request.setAttribute("societies",societyVOS);
+        request.setAttribute("societies", societyVOS);
         return "client/my_society";
     }
 

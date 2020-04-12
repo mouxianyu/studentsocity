@@ -40,10 +40,10 @@
 
                 <!-- listview -->
                 <div class="listView">
-                    <a href="splash-iconed.html" class="listItem">
+                    <a th:onclick="'toAllSocietyUser('+${society.id}+')'" class="listItem">
                         <div class="image">
                             <div class="iconBox bg-success">
-                                <i class="icon ion-ios-browsers"></i>
+                                <i class="icon ion-ios-person"></i>
                             </div>
                         </div>
                         <div class="text">
@@ -52,8 +52,7 @@
                             </div>
                         </div>
                     </a>
-
-                    <a href="splash-imaged.html" class="listItem">
+                    <a th:onclick="'toSocietyApplyList('+${society.id}+')'" class="listItem">
                         <div class="image">
                             <div class="iconBox bg-success">
                                 <i class="icon ion-ios-browsers"></i>
@@ -74,7 +73,7 @@
                         </div>
                         <div class="text">
                             <div>
-                                <strong>Slider</strong>
+                                <strong>活动管理</strong>
                             </div>
                         </div>
                     </a>
@@ -100,6 +99,18 @@
         var map = new Map();
         map.set("societyId", id);
         postLinkTo("/client/society/toModifyPage", map);
+    }
+
+    function toAllSocietyUser(id) {
+        var map = new Map();
+        map.set("id", id);
+        postLinkTo("/client/society/allUser", map);
+    }
+
+    function toSocietyApplyList(id) {
+        var map = new Map();
+        map.set("id", id);
+        postLinkTo("/client/society/apply", map);
     }
 </script>
 </body>

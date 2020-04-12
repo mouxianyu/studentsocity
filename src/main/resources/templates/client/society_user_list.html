@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<div class="appHeader">
+    <div class="left">
+        <a href="#" class="icon goBack">
+            <i class="icon ion-ios-arrow-back"></i>
+        </a>
+    </div>
+    <div class="pageTitle">所有社员</div>
+</div>
+<div id="appCapsule">
+    <div class="appContent">
+        <div class="listView detailed">
+            <a href="#" class="listItem" th:each="user:${users}">
+                <div class="image">
+                    <img th:if="${user.avatarImgName==null}" th:src="@{/img/avatar-default.jpg}" alt="avatar" class="avatar">
+                    <img th:if="${user.avatarImgName!=null}" th:src="@{'/img/avatar/'+${user.avatarImgName}}" alt="avatar" class="avatar">
+                </div>
+                <div class="text">
+                    <div>
+                        <strong th:text="${user.name}"></strong>
+                        <div class="text-muted">
+                            <i th:if="${user.gender}" class="fa fa-mars" aria-hidden="true" style="color: #428bca"></i>
+                            <i th:if="${not user.gender}" class="fa fa-venus" aria-hidden="true" style="color: hotpink"></i>
+                            <span th:text="'&nbsp;'+${user.grade}+'级'"></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="../templates/client/client_common::bottom_buttom"/>
+
+<!--引入通用js-->
+<th:block th:replace="../templates/client/client_common::common-js"/>
+</body>
+</html>

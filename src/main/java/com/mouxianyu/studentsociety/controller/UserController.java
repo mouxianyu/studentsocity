@@ -57,6 +57,7 @@ public class UserController {
     @RequestMapping("queryAll")
     @ResponseBody
     public List<User> queryAll(UserDTO userDTO){
+        userDTO.setStart(0);
         return userService.queryAll(userDTO);
     }
     @RequestMapping("toLogin")

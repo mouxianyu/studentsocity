@@ -184,7 +184,10 @@ public class SocietyServiceImpl implements SocietyService {
         List<String> counts = new ArrayList<>();
         List<String> colleges = new ArrayList<>();
         Map<Long, Integer> relationMap = new HashMap<>();
-        List<UserVO> userVOS = userService.queryBySocietyId(societyId);
+        SocietyDTO societyDTO = new SocietyDTO();
+        societyDTO.setId(societyId);
+        societyDTO.setStatus(StatusEnum.NORMAL.getCode());
+        List<UserVO> userVOS = userService.queryBySocietyIdAndCondition(societyDTO);
         for (UserVO userVO : userVOS) {
             Long collegeId = userVO.getCollege();
             if (relationMap.containsKey(collegeId)) {
@@ -210,7 +213,10 @@ public class SocietyServiceImpl implements SocietyService {
         List<String> counts = new ArrayList<>();
         List<String> majors = new ArrayList<>();
         Map<Long, Integer> relationMap = new HashMap<>();
-        List<UserVO> userVOS = userService.queryBySocietyId(societyId);
+        SocietyDTO societyDTO = new SocietyDTO();
+        societyDTO.setId(societyId);
+        societyDTO.setStatus(StatusEnum.NORMAL.getCode());
+        List<UserVO> userVOS = userService.queryBySocietyIdAndCondition(societyDTO);
         for (UserVO userVO : userVOS) {
             Long majorId = userVO.getMajorId();
             if (relationMap.containsKey(majorId)) {
@@ -236,7 +242,10 @@ public class SocietyServiceImpl implements SocietyService {
         List<String> counts = new ArrayList<>();
         List<String> majors = new ArrayList<>();
         Map<String, Integer> relationMap = new HashMap<>();
-        List<UserVO> userVOS = userService.queryBySocietyId(societyId);
+        SocietyDTO societyDTO = new SocietyDTO();
+        societyDTO.setId(societyId);
+        societyDTO.setStatus(StatusEnum.NORMAL.getCode());
+        List<UserVO> userVOS = userService.queryBySocietyIdAndCondition(societyDTO);
         for (UserVO userVO : userVOS) {
             String grade = userVO.getGrade();
             if (relationMap.containsKey(grade)) {
@@ -264,7 +273,10 @@ public class SocietyServiceImpl implements SocietyService {
         genderList.add("男");
         genderList.add("女");
         List<String> countList = new ArrayList<>();
-        List<UserVO> userVOS = userService.queryBySocietyId(societyId);
+        SocietyDTO societyDTO = new SocietyDTO();
+        societyDTO.setId(societyId);
+        societyDTO.setStatus(StatusEnum.NORMAL.getCode());
+        List<UserVO> userVOS = userService.queryBySocietyIdAndCondition(societyDTO);
         for (UserVO userVO : userVOS) {
             if (userVO.getGender()) {
                 maleCount++;

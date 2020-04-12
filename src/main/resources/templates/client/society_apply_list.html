@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<div class="appHeader">
+    <div class="left">
+        <a href="#" class="icon goBack">
+            <i class="icon ion-ios-arrow-back"></i>
+        </a>
+    </div>
+    <div class="pageTitle">申请管理</div>
+</div>
+<div id="appCapsule">
+    <div class="appContent">
+        <th:block th:if="${#lists.isEmpty(users)}">
+            <img style="padding-top: 100px" th:src="@{/img/draw-4.png}" alt="draw" class="img-fluid mb-4 mt-2">
+            <div class="sectionTitle text-center mb-2">
+                <div class="title">
+                    <h1>暂时没有申请需要处理</h1>
+                </div>
+            </div>
+        </th:block>
+        <div class="listView detailed">
+            <div class="listItem" th:each="user:${users}">
+                <div class="image">
+                    <img th:if="${user.avatarImgName==null}" th:src="@{/img/avatar-default.jpg}" alt="avatar"
+                         class="avatar">
+                    <img th:if="${user.avatarImgName!=null}" th:src="@{'/img/avatar/'+${user.avatarImgName}}"
+                         alt="avatar" class="avatar">
+                </div>
+                <div class="text">
+                    <div>
+                        <strong th:text="${user.name}"></strong>
+                        <div class="text-muted">
+                            <i th:if="${user.gender}" class="fa fa-mars" aria-hidden="true" style="color: #428bca"></i>
+                            <i th:if="${not user.gender}" class="fa fa-venus" aria-hidden="true"
+                               style="color: hotpink"></i>
+                            <span th:text="'&nbsp;'+${user.grade}+'级'"></span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-success btn-sm mb-1" style="width: 60px" type="button">同意</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="../templates/client/client_common::bottom_buttom"/>
+
+<!--引入通用js-->
+<th:block th:replace="../templates/client/client_common::common-js"/>
+</body>
+</html>

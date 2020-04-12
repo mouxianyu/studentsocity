@@ -7,11 +7,13 @@ import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
 import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.common.util.FileUtil;
 import com.mouxianyu.studentsociety.mapper.UserMapper;
+import com.mouxianyu.studentsociety.pojo.dto.SocietyDTO;
 import com.mouxianyu.studentsociety.pojo.dto.UserDTO;
 import com.mouxianyu.studentsociety.pojo.dto.UserImportDTO;
 import com.mouxianyu.studentsociety.pojo.entity.*;
 import com.mouxianyu.studentsociety.pojo.vo.UserVO;
 import com.mouxianyu.studentsociety.service.*;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -83,9 +85,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserVO> queryBySocietyId(Long societyId) {
+    public List<UserVO> queryBySocietyIdAndCondition(SocietyDTO societyDTO) {
         List<UserVO> userVOS = new ArrayList<>();
-        List<RelUserSociety> relUserSocieties = relUserSocietyService.queryBySocietyId(societyId);
+        List<RelUserSociety> relUserSocieties = relUserSocietyService.queryBySocietyIdAndStatus(societyDTO.getId(),societyDTO.getStatus());
         for (RelUserSociety relUserSociety : relUserSocieties) {
             User user = getById(relUserSociety.getUserId());
             UserVO userVO = new UserVO();
@@ -99,6 +101,10 @@ public class UserServiceImpl implements UserService {
             }
             if (major != null) {
                 userVO.setMajor(major.getName());
+            }
+            List<Img> imgs = imgService.queryByTypeObjId(user.getId(), ObjTypeEnum.AVATAR.getCode());
+            if(imgs!=null&&imgs.size()>0){
+                userVO.setAvatarImgName(imgs.get(0).getRelName());
             }
             userVOS.add(userVO);
         }

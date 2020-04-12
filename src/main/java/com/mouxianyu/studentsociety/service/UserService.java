@@ -1,5 +1,6 @@
 package com.mouxianyu.studentsociety.service;
 
+import com.mouxianyu.studentsociety.pojo.dto.SocietyDTO;
 import com.mouxianyu.studentsociety.pojo.dto.UserDTO;
 import com.mouxianyu.studentsociety.pojo.dto.UserImportDTO;
 import com.mouxianyu.studentsociety.pojo.entity.Img;
@@ -42,10 +43,10 @@ public interface UserService {
     /**
      * 通过社团id查询
      *
-     * @param societyId
+     * @param societyDTO
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.vo.UserVO>
      */
-    List<UserVO> queryBySocietyId(Long societyId);
+    List<UserVO> queryBySocietyIdAndCondition(SocietyDTO societyDTO);
 
     /**
      * 分页查询

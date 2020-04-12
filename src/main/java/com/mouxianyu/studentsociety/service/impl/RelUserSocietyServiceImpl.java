@@ -27,11 +27,11 @@ public class RelUserSocietyServiceImpl implements RelUserSocietyService {
     }
 
     @Override
-    public List<RelUserSociety> queryBySocietyId(Long id) {
+    public List<RelUserSociety> queryBySocietyIdAndStatus(Long id,Integer status) {
         Example example = new Example(RelUserSociety.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("societyId",id);
-        criteria.andEqualTo("status",StatusEnum.NORMAL.getCode());
+        criteria.andEqualTo("status",status);
         return relUserSocietyMapper.selectByExample(example);
     }
 

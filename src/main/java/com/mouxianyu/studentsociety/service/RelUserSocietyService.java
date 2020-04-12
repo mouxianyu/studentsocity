@@ -22,7 +22,7 @@ public interface RelUserSocietyService {
      * @param id
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.RelUserSociety>
      */
-    List<RelUserSociety> queryBySocietyId(Long id);
+    List<RelUserSociety> queryBySocietyIdAndStatus(Long id,Integer status);
 
     /**
      * 通过学生id查询

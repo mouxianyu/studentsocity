@@ -11,6 +11,7 @@ import com.mouxianyu.studentsociety.pojo.entity.Society;
 import com.mouxianyu.studentsociety.pojo.entity.User;
 import com.mouxianyu.studentsociety.pojo.vo.ActivityVO;
 import com.mouxianyu.studentsociety.pojo.vo.SocietyVO;
+import com.mouxianyu.studentsociety.pojo.vo.UserVO;
 import com.mouxianyu.studentsociety.service.ActivityService;
 import com.mouxianyu.studentsociety.service.RelUserSocietyService;
 import com.mouxianyu.studentsociety.service.SocietyService;
@@ -119,5 +120,21 @@ public class ClientController {
     @ResponseBody
     public void updateSociety(SocietyDTO societyDTO){
         societyService.updateById(societyDTO);
+    }
+
+    @RequestMapping("/society/allUser")
+    public String allSocietyUser(SocietyDTO societyDTO,HttpServletRequest request){
+        societyDTO.setStatus(StatusEnum.NORMAL.getCode());
+        List<UserVO> userVOS = userService.queryBySocietyIdAndCondition(societyDTO);
+        request.setAttribute("users",userVOS);
+        return "client/society_user_list";
+    }
+
+    @RequestMapping("/society/apply")
+    public String applyUser(SocietyDTO societyDTO,HttpServletRequest request){
+        societyDTO.setStatus(StatusEnum.AUDITING.getCode());
+        List<UserVO> userVOS = userService.queryBySocietyIdAndCondition(societyDTO);
+        request.setAttribute("users",userVOS);
+        return "client/society_apply_list";
     }
 }
