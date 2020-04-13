@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
+    <!--引入自己的css-->
+    <style>
+        #multiple_view {
+            width: 49%;
+            height: 0;
+            padding-top: 49%;
+            margin: 0 !important;
+            background: url("/img/add.svg") no-repeat;
+            display: inline-block;
+            position: relative;
+            border-radius: 10px;
+            background-size: 100%;
+        }
+
+        #multiple_img_file {
+            top: 0;
+            position: absolute;
+            cursor: pointer;
+            opacity: 0;
+            filter: alpha(opacity=0);
+            width: 90%;
+            padding-top: 90%;
+            margin: 5%;
+            height: 0;
+        }
+
+        .mobile_img_wrap {
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            width: 46%;
+            height: 0;
+            padding-top: 46%;
+            border-radius: 10px;
+            box-shadow: 1px 1px 2px gray;
+            margin: 4px;
+        }
+
+        .mobile_img_wrap:hover {
+            box-shadow: 2px 2px 6px gray;
+        }
+
+        .mobile_img_wrap:hover i {
+            display: inline;
+        }
+
+        .mobile_img_wrap i {
+            cursor: pointer;
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: none;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .mobile_img_wrap img {
+            width: 101%;
+            position: absolute;
+            top: 0;
+        }
+
+
+        #multiple_clipArea {
+            margin: 10px;
+            height: 520px;
+        }
+    </style>
+</head>
+<body>
+<div class="appHeader">
+    <div class="left">
+        <a href="#" class="icon goBack">
+            <i class="icon ion-ios-arrow-back"></i>
+        </a>
+    </div>
+    <div class="pageTitle">添加活动</div>
+</div>
+<div id="appCapsule">
+    <div class="appContent">
+        <div class="card mt-2 mb-3">
+            <div class="card-body">
+                <h5 class="card-title">活动名称</h5>
+                <input type="text" id="society_id" style="display: none" th:value="${activity.societyId}">
+                <input type="text" id="activity_id" style="display: none" th:value="${activity.id}">
+                <div class="form-group">
+                    <input type="text" th:value="${activity.title}" id="activity_title" class="form-control" placeholder="活动名称...">
+                </div>
+                <h5 class="card-title">活动内容</h5>
+                <div class="form-group">
+                    <textarea rows="6" th:text="${activity.content}" id="activity_content" class="form-control" placeholder="活动内容..."></textarea>
+                </div>
+                <h5 class="card-title">活动图片</h5>
+                <div class="form-group">
+                    <th:block th:if="${not #lists.isEmpty(activity.imgs)}">
+                        <div class='mobile_img_wrap' th:each="img:${activity.imgs}">
+                            <img alt='图片' th:src="@{'/img/activity/'+${img.relName}}">
+                            <i th:onclick="'deleteOneImgWithDataBase(this,'+${img.id}+')'" class='fa fa-trash-o' aria-hidden='true'></i>
+                        </div>
+                    </th:block>
+                    <div id="multiple_view"><input type="file" id="multiple_img_file" accept="image/*"></div>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="updateActivity()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="cover-wrap">
+    <div class="cover-frame">
+        <div id="multiple_clipArea"></div>
+        <div class="btn-area">
+            <button id="multiple_clipBtn" class="btn btn-success">裁剪</button>
+            <button class="btn btn-default" onclick="coverFadeOut()">取消</button>
+        </div>
+    </div>
+</div>
+<th:block th:replace="../templates/client/client_common::bottom_buttom"/>
+
+<!--引入通用js-->
+<th:block th:replace="../templates/client/client_common::common-js"/>
+<script>
+    var imgFile = [];
+    var clipArea = new PhotoClip("#multiple_clipArea", {
+        size: [260, 260],
+        outputSize: 640,
+        file: "#multiple_img_file",
+        ok: "#multiple_clipBtn",
+        loadStart: function () {
+            $('.cover-wrap').fadeIn();
+        },
+        done: function (dataURL) {
+            $('.cover-wrap').fadeOut();
+            if (imgFile.length > 3) {
+                mobileAlert("最多上传4张图片")
+            } else {
+                var newFile = dataURLtoFile(dataURL, "a.jpg");
+                creatTempImgView(newFile);
+                imgFile.push(newFile);
+            }
+        }
+    });
+
+    function creatTempImgView(file) {
+        var URL = window.URL || window.webkitURL;
+        var imgURL = URL.createObjectURL(file);
+        $("#multiple_view").before("<div class='mobile_img_wrap update_temp'><img alt='图片' src='" + imgURL + "'><i onclick='deleteOneImgUpdate(this)' class='fa fa-trash-o' aria-hidden='true'></i></div>");
+    }
+
+    function deleteOneImgUpdate(icon) {
+        var imgDiv = $(icon).parent();
+        var index = imgDiv.index(".update_temp");
+        imgDiv.remove();
+        imgFile.splice(index,1);
+        console.log(index)
+    }
+
+    function deleteOneImgWithDataBase(icon, id) {
+        $(document).dialog({
+            type: 'confirm',
+            titleShow: false,
+            content: "是否删除图片?",
+            buttons: [
+                {
+                    name: "确定",
+                    callback: function () {
+                        $.ajax({
+                            url: "/img/delete/" + id,
+                            success: function () {
+                                var imgDiv = $(icon).parent();
+                                imgDiv.remove();
+                            }, error: function (error) {
+                                mobileAlert("发生异常");
+                                console.log(error);
+                            }
+                        })
+                    }
+                },
+                {
+                    name:"取消",
+                    callback:function () {
+
+                    }
+                }
+            ]
+        });
+    }
+
+    function updateActivity() {
+        var formData = new FormData();
+        if (imgFile.length > 0) {
+            for (var i = 0; i < imgFile.length; i++) {
+                formData.append("file", imgFile[i]);
+            }
+        }
+        var societyId = $("#society_id").val();
+        var activityId = $("#activity_id").val();
+        var title = $("#activity_title").val();
+        if(title===''){
+            mobileAlert("请输入标题");
+            return;
+        }
+        var content = $("#activity_content").val();
+        if(content===''){
+            mobileAlert("请输入内容");
+            return;
+        }
+        var map = new Map();
+        map.set("societyId",societyId);
+        formData.append("title", title);
+        formData.append("content", content);
+        formData.append("id", activityId);
+        $.ajax({
+            type: 'post',
+            url: '/activity/update',
+            data: formData,
+            cache: false,
+            traditional: true,
+            processData: false,
+            contentType: false,
+            success:function () {
+                mobileAlertThenLinkTo("保存成功","/client/society/activities",map);
+            },
+            error:function (error) {
+                mobileAlert("上传失败");
+                console.log(error);
+            }
+        });
+    }
+</script>
+</body>
+</html>

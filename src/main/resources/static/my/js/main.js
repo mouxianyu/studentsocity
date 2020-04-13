@@ -176,6 +176,22 @@ function mobileAlertThenBack(text) {
     });
 }
 
+function mobileAlertThenLinkTo(text,url,map) {
+    $(document).dialog({
+        type: 'confirm',
+        titleShow: false,
+        content: text,
+        buttons: [
+            {
+                name: "确定",
+                callback: function () {
+                    postLinkTo(url,map);
+                }
+            }
+        ]
+    });
+}
+
 function postLinkTo(url,data) {
     var form =$("<form>").attr("method","post").attr("action",url).css("display","none");
     data.forEach(function (obj,key) {

@@ -6,7 +6,13 @@
     <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
     <!--引入自己的css-->
     <style>
-
+        .text_wrap{
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100px;
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -18,7 +24,7 @@
     </div>
     <div class="pageTitle">社团活动</div>
     <div class="right">
-        <a href="#" class="icon">
+        <a th:onclick="'toActivityAdd('+${societyId}+')'" class="icon">
             <i class="icon ion-md-add"></i>
         </a>
     </div>
@@ -26,7 +32,7 @@
 <div id="appCapsule">
     <div class="appContent">
         <div class="listView detailed">
-            <a href="#" class="listItem" th:each="activity:${activities}">
+            <a th:onclick="'toActivityDetail('+${activity.id}+')'" class="listItem" th:each="activity:${activities}">
                 <div class="image">
                     <img th:if="${#lists.isEmpty(activity.imgs)}" th:src="@{/img/avatar-default.jpg}"
                          alt="image">
@@ -39,7 +45,7 @@
                     <div>
                         <strong th:text="${activity.title}"></strong>
                         <div class="text-muted">
-                            <span th:text="${activity.content}"></span>
+                            <span class="text_wrap" th:text="${activity.content}"></span>
                         </div>
                     </div>
                 </div>
@@ -58,5 +64,18 @@
 
 <!--引入通用js-->
 <th:block th:replace="../templates/client/client_common::common-js"/>
+<script>
+    function toActivityAdd(societyId) {
+        var map = new Map();
+        map.set("societyId",societyId);
+        postLinkTo("/client/society/activity/toAdd",map);
+    }
+
+    function toActivityDetail(activityId) {
+        var map = new Map();
+        map.set("activityId",activityId);
+        postLinkTo("/client/society/activity/toDetail",map);
+    }
+</script>
 </body>
 </html>

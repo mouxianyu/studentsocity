@@ -291,7 +291,6 @@ function deleteOneImgWithDataBase(icon, id) {
             取消: {}
         }
     });
-
 }
 
 function addNewActivity() {

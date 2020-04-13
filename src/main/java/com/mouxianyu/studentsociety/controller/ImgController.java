@@ -3,10 +3,14 @@ package com.mouxianyu.studentsociety.controller;
 import com.mouxianyu.studentsociety.common.config.ImgConfig;
 import com.mouxianyu.studentsociety.common.constant.Constant;
 import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
+import com.mouxianyu.studentsociety.pojo.dto.ActivityDTO;
+import com.mouxianyu.studentsociety.pojo.entity.Activity;
 import com.mouxianyu.studentsociety.pojo.entity.Img;
 import com.mouxianyu.studentsociety.pojo.entity.User;
+import com.mouxianyu.studentsociety.service.ActivityService;
 import com.mouxianyu.studentsociety.service.ImgService;
 import com.mouxianyu.studentsociety.service.UserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +36,6 @@ public class ImgController {
 
     @Autowired
     private ImgService imgService;
-
-    @Autowired
-    private UserService userService;
 
 
     @RequestMapping(value = "activity/{imgName}", method = RequestMethod.GET)

@@ -1,7 +1,9 @@
 package com.mouxianyu.studentsociety.service.impl;
 
 import com.mouxianyu.studentsociety.common.config.ImgConfig;
+import com.mouxianyu.studentsociety.common.enums.ActivityScaleEnum;
 import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
+import com.mouxianyu.studentsociety.common.enums.ScaleEnum;
 import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.mapper.ActivityMapper;
 import com.mouxianyu.studentsociety.pojo.dto.ActivityDTO;
@@ -116,9 +118,9 @@ public class ActivityServiceImpl implements ActivityService {
         activity.setModifyTime(new Date());
         activityMapper.updateByPrimaryKeySelective(activity);
         if (multipartFiles != null) {
-            if(multipartFiles.length>0){
+            if (multipartFiles.length > 0) {
                 for (MultipartFile multipartFile : multipartFiles) {
-                    imgService.add(multipartFile,imgConfig.getActivity(),ObjTypeEnum.ACTIVITY.getCode(),activity.getId());
+                    imgService.add(multipartFile, imgConfig.getActivity(), ObjTypeEnum.ACTIVITY.getCode(), activity.getId());
                 }
             }
         }
@@ -132,9 +134,14 @@ public class ActivityServiceImpl implements ActivityService {
         if (activity.getStatus() == null) {
             activity.setStatus(StatusEnum.AUDITING.getCode());
         }
+        if (activity.getSocietyId() != null) {
+            activity.setScale(ActivityScaleEnum.SOCIETY.getCode());
+        }
         activityMapper.insertSelective(activity);
-        for (MultipartFile multipartFile : multipartFiles) {
-            imgService.add(multipartFile,imgConfig.getActivity(),ObjTypeEnum.ACTIVITY.getCode(),activity.getId());
+        if (multipartFiles != null && multipartFiles.length > 0) {
+            for (MultipartFile multipartFile : multipartFiles) {
+                imgService.add(multipartFile, imgConfig.getActivity(), ObjTypeEnum.ACTIVITY.getCode(), activity.getId());
+            }
         }
         return activity.getId();
     }

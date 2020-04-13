@@ -157,6 +157,7 @@ public class ClientController {
         activityDTO.setRow(5);
         List<ActivityVO> activityVOS = activityService.queryByPageWithImg(activityDTO);
         request.setAttribute("activities",activityVOS);
+        request.setAttribute("societyId",societyId);
         return "client/society_activity";
     }
 
@@ -168,5 +169,18 @@ public class ClientController {
         activityDTO.setStart(start);
         activityDTO.setRow(5);
         return activityService.queryByPageWithImg(activityDTO);
+    }
+
+    @RequestMapping("society/activity/toAdd")
+    public String activityAdd(Long societyId,HttpServletRequest request){
+        request.setAttribute("societyId",societyId);
+        return "client/society_activity_add";
+    }
+
+    @RequestMapping("society/activity/toDetail")
+    public String activityDetail(Long activityId,HttpServletRequest request){
+        ActivityVO activityVO = activityService.getByIdMore(activityId);
+        request.setAttribute("activity",activityVO);
+        return "client/society_activity_detail";
     }
 }
