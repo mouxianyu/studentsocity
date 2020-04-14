@@ -60,6 +60,9 @@ public class SocietyServiceImpl implements SocietyService {
     public SocietyVO getByIdMore(Long id) {
         SocietyVO societyVO = new SocietyVO();
         Society society = getById(id);
+        if(society==null){
+            return null;
+        }
         BeanUtils.copyProperties(society, societyVO);
         RelUserSociety president = relUserSocietyService.getBySocietyIdAndRelation(id, UserSocietyRelationEnum.PRESIDENT.getCode());
         RelUserSociety vicePresident = relUserSocietyService.getBySocietyIdAndRelation(id, UserSocietyRelationEnum.VICE_PRESIDENT.getCode());
@@ -149,7 +152,7 @@ public class SocietyServiceImpl implements SocietyService {
             society.setStatus(StatusEnum.INVALID.getCode());
         }
         if (society.getScale() == null) {
-            society.setStatus(ScaleEnum.SCHOOL_LEVEL.getCode());
+            society.setScale(ScaleEnum.SCHOOL_LEVEL.getCode());
         }
         societyMapper.insertSelective(society);
         return society.getId();

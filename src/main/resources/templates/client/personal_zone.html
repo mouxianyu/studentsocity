@@ -5,6 +5,13 @@
     <!--引入通用头部和css-->
     <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
     <!--引入自己的css-->
+    <style>
+        #logout-btn{
+            position: absolute;
+            bottom: 100px;
+            left: 38%;
+        }
+    </style>
 </head>
 <body>
 <div class="appHeader">
@@ -15,11 +22,11 @@
 <div id="appCapsule">
     <div class="appContent">
         <div class="listView detailed">
-            <a href="#" class="listItem">
-                <div class="image">
+            <div class="listItem">
+                <div class="image" th:onclick="'toUploadImgPage('+${session.USER.id}+')'">
                     <img th:src="@{'/img/avatar/'+${session.AVATAR}}" alt="avatar">
                 </div>
-                <div class="text">
+                <div class="text" onclick="toUserDetail()">
                     <div>
                         <strong th:text="${session.USER.name}">Carmen Beltrán</strong>
                         <div class="text-muted">
@@ -30,37 +37,38 @@
                         </div>
                     </div>
                 </div>
-            </a>
+            </div>
             <br>
-            <a href="#" class="listItem">
+            <a th:href="@{/client/zone/passwordPage}" class="listItem">
                 <div class="text">
                     <div>
                         <strong>修改密码</strong>
                     </div>
                 </div>
             </a>
-            <a href="#" class="listItem">
+            <a th:href="@{/client/zone/applySociety}" class="listItem">
                 <div class="text">
                     <div>
                         <strong>申请社团</strong>
                     </div>
                 </div>
             </a>
-            <a href="#" class="listItem">
+            <a th:href="@{/client/zone/mySociety/manage}" class="listItem">
                 <div class="text">
                     <div>
-                        <strong>我的社团</strong>
+                        <strong>我管理的社团</strong>
                     </div>
                 </div>
             </a>
-            <a href="#" class="listItem">
+            <a th:href="@{/client/zone/mySociety/join}" class="listItem">
                 <div class="text">
                     <div>
-                        <strong>退出登录</strong>
+                        <strong>我加入的社团</strong>
                     </div>
                 </div>
             </a>
         </div>
+        <button class="btn btn-danger" id="logout-btn" onclick="mobileLogout()">退出登录</button>
     </div>
 </div>
 
@@ -68,5 +76,17 @@
 
 <!--引入通用js-->
 <th:block th:replace="../templates/client/client_common::common-js"/>
+<script>
+    function toUploadImgPage(objId) {
+        var map = new Map();
+        map.set("objId", objId);
+        map.set("objType", 2);
+        postLinkTo("/img/toUploadPage", map);
+    }
+
+    function toUserDetail() {
+        window.location.href="/client/zone/detail"
+    }
+</script>
 </body>
 </html>

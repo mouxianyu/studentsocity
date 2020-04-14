@@ -36,6 +36,16 @@ public class RelUserSocietyServiceImpl implements RelUserSocietyService {
     }
 
     @Override
+    public List<RelUserSociety> queryByUserIdAndRelation(Long userId, Integer relation) {
+        Example example = new Example(RelUserSociety.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId",userId);
+        criteria.andEqualTo("relation",relation);
+        criteria.andNotEqualTo("status",StatusEnum.DELETED.getCode());
+        return relUserSocietyMapper.selectByExample(example);
+    }
+
+    @Override
     public List<RelUserSociety> queryByUserId(Long id) {
         Example example = new Example(RelUserSociety.class);
         Example.Criteria criteria = example.createCriteria();

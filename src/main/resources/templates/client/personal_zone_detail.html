@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<div class="appHeader">
+    <div class="left">
+        <a href="#" class="icon goBack">
+            <i class="icon ion-ios-arrow-back"></i>
+        </a>
+    </div>
+    <div class="pageTitle">个人资料</div>
+</div>
+<div id="appCapsule">
+    <div class="appContent">
+        <div class="card mt-2 mb-3">
+            <div class="card-body">
+                <h5 class="card-title">姓名</h5>
+                <div class="form-group">
+                    <input type="text" id="user_name" class="form-control" placeholder="姓名..."
+                           th:value="${session.USER.name}" readonly>
+                </div>
+                <h5 class="card-title">年级</h5>
+                <div class="form-group">
+                    <input type="text" id="user_grade" class="form-control" placeholder="年级..."
+                           th:value="${session.USER.grade}" readonly>
+                </div>
+                <h5 class="card-title">学院</h5>
+                <div class="form-group">
+                    <input type="text" id="user_college" class="form-control" placeholder="学院..."
+                           th:value="${session.COLLEGE}" readonly>
+                </div>
+                <h5 class="card-title">专业</h5>
+                <div class="form-group">
+                    <input type="text" id="user_major" class="form-control" placeholder="学院..."
+                           th:value="${session.MAJOR}" readonly>
+                </div>
+                <h5 class="card-title">手机</h5>
+                <div class="form-group">
+                    <input type="text" id="user_phone" class="form-control" placeholder="手机..."
+                           th:value="${session.USER.phone}">
+                </div>
+                <h5 class="card-title">邮箱</h5>
+                <div class="form-group">
+                    <input type="text" id="user_email" class="form-control" placeholder="邮箱..."
+                           th:value="${session.USER.email}">
+                </div>
+                <button type="button" id="save_btn" class="btn btn-primary" onclick="updateUser()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<th:block th:replace="../templates/client/client_common::bottom_buttom"/>
+
+<!--引入通用js-->
+<th:block th:replace="../templates/client/client_common::common-js"/>
+<script>
+    function updateUser() {
+        $.ajax({
+            url:"/user/updateIncludeSession",
+            type:"post",
+            data:{
+                phone:$("#user_phone").val(),
+                email:$("#user_email").val()
+            },
+            success:function () {
+                mobileAlertThenLinkTo("保存成功","/client/zone");
+            }
+        });
+    }
+</script>
+</body>
+</html>

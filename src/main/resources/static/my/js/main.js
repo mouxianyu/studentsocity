@@ -118,10 +118,32 @@ function logout() {
         type: "green",
         buttons: {
             确认: function () {
-                window.location.href = '/user/toLogin'
+                window.location.href = '/user/logout'
             },
             取消: {}
         }
+    });
+}
+
+function mobileLogout() {
+    $(document).dialog({
+        type: 'confirm',
+        titleShow: false,
+        content: "是否退出？退出后需重新登录",
+        buttons: [
+            {
+                name: "确定",
+                callback: function () {
+                    window.location.href ="/client/logout";
+                }
+            },
+            {
+                name:"取消",
+                callback:function () {
+
+                }
+            }
+        ]
     });
 }
 
@@ -185,7 +207,12 @@ function mobileAlertThenLinkTo(text,url,map) {
             {
                 name: "确定",
                 callback: function () {
-                    postLinkTo(url,map);
+                    if(map==undefined){
+                        window.location.href=url;
+                    }else {
+                        postLinkTo(url,map);
+                    }
+
                 }
             }
         ]

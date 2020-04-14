@@ -2,6 +2,7 @@ package com.mouxianyu.studentsociety.controller;
 
 import com.mouxianyu.studentsociety.common.constant.Constant;
 import com.mouxianyu.studentsociety.common.enums.StatusEnum;
+import com.mouxianyu.studentsociety.common.enums.UserSocietyRelationEnum;
 import com.mouxianyu.studentsociety.pojo.dto.ActivityDTO;
 import com.mouxianyu.studentsociety.pojo.dto.SocietyDTO;
 import com.mouxianyu.studentsociety.pojo.entity.RelUserSociety;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -198,6 +200,21 @@ public class ClientController {
         request.setAttribute("activity", activityVO);
         return "client/society_activity_detail";
     }
+    @RequestMapping("society/applyFor")
+    @ResponseBody
+    public void applyForSociety(SocietyDTO societyDTO,HttpServletRequest request){
+        User currentUser =(User) request.getSession().getAttribute(Constant.USER);
+        societyDTO.setStatus(StatusEnum.AUDITING.getCode());
+        societyDTO.setCreateId(currentUser.getId());
+        Long societyId = societyService.add(societyDTO);
+        RelUserSociety relUserSociety = new RelUserSociety();
+        relUserSociety.setStatus(StatusEnum.NORMAL.getCode());
+        relUserSociety.setRelation(UserSocietyRelationEnum.PRESIDENT.getCode());
+        relUserSociety.setUserId(currentUser.getId());
+        relUserSociety.setCreateId(currentUser.getId());
+        relUserSociety.setSocietyId(societyId);
+        relUserSocietyService.add(relUserSociety);
+    }
 
     @RequestMapping("activity/{activityId}")
     public String activityPage(@PathVariable Long activityId, HttpServletRequest request) {
@@ -228,5 +245,57 @@ public class ClientController {
     @RequestMapping("zone")
     public String personalZone(){
         return "client/personal_zone";
+    }
+
+    @RequestMapping("zone/detail")
+    public String zoneDetail(){
+        return "client/personal_zone_detail";
+    }
+
+    @RequestMapping("zone/passwordPage")
+    public String zonePasswordPage(){
+        return "client/password";
+    }
+
+    @RequestMapping("zone/applySociety")
+    public String applySociety(){
+        return "client/apply_society";
+    }
+
+    @RequestMapping("logout")
+    public String logout(HttpServletRequest request){
+        request.getSession().removeAttribute(Constant.USER);
+        return "client/login";
+    }
+
+    @RequestMapping("zone/mySociety/manage")
+    public String mySocietyListManage(HttpServletRequest request){
+        List<SocietyVO> societyVOS = new ArrayList<>();
+        User user = (User)request.getSession().getAttribute(Constant.USER);
+        List<RelUserSociety> relations = relUserSocietyService.queryByUserIdAndRelation(user.getId(), UserSocietyRelationEnum.PRESIDENT.getCode());
+        for (RelUserSociety relation : relations) {
+            SocietyVO societyVO = societyService.getByIdMore(relation.getSocietyId());
+            if(societyVO!=null){
+                societyVOS.add(societyVO);
+            }
+        }
+        request.setAttribute("isManage",true);
+        request.setAttribute("societies",societyVOS);
+        return "client/my_society_list";
+    }
+
+    @RequestMapping("zone/mySociety/join")
+    public String mySocietyListJoin(HttpServletRequest request){
+        List<SocietyVO> societyVOS = new ArrayList<>();
+        User user = (User)request.getSession().getAttribute(Constant.USER);
+        List<RelUserSociety> relations = relUserSocietyService.queryByUserIdAndRelation(user.getId(), UserSocietyRelationEnum.MEMBER.getCode());
+        for (RelUserSociety relation : relations) {
+            SocietyVO societyVO = societyService.getByIdMore(relation.getSocietyId());
+            societyVO.setRelationStatus(relation.getStatus());
+            societyVOS.add(societyVO);
+        }
+        request.setAttribute("isManage",false);
+        request.setAttribute("societies",societyVOS);
+        return "client/my_society_list";
     }
 }

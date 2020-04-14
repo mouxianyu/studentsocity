@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<div class="appHeader">
+    <div class="left">
+        <a href="#" class="icon goBack">
+            <i class="icon ion-ios-arrow-back"></i>
+        </a>
+    </div>
+    <div class="pageTitle">申请社团</div>
+</div>
+<div id="appCapsule">
+    <div class="appContent">
+        <div class="card mt-2 mb-3">
+            <div class="card-body">
+                <h5 class="card-title">社团名称</h5>
+                <div class="form-group">
+                    <input type="text" id="society_name" class="form-control" placeholder="请输入社团名称..." >
+                </div>
+                <h5 class="card-title">社团介绍</h5>
+                <div class="form-group">
+                    <textarea rows="6" id="society_detail" class="form-control" placeholder="请输入社团简介..."></textarea>
+                </div>
+                <button type="button" id="save_btn" class="btn btn-primary" onclick="applyForSociety()">申请</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="../templates/client/client_common::bottom_buttom"/>
+
+<!--引入通用js-->
+<th:block th:replace="../templates/client/client_common::common-js"/>
+<script>
+    function applyForSociety() {
+        var societyName =$("#society_name").val();
+        var societyDetail =$("#society_detail").val();
+        if(societyName===""||societyDetail===""){
+            mobileAlert("请输入");
+            return;
+        }
+        $.ajax({
+            url:"/client/society/applyFor",
+            data:{
+                name:societyName,
+                detail:societyDetail
+            },
+            success:function () {
+                mobileAlertThenBack("申请成功")
+            }
+        });
+    }
+</script>
+</body>
+</html>

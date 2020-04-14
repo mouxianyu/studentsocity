@@ -95,6 +95,12 @@ public class UserController {
         return "";
     }
 
+    @RequestMapping("logout")
+    public String logout(HttpServletRequest request){
+        request.getSession().removeAttribute(Constant.USER);
+        return "login";
+    }
+
     @RequestMapping("queryByPage")
     public String queryByPage(HttpServletRequest request, UserDTO userDTO) {
         UserDTO condition = new UserDTO();
@@ -126,9 +132,11 @@ public class UserController {
     @RequestMapping("updateIncludeSession")
     @ResponseBody
     public void updateIncludeSession(UserDTO userDTO ,HttpServletRequest request){
+        User user = (User)request.getSession().getAttribute(Constant.USER);
+        userDTO.setId(user.getId());
         userService.updateById(userDTO);
-        User user = userService.getById(userDTO.getId());
-        updateSession(request,user);
+        User newUser = userService.getById(userDTO.getId());
+        updateSession(request,newUser);
     }
 
     @RequestMapping("resetPassword")
@@ -141,14 +149,15 @@ public class UserController {
     }
     @RequestMapping("changePassword")
     @ResponseBody
-    public String changePassword(Long id,String oldPassword,String newPassword){
-        User user = userService.getById(id);
+    public String changePassword(HttpServletRequest request,String oldPassword,String newPassword){
+        User currentUser = (User)request.getSession().getAttribute(Constant.USER);
+        User user = userService.getById(currentUser.getId());
         if(!user.getPassword().equals(oldPassword)){
             return "旧密码错误";
         }else {
             UserDTO userDTO = new UserDTO();
             userDTO.setPassword(newPassword);
-            userDTO.setId(id);
+            userDTO.setId(currentUser.getId());
             userService.updateById(userDTO);
             return "";
         }
@@ -159,6 +168,7 @@ public class UserController {
         userService.add(userDTO);
         return "redirect:/user/queryByPage";
     }
+
 
 
     private void updateSession(HttpServletRequest request,User user){

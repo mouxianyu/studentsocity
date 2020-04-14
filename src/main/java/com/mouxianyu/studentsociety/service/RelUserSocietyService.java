@@ -25,6 +25,14 @@ public interface RelUserSocietyService {
     List<RelUserSociety> queryBySocietyIdAndStatus(Long id,Integer status);
 
     /**
+     * 通过关系和用户id
+     * @param userId
+     * @param relation
+     * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.RelUserSociety>
+     */
+    List<RelUserSociety> queryByUserIdAndRelation(Long userId,Integer relation);
+
+    /**
      * 通过学生id查询
      * @param id
      * @return java.util.List<com.mouxianyu.studentsociety.pojo.entity.RelUserSociety>
