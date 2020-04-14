@@ -6,12 +6,30 @@
     <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
     <!--引入自己的css-->
     <style>
+        .banner-card{
+            border-radius: 8px !important;
+        }
         .text_wrap {
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
             width: 150px;
             display: block;
+        }
+        .banner-img-wrap{
+            width: 80%;
+            padding-top: 80%;
+            height: 0;
+            position: relative;
+        }
+        .banner-img-wrap img{
+            position: absolute;
+            top:0;
+            border-radius: 0!important;
+            max-width: 180% !important;
+            width: auto!important;
+            height: auto;
+            min-width: 100% !important;
         }
     </style>
 </head>
@@ -43,113 +61,38 @@
         <!-- Card Overlay Carousel -->
         <div class="cardOverlayCarousel owl-carousel mt-2 mb-4">
             <!-- item -->
-            <div class="item">
-                <a href="blog-post.html" class="card card-overlay text-white">
-                    <img th:src="@{/img/photo8.jpg}" class="card-img img-fluid" alt="image">
+            <div class="item" th:each="activity:${topActivities}">
+                <a th:href="@{'/client/activity/'+${activity.id}}" class="card banner-card card-overlay text-white">
+                    <div class="banner-img-wrap">
+                        <img th:if="${activity.imgs==null}" th:src="@{/img/society-default.jpg}"
+                             class="card-img img-fluid" alt="image">
+                        <th:block th:if="${activity.imgs!=null}" th:each="img,stat:${activity.imgs}">
+                            <img th:if="${stat.first}" th:src="@{'/img/activity/'+${img.relName}}"
+                                 class="card-img img-fluid" alt="image">
+                        </th:block>
+                    </div>
                     <div class="card-img-overlay">
                         <div class="header row">
-                            <div class="col-8">TRAVEL</div>
-                            <div class="col-4 text-right">
-                                <i class="icon ion-ios-heart"></i> 523
-                            </div>
+                            <div class="col-8" th:if="${#strings.isEmpty(activity.societyName)}">全校活动</div>
+                            <div class="col-8" th:if="${not #strings.isEmpty(activity.societyName)}"
+                                 th:text="${activity.societyName}"></div>
                         </div>
                         <div class="content">
-                            <h1>Top 10 Travel Bloggers You Should Already Be Following</h1>
+                            <h1 th:text="${activity.title}"></h1>
                             <footer>
                                 <div class="author">
-                                    <img th:src="@{/img/avatar-default.jpg}" alt="avatar">
-                                    Marti Valencia
+                                    <img th:src="@{/img/avatar-default.jpg}"
+                                         th:if="${#strings.isEmpty(activity.createAvatar)}" alt="avatar">
+                                    <img th:src="@{'/img/avatar/'+${activity.createAvatar}}"
+                                         th:if="${not #strings.isEmpty(activity.createAvatar)}" alt="avatar">
+                                    <span th:text="${activity.createName}"></span>
                                 </div>
-                                <div class="date">
-                                    5 hours ago
-                                </div>
+                                <div class="date" th:text="${#dates.format(activity.estTime,'yyyy-MM-dd')}"></div>
                             </footer>
                         </div>
                     </div>
                 </a>
             </div>
-            <!-- * item -->
-            <!-- item -->
-            <div class="item">
-                <a href="blog-post.html" class="card card-overlay text-white">
-                    <img th:src="@{/img/photo8.jpg}" class="card-img img-fluid" alt="image">
-                    <div class="card-img-overlay">
-                        <div class="header row">
-                            <div class="col-8">EVENTS</div>
-                            <div class="col-4 text-right">
-                                <i class="icon ion-ios-heart"></i> 12K
-                            </div>
-                        </div>
-                        <div class="content">
-                            <h1>The World's Largest Pillow Fight is Also a Festival</h1>
-                            <footer>
-                                <div class="author">
-                                    <img th:src="@{/img/avatar-default.jpg}" alt="avatar">
-                                    Sofie Fulloway
-                                </div>
-                                <div class="date">
-                                    2 hours ago
-                                </div>
-                            </footer>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <!-- * item -->
-            <!-- item -->
-            <div class="item">
-                <a href="blog-post.html" class="card card-overlay text-white">
-                    <img th:src="@{/img/photo8.jpg}" class="card-img img-fluid" alt="image">
-                    <div class="card-img-overlay">
-                        <div class="header row">
-                            <div class="col-8">SPORTS</div>
-                            <div class="col-4 text-right">
-                                <i class="icon ion-ios-heart"></i> 12K
-                            </div>
-                        </div>
-                        <div class="content">
-                            <h1>Juxon Julio praises Peri’s resilience after testing week</h1>
-                            <footer>
-                                <div class="author">
-                                    <img th:src="@{/img/avatar-default.jpg}" alt="avatar">
-                                    Jackie Pearson
-                                </div>
-                                <div class="date">
-                                    2 hours ago
-                                </div>
-                            </footer>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <!-- * item -->
-            <!-- item -->
-            <div class="item">
-                <a href="blog-post.html" class="card card-overlay text-white">
-                    <img th:src="@{/img/photo8.jpg}" class="card-img img-fluid" alt="image">
-                    <div class="card-img-overlay">
-                        <div class="header row">
-                            <div class="col-8">WORLD</div>
-                            <div class="col-4 text-right">
-                                <i class="icon ion-ios-heart"></i> 12K
-                            </div>
-                        </div>
-                        <div class="content">
-                            <h1>Best of Skyscrapers in the World</h1>
-                            <footer>
-                                <div class="author">
-                                    <img th:src="@{/img/avatar-default.jpg}" alt="avatar">
-                                    Vincent Hunt
-                                </div>
-                                <div class="date">
-                                    2 hours ago
-                                </div>
-                            </footer>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <!-- * item -->
         </div>
         <!-- * Card Overlay Carousel -->
 
@@ -160,9 +103,11 @@
                 <div class="item">
                     <a th:href="@{'/client/society/'+${society.id}}">
                         <div class="imgWrapper">
-                            <img th:if="${society.imgs==null}" th:src="@{/img/society-default.jpg}" class="card-img img-fluid" alt="image">
+                            <img th:if="${society.imgs==null}" th:src="@{/img/society-default.jpg}"
+                                 class="card-img img-fluid" alt="image">
                             <th:block th:if="${society.imgs!=null}" th:each="img,stat:${society.imgs}">
-                                <img th:if="${stat.first}" th:src="@{'/img/society/'+${img.relName}}" class="card-img img-fluid" alt="image">
+                                <img th:if="${stat.first}" th:src="@{'/img/society/'+${img.relName}}"
+                                     class="card-img img-fluid" alt="image">
                             </th:block>
                         </div>
                         <strong th:text="${society.name}"></strong>
@@ -191,21 +136,26 @@
 
         <!-- post list -->
         <div class="row">
-            <th:block th:each="activity:${activities}">
+            <th:block th:each="activity:${normalActivities}">
                 <div class="col-6">
                     <a th:href="@{'/client/activity/'+${activity.id}}" class="postItem">
                         <div class="imageWrapper">
-                            <img th:if="${activity.imgs==null}" th:src="@{/img/society-default.jpg}" alt="image" class="image">
+                            <img th:if="${activity.imgs==null}" th:src="@{/img/society-default.jpg}" alt="image"
+                                 class="image">
                             <th:block th:if="${activity.imgs!=null}" th:each="img,stat:${activity.imgs}">
-                                <img  th:if="${stat.first}" th:src="@{'/img/activity/'+${img.relName}}" alt="image" class="image">
+                                <img th:if="${stat.first}" th:src="@{'/img/activity/'+${img.relName}}" alt="image"
+                                     class="image">
                             </th:block>
-                            <div class="badge badge-info" th:if="${activity.societyName!=null}" th:text="${activity.societyName}"></div>
+                            <div class="badge badge-info" th:if="${activity.societyName!=null}"
+                                 th:text="${activity.societyName}"></div>
                             <div class="badge badge-danger" th:if="${activity.societyName==null}">全校</div>
                         </div>
                         <h2 class="title text_wrap" th:text="${activity.title}"></h2>
                         <footer>
-                            <img th:if="${activity.createAvatar==null}" th:src="@{/img/avatar-default.jpg}" alt="avatar" class="avatar">
-                            <img th:if="${activity.createAvatar!=null}" th:src="@{'/img/avatar/'+${activity.createAvatar}}" alt="avatar" class="avatar">
+                            <img th:if="${activity.createAvatar==null}" th:src="@{/img/avatar-default.jpg}" alt="avatar"
+                                 class="avatar">
+                            <img th:if="${activity.createAvatar!=null}"
+                                 th:src="@{'/img/avatar/'+${activity.createAvatar}}" alt="avatar" class="avatar">
                             <th:block th:text="${#dates.format(activity.estTime,' yyyy-MM-dd')}"/>
                         </footer>
                     </a>
