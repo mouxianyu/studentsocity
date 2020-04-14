@@ -6,7 +6,7 @@
     <th:block th:replace="../templates/client/client_common::common-header('所有社团')"/>
     <!--引入自己的css-->
     <style>
-        .text-muted{
+        .text-muted {
             display: -webkit-box;
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 3;
@@ -57,7 +57,8 @@
             </th:block>
         </div>
         <div class="mt-2 mb-2">
-            <a style="color: white" id="btn-loadMore" onclick="loadMore()" class="btn btn-primary btn-lg btn-block">加载更多</a>
+            <a style="color: white" id="btn-loadMore" onclick="loadMore()"
+               class="btn btn-primary btn-lg btn-block">加载更多</a>
         </div>
     </div>
 </div>
@@ -70,39 +71,43 @@
     var host;
     $(function () {
         $("#btn-society").addClass("active");
-        var curWwwPath=window.document.location.href;
-        var pathName=window.document.location.pathname;
-        var pos=curWwwPath.indexOf(pathName);
-        host=curWwwPath.substring(0,pos);
+        var curWwwPath = window.document.location.href;
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        host = curWwwPath.substring(0, pos);
+        var activityNum = $(".itemList .item").length;
+        if (activityNum < 6) {
+            $("#btn-loadMore").css("display", "none");
+        }
     })
 
     function goToSocietyMore(id) {
-        window.location.href="/client/society/"+id;
+        window.location.href = "/client/society/" + id;
     }
 
     function loadMore() {
-        var socialList=$("#society_list");
+        var socialList = $("#society_list");
         $.ajax({
-            url:"/client/society/load",
-            data:{
-                start:$(".itemList .item").length
+            url: "/client/society/load",
+            data: {
+                start: $(".itemList .item").length
             },
-            success:function (data) {
-                if(data.length<6){
+            success: function (data) {
+                if (data.length < 6) {
                     mobileAlert("已加载全部社团");
-                    $("#btn-loadMore").css("display","none");
+                    $("#btn-loadMore").css("display", "none");
                 }
-                data.forEach(function (obj,index) {
-                    var item =$("<div>").attr("class","item").attr("onclick","goToSocietyMore("+obj.id+")");
-                    var imgDiv = $("<div>").attr("class","image");
-                    var image =$("<img>");
-                    var text = $("<div>").attr("class","text");
-                    var title =$("<h4>").attr("class","title").text(obj.name);
-                    var textMuted =$("<div>").attr("class","text-muted").text(obj.detail);
-                    if(data.imgs!=null){
-                        image.attr("src",host+"/img/society/"+data.imgs[0]).attr("alt","image");
-                    }else {
-                        image.attr("src",host+"/img/society-default.jpg").attr("alt","image");
+                data.forEach(function (obj, index) {
+                    var item = $("<div>").attr("class", "item").attr("onclick", "goToSocietyMore(" + obj.id + ")");
+                    var imgDiv = $("<div>").attr("class", "image");
+                    var image = $("<img>");
+                    var text = $("<div>").attr("class", "text");
+                    var title = $("<h4>").attr("class", "title").text(obj.name);
+                    var textMuted = $("<div>").attr("class", "text-muted").text(obj.detail);
+                    if (data.imgs != null) {
+                        image.attr("src", host + "/img/society/" + data.imgs[0]).attr("alt", "image");
+                    } else {
+                        image.attr("src", host + "/img/society-default.jpg").attr("alt", "image");
                     }
                     text.append(title);
                     text.append(textMuted);
@@ -113,7 +118,7 @@
                     socialList.append("<div class='divider mt-2 mb-4'></div>");
                 })
             },
-            error:function (error) {
+            error: function (error) {
                 mobileAlert("加载失败");
                 console.log(error)
             }

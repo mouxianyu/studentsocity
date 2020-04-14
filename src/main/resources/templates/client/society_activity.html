@@ -6,12 +6,16 @@
     <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
     <!--引入自己的css-->
     <style>
-        .text_wrap{
+        .text_wrap {
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
-            width: 100px;
+            width: 150px;
             display: block;
+        }
+        #btn-loadMore{
+            margin: 20px auto;
+            width: 80%;
         }
     </style>
 </head>
@@ -31,7 +35,16 @@
 </div>
 <div id="appCapsule">
     <div class="appContent">
-        <div class="listView detailed">
+        <input id="society_id" th:value="${societyId}" style="display: none">
+        <th:block th:if="${#lists.isEmpty(activities)}">
+            <img style="padding-top: 100px" th:src="@{/img/draw-4.png}" alt="draw" class="img-fluid mb-4 mt-2">
+            <div class="sectionTitle text-center mb-2">
+                <div class="title">
+                    <h1>社团暂时没有活动</h1>
+                </div>
+            </div>
+        </th:block>
+        <div class="listView detailed" id="activities_wrap">
             <a th:onclick="'toActivityDetail('+${activity.id}+')'" class="listItem" th:each="activity:${activities}">
                 <div class="image">
                     <img th:if="${#lists.isEmpty(activity.imgs)}" th:src="@{/img/avatar-default.jpg}"
@@ -43,7 +56,7 @@
                 </div>
                 <div class="text">
                     <div>
-                        <strong th:text="${activity.title}"></strong>
+                        <strong class="text_wrap" th:text="${activity.title}"></strong>
                         <div class="text-muted">
                             <span class="text_wrap" th:text="${activity.content}"></span>
                         </div>
@@ -56,6 +69,7 @@
                     <span th:case="1" class="badge badge-outline-dark mr-1 mb-1">已失效</span>
                 </th:block>
             </a>
+            <button th:if="${not #lists.isEmpty(activities)}" id="btn-loadMore" onclick="loadMoreActivities()" class="btn btn-primary btn-block">加载更多</button>
         </div>
     </div>
 </div>
@@ -65,16 +79,99 @@
 <!--引入通用js-->
 <th:block th:replace="../templates/client/client_common::common-js"/>
 <script>
+    var host;
+    $(function () {
+        $("#btn-society").addClass("active");
+        var curWwwPath=window.document.location.href;
+        var pathName=window.document.location.pathname;
+        var pos=curWwwPath.indexOf(pathName);
+        host=curWwwPath.substring(0,pos);
+
+        var activityNum = $(".listItem").length;
+        if (activityNum < 10) {
+            $("#btn-loadMore").css("display", "none");
+        }
+    })
+
     function toActivityAdd(societyId) {
         var map = new Map();
-        map.set("societyId",societyId);
-        postLinkTo("/client/society/activity/toAdd",map);
+        map.set("societyId", societyId);
+        postLinkTo("/client/society/activity/toAdd", map);
     }
 
     function toActivityDetail(activityId) {
         var map = new Map();
-        map.set("activityId",activityId);
-        postLinkTo("/client/society/activity/toDetail",map);
+        map.set("activityId", activityId);
+        postLinkTo("/client/society/activity/toDetail", map);
+    }
+
+    function loadMoreActivities() {
+        var btnLoadMore=$("#btn-loadMore");
+        var societyId = $("#society_id").val();
+        $.ajax({
+            url:"/client/society/activity/load",
+            data:{
+                start:$(".listItem").length,
+                societyId:societyId
+            },
+            success:function (data) {
+                if(data.length<10){
+                    mobileAlert("已加载全部活动");
+                    $("#btn-loadMore").css("display","none");
+                }
+                data.forEach(function (obj,index) {
+                    var item = $("<a>").attr("onclick","toActivityDetail("+obj.id+")")
+                        .attr("class","listItem");
+                    var imageDiv = $("<div>").attr("class","image");
+                    var img=$("<img>");
+                    if(obj.imgs!=null){
+                        img.attr("src",host+"/img/activity/"+obj.imgs[0].relName)
+                            .attr("alt","image");
+                    }
+                    imageDiv.append(img);
+                    var textDiv=$("<div>").attr("class","text");
+                    var textDiv2=$("<div>");
+                    var title=$("<strong>").attr("class","text_wrap")
+                        .text(obj.title);
+                    var textMutedDiv=$("<div>").attr("class","text_wrap");
+                    var content=$("<span>").attr("class","text_wrap")
+                        .text(obj.content);
+                    textMutedDiv.append(content);
+                    textDiv2.append(title);
+                    textDiv2.append(textMutedDiv);
+                    textDiv.append(textDiv2);
+                    var badge = $("<span>");
+                    switch (obj.status) {
+                        case 3:
+                          badge.attr("class","badge badge-outline-warning mr-1 mb-1")
+                              .text("审核中");
+                          break;
+                        case 0:
+                            badge.attr("class","badge badge-outline-success mr-1 mb-1")
+                                .text("已通过");
+                            break;
+                        case 4:
+                            badge.attr("class","badge badge-outline-danger mr-1 mb-1")
+                                .text("已驳回");
+                            break;
+                        case 1:
+                            badge.attr("class","badge badge-outline-dark mr-1 mb-1")
+                                .text("已失效");
+                            break;
+                        default:
+                            break;
+                    }
+                    item.append(imageDiv);
+                    item.append(textDiv);
+                    item.append(badge);
+                    btnLoadMore.before(item);
+                })
+            },
+            error:function (error) {
+                mobileAlert("加载失败");
+                console.log(error)
+            }
+        });
     }
 </script>
 </body>

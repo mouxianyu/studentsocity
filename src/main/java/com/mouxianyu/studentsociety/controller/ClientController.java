@@ -154,7 +154,7 @@ public class ClientController {
         ActivityDTO activityDTO = new ActivityDTO();
         activityDTO.setSocietyId(societyId);
         activityDTO.setStart(0);
-        activityDTO.setRow(5);
+        activityDTO.setRow(10);
         List<ActivityVO> activityVOS = activityService.queryByPageWithImg(activityDTO);
         request.setAttribute("activities",activityVOS);
         request.setAttribute("societyId",societyId);
@@ -167,7 +167,7 @@ public class ClientController {
         ActivityDTO activityDTO = new ActivityDTO();
         activityDTO.setSocietyId(societyId);
         activityDTO.setStart(start);
-        activityDTO.setRow(5);
+        activityDTO.setRow(10);
         return activityService.queryByPageWithImg(activityDTO);
     }
 

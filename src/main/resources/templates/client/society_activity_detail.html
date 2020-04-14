@@ -109,6 +109,7 @@
                     <div id="multiple_view"><input type="file" id="multiple_img_file" accept="image/*"></div>
                 </div>
                 <button type="button" class="btn btn-primary" onclick="updateActivity()">保存</button>
+                <button type="button" class="btn btn-danger" onclick="deleteActivity()">删除</button>
             </div>
         </div>
     </div>
@@ -232,6 +233,45 @@
                 mobileAlert("上传失败");
                 console.log(error);
             }
+        });
+    }
+
+    function deleteActivity() {
+        var activityId = $("#activity_id").val();
+        var map = new Map();
+        map.set("societyId",$("#society_id").val());
+        $(document).dialog({
+            type: 'confirm',
+            titleShow: false,
+            content: "是否删除",
+            buttons: [
+                {
+                    name: "确定",
+                    callback: function () {
+                        $.ajax({
+                            type: 'post',
+                            url: '/activity/delete',
+                            data: {
+                                ids:activityId
+                            },
+                            traditional: true,
+                            success:function () {
+                                mobileAlertThenLinkTo("删除成功","/client/society/activities",map);
+                            },
+                            error:function (error) {
+                                mobileAlert("后台服务器错误");
+                                console.log(error);
+                            }
+                        });
+                    }
+                },
+                {
+                    name:"取消",
+                    callback: function () {
+                        
+                    }
+                }
+            ]
         });
     }
 </script>

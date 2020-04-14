@@ -186,10 +186,10 @@
             processData: false,
             contentType: false,
             success:function () {
-                mobileAlertThenLinkTo("上传成功","/client/society/activities",map);
+                mobileAlertThenLinkTo("保存成功","/client/society/activities",map);
             },
             error:function (error) {
-                mobileAlert("上传失败");
+                mobileAlert("后台服务器错误");
                 console.log(error);
             }
         });
