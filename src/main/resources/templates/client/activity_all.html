@@ -12,12 +12,27 @@
             -webkit-line-clamp: 3;
             overflow: hidden;
         }
+        .text_wrap {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 150px;
+            display: block;
+        }
+        .image{
+            position: relative;
+        }
+        .image .badge{
+            top: 5px;
+            left: 5px;
+            position: absolute;
+        }
     </style>
 </head>
 <body>
 <!--引入导航栏-->
 <div class="appHeader">
-    <div class="pageTitle">所有社团</div>
+    <div class="pageTitle">所有活动</div>
     <div class="right">
         <label for="searchInput" class="mb-0 icon toggleSearchbox">
             <i class="icon ion-ios-search"></i>
@@ -39,18 +54,20 @@
 <div id="appCapsule">
     <div class="appContent">
         <div class="divider mt-2 mb-4"></div>
-        <div class="itemList" id="society_list">
-            <th:block th:each="society:${societies}">
-                <div class="item" th:onclick="'goToSocietyMore('+${society.id}+')'">
+        <div class="itemList" id="activity_list">
+            <th:block th:each="activity:${activities}">
+                <div class="item" th:onclick="'goToActivityMore('+${activity.id}+')'">
                     <div class="image">
-                        <img th:if="${#lists.isEmpty(society.imgs)}" th:src="@{/img/society-default.jpg}" alt="image">
-                        <th:block th:if="${not #lists.isEmpty(society.imgs)}" th:each="img,stat:${society.imgs}">
-                            <img th:if="${stat.first}" th:src="@{'/img/society/'+${img.relName}}" alt="image">
+                        <span class="badge badge-danger" th:if="${#strings.isEmpty(activity.societyName)}">全校</span>
+                        <span class="badge badge-success" th:text="${activity.societyName}" th:if="${not #strings.isEmpty(activity.societyName)}">全校</span>
+                        <img th:if="${#lists.isEmpty(activity.imgs)}" th:src="@{/img/society-default.jpg}" alt="image">
+                        <th:block th:if="${not #lists.isEmpty(activity.imgs)}" th:each="img,stat:${activity.imgs}">
+                            <img th:if="${stat.first}" th:src="@{'/img/activity/'+${img.relName}}" alt="image">
                         </th:block>
                     </div>
                     <div class="text">
-                        <h4 class="title" th:text="${society.name}">社团名</h4>
-                        <div class="text-muted" th:text="${society.detail}">社团详情</div>
+                        <h4 class="title text_wrap" th:text="${activity.title}">活动名</h4>
+                        <div class="text-muted" th:text="${activity.content}">活动内容</div>
                     </div>
                 </div>
                 <div class="divider mt-2 mb-4"></div>
@@ -70,42 +87,41 @@
 <script>
     var host;
     $(function () {
-        $("#btn-society").addClass("active");
         var curWwwPath = window.document.location.href;
         var pathName = window.document.location.pathname;
         var pos = curWwwPath.indexOf(pathName);
         host = curWwwPath.substring(0, pos);
         var activityNum = $(".itemList .item").length;
-        if (activityNum < 5) {
+        if (activityNum < 6) {
             $("#btn-loadMore").css("display", "none");
         }
     })
 
-    function goToSocietyMore(id) {
-        window.location.href = "/client/society/" + id;
+    function goToActivityMore(id) {
+        window.location.href = "/client/activity/" + id;
     }
 
     function loadMore() {
-        var socialList = $("#society_list");
+        var socialList = $("#activity_list");
         $.ajax({
-            url: "/client/society/load",
+            url: "/client/activity/load",
             data: {
                 start: $(".itemList .item").length
             },
             success: function (data) {
                 if (data.length < 6) {
-                    mobileAlert("已加载全部社团");
+                    mobileAlert("已加载全部活动");
                     $("#btn-loadMore").css("display", "none");
                 }
                 data.forEach(function (obj, index) {
-                    var item = $("<div>").attr("class", "item").attr("onclick", "goToSocietyMore(" + obj.id + ")");
+                    var item = $("<div>").attr("class", "item").attr("onclick", "goToActivityMore(" + obj.id + ")");
                     var imgDiv = $("<div>").attr("class", "image");
                     var image = $("<img>");
                     var text = $("<div>").attr("class", "text");
-                    var title = $("<h4>").attr("class", "title").text(obj.name);
-                    var textMuted = $("<div>").attr("class", "text-muted").text(obj.detail);
+                    var title = $("<h4>").attr("class", "title text_wrap").text(obj.title);
+                    var textMuted = $("<div>").attr("class", "text-muted").text(obj.content);
                     if (obj.imgs != null) {
-                        image.attr("src", host + "/img/society/" + obj.imgs[0].relName).attr("alt", "image");
+                        image.attr("src", host + "/img/activity/" + obj.imgs[0].relName).attr("alt", "image");
                     } else {
                         image.attr("src", host + "/img/society-default.jpg").attr("alt", "image");
                     }

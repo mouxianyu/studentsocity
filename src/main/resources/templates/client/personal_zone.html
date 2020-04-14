@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!--引入通用头部和css-->
+    <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
+    <!--引入自己的css-->
+</head>
+<body>
+<div class="appHeader">
+    <div class="pageTitle">
+        <span>个人中心</span>
+    </div>
+</div>
+<div id="appCapsule">
+    <div class="appContent">
+        <div class="listView detailed">
+            <a href="#" class="listItem">
+                <div class="image">
+                    <img th:src="@{'/img/avatar/'+${session.AVATAR}}" alt="avatar">
+                </div>
+                <div class="text">
+                    <div>
+                        <strong th:text="${session.USER.name}">Carmen Beltrán</strong>
+                        <div class="text-muted">
+                            <i th:if="${session.USER.gender}" class="fa fa-mars mr-1" aria-hidden="true" style="color: #428bca"></i>
+                            <i th:if="${not session.USER.gender}" class="fa fa-venus mr-1" aria-hidden="true"
+                               style="color: hotpink"></i>
+                            <span th:text="${session.USER.grade}+' 级'"></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <br>
+            <a href="#" class="listItem">
+                <div class="text">
+                    <div>
+                        <strong>修改密码</strong>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="listItem">
+                <div class="text">
+                    <div>
+                        <strong>申请社团</strong>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="listItem">
+                <div class="text">
+                    <div>
+                        <strong>我的社团</strong>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="listItem">
+                <div class="text">
+                    <div>
+                        <strong>退出登录</strong>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="../templates/client/client_common::bottom_buttom"/>
+
+<!--引入通用js-->
+<th:block th:replace="../templates/client/client_common::common-js"/>
+</body>
+</html>

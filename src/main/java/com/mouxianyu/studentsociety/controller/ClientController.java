@@ -1,11 +1,9 @@
 package com.mouxianyu.studentsociety.controller;
 
 import com.mouxianyu.studentsociety.common.constant.Constant;
-import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
 import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.pojo.dto.ActivityDTO;
 import com.mouxianyu.studentsociety.pojo.dto.SocietyDTO;
-import com.mouxianyu.studentsociety.pojo.entity.Img;
 import com.mouxianyu.studentsociety.pojo.entity.RelUserSociety;
 import com.mouxianyu.studentsociety.pojo.entity.Society;
 import com.mouxianyu.studentsociety.pojo.entity.User;
@@ -20,13 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -210,5 +204,29 @@ public class ClientController {
         ActivityVO activityVO = activityService.getByIdMore(activityId);
         request.setAttribute("activity", activityVO);
         return "client/activity_page";
+    }
+
+    @RequestMapping("activity/all")
+    public String activityAll(HttpServletRequest request, ActivityDTO activityDTO) {
+        activityDTO.setStart(0);
+        activityDTO.setRow(6);
+        activityDTO.setStatus(StatusEnum.NORMAL.getCode());
+        List<ActivityVO> activityVOS = activityService.queryByPageWithImg(activityDTO);
+        request.setAttribute("activities", activityVOS);
+        return "client/activity_all";
+    }
+
+    @RequestMapping("activity/load")
+    @ResponseBody
+    public List<ActivityVO> activityLoad(ActivityDTO activityDTO) {
+        activityDTO.setRow(6);
+        activityDTO.setStatus(StatusEnum.NORMAL.getCode());
+        List<ActivityVO> activityVOS = activityService.queryByPageWithImg(activityDTO);
+        return activityVOS;
+    }
+
+    @RequestMapping("zone")
+    public String personalZone(){
+        return "client/personal_zone";
     }
 }

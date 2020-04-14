@@ -39,11 +39,6 @@
     <div class="pageTitle">
         <img th:src="@{/img/logo.png}" alt="Bitter" class="image">
     </div>
-    <div class="right">
-        <label for="searchInput" class="mb-0 icon toggleSearchbox">
-            <i class="icon ion-ios-search"></i>
-        </label>
-    </div>
 </div>
 <div class="searchBox">
     <form>
@@ -130,7 +125,7 @@
         <div class="sectionTitle mb-2">
             <div class="title">
                 <h1>活 动</h1>
-                <a href="blog-category.html">查看所有</a>
+                <a th:href="@{/client/activity/all}">查看所有</a>
             </div>
         </div>
 
