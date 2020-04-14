@@ -7,10 +7,53 @@
     <!--引入自己的css-->
 </head>
 <body>
-
+<div class="appHeader">
+    <div class="left">
+        <a href="#" class="icon goBack">
+            <i class="icon ion-ios-arrow-back"></i>
+        </a>
+    </div>
+    <div class="pageTitle">活动详情</div>
+</div>
 <div id="appCapsule">
     <div class="appContent">
+        <h1 class="title-lg mt-2 mb-2" th:text="${activity.title}"></h1>
+        <!-- * title -->
+        <div class="postHeader mb-2">
+            <div>
+                <a th:href="@{'/client/society/'+${activity.societyId}}" class="badge badge-primary" th:text="${activity.societyName}" th:if="${not #strings.isEmpty(activity.societyName)}"></a>
+                <span class="badge badge-danger" th:if="${#strings.isEmpty(activity.societyName)}">全校</span>
+            </div>
+            <div>
+                <span th:text="${#dates.format(activity.estTime,'yyyy-MM-dd')}"></span>
+            </div>
+        </div>
+        <!-- post header -->
+        <div class="cardOverlayCarousel owl-carousel mt-2 mb-4">
+            <!-- item -->
+            <div class="item" th:if="${not #lists.isEmpty(activity.imgs)}" th:each="img:${activity.imgs}">
+                <div class="card card-overlay text-white">
+                    <img th:src="@{'/img/activity/'+${img.relName}}" class="card-img img-fluid" alt="image">
+                </div>
+            </div>
+        </div>
+        <!-- * post header-->
 
+        <!-- post body -->
+        <div class="postBody">
+            <p style="text-indent: 2em" th:text="${activity.content}"></p>
+        </div>
+        <!-- * post body -->
+
+        <!-- author -->
+        <div class="postAuthor mt-3">
+            <img th:src="@{'/img/avatar/'+${activity.createAvatar}}" th:if="${not #strings.isEmpty(activity.createAvatar)}" alt="avatar" class="avatar">
+            <img th:src="@{/img/avatar/avatar-default.jpg}" th:if="${#strings.isEmpty(activity.createAvatar)}" alt="avatar" class="avatar">
+            <div>
+                <strong th:text="${activity.createName}"></strong>
+                <div class="text-muted" th:text="${#dates.format(activity.estTime,'yyyy-MM-dd')}+' 发布'"></div>
+            </div>
+        </div>
     </div>
 </div>
 

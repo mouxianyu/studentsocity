@@ -183,4 +183,11 @@ public class ClientController {
         request.setAttribute("activity",activityVO);
         return "client/society_activity_detail";
     }
+
+    @RequestMapping("activity/{activityId}")
+    public String activityPage(@PathVariable Long activityId,HttpServletRequest request){
+        ActivityVO activityVO = activityService.getByIdMore(activityId);
+        request.setAttribute("activity",activityVO);
+        return "client/activity_page";
+    }
 }

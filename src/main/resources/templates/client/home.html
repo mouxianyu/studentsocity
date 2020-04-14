@@ -5,6 +5,15 @@
     <!--引入通用头部和css-->
     <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
     <!--引入自己的css-->
+    <style>
+        .text_wrap {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 150px;
+            display: block;
+        }
+    </style>
 </head>
 <body>
 <!--引入导航栏-->
@@ -175,45 +184,6 @@
 
         <div class="sectionTitle mb-2">
             <div class="title">
-                <h1>新 闻</h1>
-                <a href="blog-category.html">查看所有</a>
-            </div>
-        </div>
-        <!-- item list -->
-        <div class="itemList">
-            <div class="item">
-                <div class="image">
-                    <img th:src="@{/img/society-default.jpg}" alt="image">
-                </div>
-                <div class="text">
-                    <h4 class="title">Pinky Glasses</h4>
-                    <div class="text-muted">Simple and elegant design line and has stunning looks</div>
-                </div>
-            </div>
-            <div class="item">
-                <div class="image">
-                    <img th:src="@{/img/society-default.jpg}" alt="image">
-                </div>
-                <div class="text">
-                    <h4 class="title">Yellowish Headphone</h4>
-                    <div class="text-muted">Perfect spacing and perfect color sheme.</div>
-                </div>
-            </div>
-            <div class="item">
-                <div class="image">
-                    <img th:src="@{/img/society-default.jpg}" alt="image">
-                </div>
-                <div class="text">
-                    <h4 class="title">Hybrid</h4>
-                    <div class="text-muted">Just what you need for perfect hybrid app design.</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="divider mt-4 mb-4"></div>
-
-        <div class="sectionTitle mb-2">
-            <div class="title">
                 <h1>活 动</h1>
                 <a href="blog-category.html">查看所有</a>
             </div>
@@ -223,7 +193,7 @@
         <div class="row">
             <th:block th:each="activity:${activities}">
                 <div class="col-6">
-                    <a href="blog-post.html" class="postItem">
+                    <a th:href="@{'/client/activity/'+${activity.id}}" class="postItem">
                         <div class="imageWrapper">
                             <img th:if="${activity.imgs==null}" th:src="@{/img/society-default.jpg}" alt="image" class="image">
                             <th:block th:if="${activity.imgs!=null}" th:each="img,stat:${activity.imgs}">
@@ -232,7 +202,7 @@
                             <div class="badge badge-info" th:if="${activity.societyName!=null}" th:text="${activity.societyName}"></div>
                             <div class="badge badge-danger" th:if="${activity.societyName==null}">全校</div>
                         </div>
-                        <h2 class="title" th:text="${activity.title}"></h2>
+                        <h2 class="title text_wrap" th:text="${activity.title}"></h2>
                         <footer>
                             <img th:if="${activity.createAvatar==null}" th:src="@{/img/avatar-default.jpg}" alt="avatar" class="avatar">
                             <img th:if="${activity.createAvatar!=null}" th:src="@{'/img/avatar/'+${activity.createAvatar}}" alt="avatar" class="avatar">
