@@ -289,7 +289,11 @@ public class ClientController {
 
     @RequestMapping("login")
     @ResponseBody
-    public String login(String userNo,String userPassword,HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public String login(String checkCode, String userNo,String userPassword,HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        String relCheckCode = (String) request.getSession().getAttribute(Constant.IMAGE_CHECK_CODE);
+        if(!relCheckCode.equalsIgnoreCase(checkCode)){
+            return "验证码错误";
+        }
         User user = userService.getByNo(userNo);
         if(user==null){
             return "用户不存在";
@@ -299,6 +303,11 @@ public class ClientController {
         }
         updateSession(request,user);
         return "";
+    }
+
+    @RequestMapping("forgetPassword")
+    public String forgetPassword(){
+        return "client/forget_password";
     }
 
     @RequestMapping("logout")
