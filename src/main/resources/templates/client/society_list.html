@@ -24,11 +24,11 @@
         </label>
     </div>
     <div class="searchBox">
-        <form>
+        <form th:action="@{/client/society/all}">
             <span class="inputIcon">
                 <i class="icon ion-ios-search"></i>
             </span>
-            <input type="text" class="form-control" id="searchInput" placeholder="搜索...">
+            <input type="text" th:value="${societyName}" name="name" class="form-control" id="searchInput" placeholder="搜索...">
             <a class="toggleSearchbox closeButton">
                 <i class="icon ion-ios-close-circle"></i>
             </a>
@@ -79,7 +79,14 @@
         if (activityNum < 5) {
             $("#btn-loadMore").css("display", "none");
         }
+        $('#searchInput').bind('keyup', function (event) {
+            if (event.keyCode == "13") {
+                //回车执行查询
+                console.log($('#searchInput').val());
+            }
+        });
     })
+
 
     function goToSocietyMore(id) {
         window.location.href = "/client/society/" + id;
@@ -90,7 +97,8 @@
         $.ajax({
             url: "/client/society/load",
             data: {
-                start: $(".itemList .item").length
+                start: $(".itemList .item").length,
+                name: $("#searchInput").val()
             },
             success: function (data) {
                 if (data.length < 6) {

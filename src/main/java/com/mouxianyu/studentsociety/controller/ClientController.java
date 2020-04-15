@@ -17,6 +17,7 @@ import com.mouxianyu.studentsociety.service.SocietyService;
 import com.mouxianyu.studentsociety.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -85,20 +86,27 @@ public class ClientController {
     }
 
     @RequestMapping("society/all")
-    public String allSociety(HttpServletRequest request) {
+    public String allSociety(HttpServletRequest request,String name) {
         SocietyDTO societyDTO = new SocietyDTO();
+        if(!StringUtils.isEmpty(name)){
+            societyDTO.setName(name);
+        }
         societyDTO.setStart(0);
         societyDTO.setRow(5);
         societyDTO.setStatus(StatusEnum.NORMAL.getCode());
         List<SocietyVO> societyVOS = societyService.queryByPageWithImg(societyDTO);
         request.setAttribute("societies", societyVOS);
+        request.setAttribute("societyName", name);
         return "client/society_list";
     }
 
     @RequestMapping("society/load")
     @ResponseBody
-    public List<SocietyVO> loadSociety(int start) {
+    public List<SocietyVO> loadSociety(int start,String name) {
         SocietyDTO societyDTO = new SocietyDTO();
+        if(!StringUtils.isEmpty(name)){
+            societyDTO.setName(name);
+        }
         societyDTO.setStart(start);
         societyDTO.setRow(5);
         societyDTO.setStatus(StatusEnum.NORMAL.getCode());
@@ -115,6 +123,8 @@ public class ClientController {
                 society.setRelationStatus(relation.getStatus());
             }
         }
+        List<ActivityVO> activityVOS = activityService.queryBySocietyId(society.getId());
+        request.setAttribute("activities", activityVOS);
         request.setAttribute("society", society);
         return "client/society_page";
     }
@@ -230,6 +240,7 @@ public class ClientController {
         activityDTO.setStatus(StatusEnum.NORMAL.getCode());
         List<ActivityVO> activityVOS = activityService.queryByPageWithImg(activityDTO);
         request.setAttribute("activities", activityVOS);
+        request.setAttribute("activityTitle", activityDTO.getTitle());
         return "client/activity_all";
     }
 

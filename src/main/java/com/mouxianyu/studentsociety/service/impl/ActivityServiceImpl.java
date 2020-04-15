@@ -80,6 +80,21 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    public List<ActivityVO> queryBySocietyId(Long id) {
+        Example example = new Example(Activity.class);
+        List<ActivityVO> activityVOS = new ArrayList<>();
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("societyId",id);
+        criteria.andEqualTo("status",StatusEnum.NORMAL.getCode());
+        List<Activity> activities = activityMapper.selectByExample(example);
+        for (Activity activity : activities) {
+            ActivityVO activityVO = toVOConditionWithImg(activity);
+            activityVOS.add(activityVO);
+        }
+        return activityVOS;
+    }
+
+    @Override
     public int getCountByCondition(ActivityDTO activityDTO) {
         Example example = condition(activityDTO);
         return activityMapper.selectCountByExample(example);

@@ -29,6 +29,13 @@ public interface ActivityService {
     List<ActivityVO> queryByPageWithImg(ActivityDTO activityDTO);
 
     /**
+     * 根据社团id查询
+     * @param id
+     * @return java.util.List<com.mouxianyu.studentsociety.pojo.vo.ActivityVO>
+     */
+    List<ActivityVO> queryBySocietyId(Long id);
+
+    /**
      * 按条件查询条数
      *
      * @param activityDTO

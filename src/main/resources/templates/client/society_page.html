@@ -5,6 +5,32 @@
     <!--引入通用头部和css-->
     <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
     <!--引入自己的css-->
+    <style>
+        .text-muted {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            overflow: hidden;
+        }
+
+        .text_wrap {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 150px;
+            display: block;
+        }
+
+        .image {
+            position: relative;
+        }
+
+        .image .badge {
+            top: 5px;
+            left: 5px;
+            position: absolute;
+        }
+    </style>
 </head>
 <body>
 <div class="appHeader">
@@ -56,7 +82,8 @@
         <!-- * author -->
         <div class="row mt-2">
             <div class="col-6" style="margin: 0 auto" th:if="${session.USER.id==society.presidentId}">
-                <a style="color: white" class="btn btn-primary btn-block" th:onclick="'manageSociety('+${society.id}+')'">管理社团</a>
+                <a style="color: white" class="btn btn-primary btn-block"
+                   th:onclick="'manageSociety('+${society.id}+')'">管理社团</a>
             </div>
             <div class="col-6" style="margin: 0 auto" th:if="${society.relationStatus==null}">
                 <a style="color: white" th:onclick="'joinInSociety('+${society.id}+')'"
@@ -65,11 +92,34 @@
             <div class="col-6" style="margin: 0 auto" th:if="${society.relationStatus==3}">
                 <a style="color: white" class="btn btn-warning btn-block">申请中</a>
             </div>
-            <div class="col-6" style="margin: 0 auto" th:if="${society.relationStatus==0&&session.USER.id!=society.presidentId}">
+            <div class="col-6" style="margin: 0 auto"
+                 th:if="${society.relationStatus==0&&session.USER.id!=society.presidentId}">
                 <a style="color: white" class="btn btn-success btn-block">已加入</a>
             </div>
         </div>
         <div class="divider mt-2 mb-4"></div>
+        <th:block th:if="${not #lists.isEmpty(activities)}">
+            <h1 class="title-lg mt-2 mb-2">社团活动</h1>
+            <div class="divider mt-2 mb-4"></div>
+            <div class="itemList" id="activity_list">
+                <th:block th:each="activity:${activities}">
+                    <div class="item" th:onclick="'goToActivityMore('+${activity.id}+')'">
+                        <div class="image">
+                            <img th:if="${#lists.isEmpty(activity.imgs)}" th:src="@{/img/society-default.jpg}"
+                                 alt="image">
+                            <th:block th:if="${not #lists.isEmpty(activity.imgs)}" th:each="img,stat:${activity.imgs}">
+                                <img th:if="${stat.first}" th:src="@{'/img/activity/'+${img.relName}}" alt="image">
+                            </th:block>
+                        </div>
+                        <div class="text">
+                            <h4 class="title text_wrap" th:text="${activity.title}">活动名</h4>
+                            <div class="text-muted" th:text="${activity.content}">活动内容</div>
+                        </div>
+                    </div>
+                    <div class="divider mt-2 mb-4"></div>
+                </th:block>
+            </div>
+        </th:block>
     </div>
 </div>
 
@@ -96,7 +146,11 @@
     }
 
     function manageSociety(id) {
-        window.location.href="/client/society/manage/"+id;
+        window.location.href = "/client/society/manage/" + id;
+    }
+
+    function goToActivityMore(id) {
+        window.location.href = "/client/activity/" + id;
     }
 </script>
 </body>

@@ -39,11 +39,11 @@
         </label>
     </div>
     <div class="searchBox">
-        <form>
+        <form th:action="@{/client/activity/all}">
             <span class="inputIcon">
                 <i class="icon ion-ios-search"></i>
             </span>
-            <input type="text" class="form-control" id="searchInput" placeholder="搜索...">
+            <input type="text" th:value="${activityTitle}" class="form-control" name="title" id="searchInput" placeholder="搜索...">
             <a class="toggleSearchbox closeButton">
                 <i class="icon ion-ios-close-circle"></i>
             </a>
@@ -106,7 +106,8 @@
         $.ajax({
             url: "/client/activity/load",
             data: {
-                start: $(".itemList .item").length
+                start: $(".itemList .item").length,
+                title:$("#searchInput").val()
             },
             success: function (data) {
                 if (data.length < 6) {
@@ -117,6 +118,12 @@
                     var item = $("<div>").attr("class", "item").attr("onclick", "goToActivityMore(" + obj.id + ")");
                     var imgDiv = $("<div>").attr("class", "image");
                     var image = $("<img>");
+                    var badge = $("<span>");
+                    if(obj.societyName==null||obj.societyName==""){
+                        badge.attr("class","badge badge-danger").text("全校");
+                    }else {
+                        badge.attr("class","badge badge-success").text(obj.societyName);
+                    }
                     var text = $("<div>").attr("class", "text");
                     var title = $("<h4>").attr("class", "title text_wrap").text(obj.title);
                     var textMuted = $("<div>").attr("class", "text-muted").text(obj.content);
@@ -127,6 +134,7 @@
                     }
                     text.append(title);
                     text.append(textMuted);
+                    imgDiv.append(badge);
                     imgDiv.append(image);
                     item.append(imgDiv);
                     item.append(text);
