@@ -6,7 +6,9 @@ import com.mouxianyu.studentsociety.common.enums.AuthTypeEnum;
 import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
 import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.common.util.FileUtil;
+import com.mouxianyu.studentsociety.common.util.MD5Util;
 import com.mouxianyu.studentsociety.mapper.UserMapper;
+import com.mouxianyu.studentsociety.pojo.dto.ActivityDTO;
 import com.mouxianyu.studentsociety.pojo.dto.SocietyDTO;
 import com.mouxianyu.studentsociety.pojo.dto.UserDTO;
 import com.mouxianyu.studentsociety.pojo.dto.UserImportDTO;
@@ -29,10 +31,9 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 /**
  * @description: TODO
@@ -87,7 +88,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserVO> queryBySocietyIdAndCondition(SocietyDTO societyDTO) {
         List<UserVO> userVOS = new ArrayList<>();
-        List<RelUserSociety> relUserSocieties = relUserSocietyService.queryBySocietyIdAndStatus(societyDTO.getId(),societyDTO.getStatus());
+        List<RelUserSociety> relUserSocieties = relUserSocietyService.queryBySocietyIdAndStatus(societyDTO.getId(), societyDTO.getStatus());
         for (RelUserSociety relUserSociety : relUserSocieties) {
             User user = getById(relUserSociety.getUserId());
             UserVO userVO = new UserVO();
@@ -103,7 +104,7 @@ public class UserServiceImpl implements UserService {
                 userVO.setMajor(major.getName());
             }
             List<Img> imgs = imgService.queryByTypeObjId(user.getId(), ObjTypeEnum.AVATAR.getCode());
-            if(imgs!=null&&imgs.size()>0){
+            if (imgs != null && imgs.size() > 0) {
                 userVO.setAvatarImgName(imgs.get(0).getRelName());
             }
             userVOS.add(userVO);
@@ -140,6 +141,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Map<String, List<String>> countBystatus() {
+        List<String> names = new ArrayList<>();
+        names.add("正常用户");
+        names.add("失效用户");
+        List<String> counts = new ArrayList<>();
+        UserDTO userDTO = new UserDTO();
+        int count;
+        userDTO.setStatus(StatusEnum.NORMAL.getCode());
+        count = getCountByCondition(userDTO);
+        counts.add((Integer.toString(count)));
+        userDTO.setStatus(StatusEnum.INVALID.getCode());
+        count = getCountByCondition(userDTO);
+        counts.add((Integer.toString(count)));
+        Map<String, List<String>> result = new HashMap<>(2);
+        result.put("names", names);
+        result.put("counts", counts);
+        return result;
+    }
+
+    @Override
     public void deleteById(Long id) {
         User user = new User();
         user.setId(id);
@@ -148,13 +169,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateById(UserDTO userDTO) {
+    public void updateById(UserDTO userDTO) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         User user = new User();
         if (userDTO.getMajor() != null) {
             Major major = majorService.getById(userDTO.getMajor());
             userDTO.setCollege(major.getCollegeId());
         }
         BeanUtils.copyProperties(userDTO, user);
+        if (!StringUtils.isEmpty(user.getPassword())) {
+            String password = MD5Util.encoderByMd5(user.getPassword());
+            user.setPassword(password);
+        }
         user.setModifyTime(new Date());
         userMapper.updateByPrimaryKeySelective(user);
     }
@@ -167,7 +192,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void add(UserDTO userDTO) {
+    public void add(UserDTO userDTO) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         User user = new User();
         if (userDTO.getMajor() != null) {
             Major major = majorService.getById(userDTO.getMajor());
@@ -176,11 +201,19 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(userDTO, user);
         user.setCreateTime(new Date());
         if (StringUtils.isEmpty(user.getPassword())) {
-            user.setPassword(Constant.DEFAULT_PASSWORD);
+            if (StringUtils.isEmpty(user.getNo())) {
+                user.setPassword(Constant.DEFAULT_PASSWORD);
+            } else {
+                int userNoLength = user.getNo().length();
+                String password = user.getNo().substring(userNoLength - 6, userNoLength);
+                user.setPassword(password);
+            }
         }
         if (user.getStatus() == null) {
             user.setStatus(StatusEnum.INVALID.getCode());
         }
+        String password = MD5Util.encoderByMd5(user.getPassword());
+        user.setPassword(password);
         userMapper.insertSelective(user);
     }
 
@@ -238,7 +271,7 @@ public class UserServiceImpl implements UserService {
                 XSSFCell cell = row.getCell(cellIndex);
                 cell.setCellType(CellType.STRING);
                 String cellValue = cell.getStringCellValue();
-                if (StringUtils.isEmpty(cellValue)){
+                if (StringUtils.isEmpty(cellValue)) {
                     continue;
                 }
                 if (cellIndex == stuMajorIndex) {
@@ -301,7 +334,15 @@ public class UserServiceImpl implements UserService {
         if (!StringUtils.isEmpty(userDTO.getNo())) {
             criteria.andLike("no", "%" + userDTO.getNo() + "%");
         }
-        criteria.andNotEqualTo("status", StatusEnum.DELETED.getCode());
+        if (userDTO.getStatus() != null) {
+            criteria.andEqualTo("status", userDTO.getStatus());
+        } else {
+            criteria.andNotEqualTo("status", StatusEnum.DELETED.getCode());
+        }
+        if (userDTO.getAuthority() != null) {
+            criteria.andEqualTo("authority", userDTO.getAuthority());
+        }
+
         return example;
     }
 }

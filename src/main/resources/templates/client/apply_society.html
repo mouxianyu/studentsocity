@@ -38,6 +38,9 @@
 <!--引入通用js-->
 <th:block th:replace="../templates/client/client_common::common-js"/>
 <script>
+    $(function () {
+        $("#btn-zone").addClass("active");
+    })
     function applyForSociety() {
         var societyName =$("#society_name").val();
         var societyDetail =$("#society_detail").val();

@@ -19,6 +19,98 @@
         </div>
     </div>
     <br>
+    <section class="dashboard-counts section-padding">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-2 col-md-4 col-6">
+                    <div class="wrapper count-title d-flex">
+                        <div class="icon"><i class="icon-user"></i></div>
+                        <div class="name"><strong class="text-uppercase">管理员数量</strong>
+                            <div class="count-number" th:text="${adminCount}">25</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Count item widget-->
+                <div class="col-xl-2 col-md-4 col-6">
+                    <div class="wrapper count-title d-flex">
+                        <div class="icon"><i class="icon-user"></i></div>
+                        <div class="name"><strong class="text-uppercase">用户数量</strong>
+                            <div class="count-number" th:text="${userCount}">25</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Count item widget-->
+                <div class="col-xl-2 col-md-4 col-6">
+                    <div class="wrapper count-title d-flex">
+                        <div class="icon"><i class="icon-padnote"></i></div>
+                        <div class="name"><strong class="text-uppercase">社团数目</strong><span></span>
+                            <div class="count-number" th:text="${societyCount}">400</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Count item widget-->
+                <div class="col-xl-2 col-md-4 col-6">
+                    <div class="wrapper count-title d-flex">
+                        <div class="icon"><i class="icon-check"></i></div>
+                        <div class="name"><strong class="text-uppercase">活动数目</strong>
+                            <div class="count-number" th:text="${activityCount}">342</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Count item widget-->
+                <div class="col-xl-2 col-md-4 col-6">
+                    <div class="wrapper count-title d-flex">
+                        <div class="icon"><i class="icon-bill"></i></div>
+                        <div class="name"><strong class="text-uppercase">学院数目</strong>
+                            <div class="count-number" th:text="${collegeCount}">123</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Count item widget-->
+                <div class="col-xl-2 col-md-4 col-6">
+                    <div class="wrapper count-title d-flex">
+                        <div class="icon"><i class="icon-list"></i></div>
+                        <div class="name"><strong class="text-uppercase">专业数目</strong>
+                            <div class="count-number" th:text="${majorCount}">92</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="dashboard-header section-padding">
+        <div class="container-fluid">
+            <div class="row d-flex align-items-md-stretch">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card project-progress">
+                        <h2 class="display h4">用户状态分布</h2>
+                        <p>点击标签可进行筛选</p>
+                        <div class="pie-chart">
+                            <canvas id="user_chart" width="300" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card project-progress">
+                        <h2 class="display h4">社团状态分布</h2>
+                        <p>点击标签可进行筛选</p>
+                        <div class="pie-chart">
+                            <canvas id="society_chart" width="300" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card project-progress">
+                        <h2 class="display h4">活动状态分布</h2>
+                        <p>点击标签可进行筛选</p>
+                        <div class="pie-chart">
+                            <canvas id="activity_chart" width="300" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 <!--引入通用js-->
 <th:block th:replace="../templates/common::common-js"/>

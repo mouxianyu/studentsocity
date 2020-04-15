@@ -1,7 +1,9 @@
 package com.mouxianyu.studentsociety.controller;
 
 import com.mouxianyu.studentsociety.common.constant.Constant;
+import com.mouxianyu.studentsociety.common.enums.AuthTypeEnum;
 import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
+import com.mouxianyu.studentsociety.common.util.MD5Util;
 import com.mouxianyu.studentsociety.pojo.dto.UserDTO;
 import com.mouxianyu.studentsociety.pojo.dto.UserImportDTO;
 import com.mouxianyu.studentsociety.pojo.entity.College;
@@ -25,6 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 /**
@@ -83,13 +87,16 @@ public class UserController {
 
     @RequestMapping("login")
     @ResponseBody
-    public String login(String userNo,String userPassword,HttpServletRequest request){
+    public String login(String userNo,String userPassword,HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         User user = userService.getByUserNo(userNo);
         if(user==null){
             return "用户不存在";
         }
-        if(!user.getPassword().equals(userPassword)){
+        if(MD5Util.checkPassword(userPassword, user.getPassword())){
             return "密码错误";
+        }
+        if(user.getAuthority()!= AuthTypeEnum.ADMIN.getCode()){
+            return "您不是管理员";
         }
         updateSession(request,user);
         return "";
@@ -124,14 +131,14 @@ public class UserController {
     }
 
     @RequestMapping("update")
-    public String update(UserDTO userDTO){
+    public String update(UserDTO userDTO) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         userService.updateById(userDTO);
         return "redirect:/user/queryByPage";
     }
 
     @RequestMapping("updateIncludeSession")
     @ResponseBody
-    public void updateIncludeSession(UserDTO userDTO ,HttpServletRequest request){
+    public void updateIncludeSession(UserDTO userDTO ,HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         User user = (User)request.getSession().getAttribute(Constant.USER);
         userDTO.setId(user.getId());
         userService.updateById(userDTO);
@@ -141,7 +148,7 @@ public class UserController {
 
     @RequestMapping("resetPassword")
     @ResponseBody
-    public void resetPassword(Long id){
+    public void resetPassword(Long id) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(id);
         userDTO.setPassword(Constant.DEFAULT_PASSWORD);
@@ -149,10 +156,10 @@ public class UserController {
     }
     @RequestMapping("changePassword")
     @ResponseBody
-    public String changePassword(HttpServletRequest request,String oldPassword,String newPassword){
+    public String changePassword(HttpServletRequest request,String oldPassword,String newPassword) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         User currentUser = (User)request.getSession().getAttribute(Constant.USER);
         User user = userService.getById(currentUser.getId());
-        if(!user.getPassword().equals(oldPassword)){
+        if(MD5Util.checkPassword(oldPassword, user.getPassword())){
             return "旧密码错误";
         }else {
             UserDTO userDTO = new UserDTO();
@@ -164,7 +171,7 @@ public class UserController {
     }
 
     @RequestMapping("add")
-    public String add(UserDTO userDTO){
+    public String add(UserDTO userDTO) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         userService.add(userDTO);
         return "redirect:/user/queryByPage";
     }

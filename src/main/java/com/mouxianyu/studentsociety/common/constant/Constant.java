@@ -9,7 +9,7 @@ public final class Constant {
     /**
      * 默认密码
      */
-    public static final String DEFAULT_PASSWORD="88888888";
+    public static final String DEFAULT_PASSWORD="666666";
 
     /**
      * 用户

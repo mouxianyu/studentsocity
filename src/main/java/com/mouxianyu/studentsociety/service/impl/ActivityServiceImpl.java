@@ -7,6 +7,7 @@ import com.mouxianyu.studentsociety.common.enums.ScaleEnum;
 import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.mapper.ActivityMapper;
 import com.mouxianyu.studentsociety.pojo.dto.ActivityDTO;
+import com.mouxianyu.studentsociety.pojo.dto.SocietyDTO;
 import com.mouxianyu.studentsociety.pojo.entity.Activity;
 import com.mouxianyu.studentsociety.pojo.entity.Img;
 import com.mouxianyu.studentsociety.pojo.entity.Society;
@@ -26,9 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @description: TODO
@@ -98,6 +97,34 @@ public class ActivityServiceImpl implements ActivityService {
     public int getCountByCondition(ActivityDTO activityDTO) {
         Example example = condition(activityDTO);
         return activityMapper.selectCountByExample(example);
+    }
+
+    @Override
+    public Map<String, List<String>> countBystatus() {
+        List<String> names = new ArrayList<>();
+        names.add("正常活动");
+        names.add("失效活动");
+        names.add("审核中活动");
+        names.add("被驳回活动");
+        List<String> counts = new ArrayList<>();
+        ActivityDTO activityDTO = new ActivityDTO();
+        int count;
+        activityDTO.setStatus(StatusEnum.NORMAL.getCode());
+        count = getCountByCondition(activityDTO);
+        counts.add((Integer.toString(count)));
+        activityDTO.setStatus(StatusEnum.INVALID.getCode());
+        count = getCountByCondition(activityDTO);
+        counts.add((Integer.toString(count)));
+        activityDTO.setStatus(StatusEnum.AUDITING.getCode());
+        count = getCountByCondition(activityDTO);
+        counts.add((Integer.toString(count)));
+        activityDTO.setStatus(StatusEnum.REJECT.getCode());
+        count = getCountByCondition(activityDTO);
+        counts.add((Integer.toString(count)));
+        Map<String, List<String>> result = new HashMap<>(4);
+        result.put("names",names);
+        result.put("counts",counts);
+        return result;
     }
 
     @Override

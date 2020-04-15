@@ -77,6 +77,9 @@
 <!--引入通用js-->
 <th:block th:replace="../templates/client/client_common::common-js"/>
 <script>
+    $(function () {
+        $("#btn-zone").addClass("active");
+    })
     function toUploadImgPage(objId) {
         var map = new Map();
         map.set("objId", objId);

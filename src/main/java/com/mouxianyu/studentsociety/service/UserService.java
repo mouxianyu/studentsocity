@@ -9,7 +9,10 @@ import com.mouxianyu.studentsociety.pojo.vo.UserVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description: 用户业务逻辑
@@ -65,6 +68,13 @@ public interface UserService {
     int getCountByCondition(UserDTO userDTO);
 
     /**
+     * 社团状态通统计
+     * @param
+     * @return java.util.Map<java.lang.String,java.util.List<java.lang.String>>
+     */
+    Map<String,List<String>> countBystatus();
+
+    /**
      * 根据id删除
      *
      * @param id 主键
@@ -76,7 +86,7 @@ public interface UserService {
      *
      * @param userDTO 更新
      */
-    void updateById(UserDTO userDTO);
+    void updateById(UserDTO userDTO) throws UnsupportedEncodingException, NoSuchAlgorithmException;
 
     /**
      * 根据id批量删除
@@ -90,7 +100,7 @@ public interface UserService {
      *
      * @param userDTO
      */
-    void add(UserDTO userDTO);
+    void add(UserDTO userDTO) throws UnsupportedEncodingException, NoSuchAlgorithmException;
 
     /**
      * 导入上传数据

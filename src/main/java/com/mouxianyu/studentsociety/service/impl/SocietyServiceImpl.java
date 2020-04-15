@@ -212,6 +212,34 @@ public class SocietyServiceImpl implements SocietyService {
     }
 
     @Override
+    public Map<String, List<String>> countBystatus() {
+        List<String> names = new ArrayList<>();
+        names.add("正常社团");
+        names.add("失效社团");
+        names.add("审核中社团");
+        names.add("被驳回社团");
+        List<String> counts = new ArrayList<>();
+        SocietyDTO societyDTO = new SocietyDTO();
+        int count;
+        societyDTO.setStatus(StatusEnum.NORMAL.getCode());
+        count = getCountByCondition(societyDTO);
+        counts.add((Integer.toString(count)));
+        societyDTO.setStatus(StatusEnum.INVALID.getCode());
+        count = getCountByCondition(societyDTO);
+        counts.add((Integer.toString(count)));
+        societyDTO.setStatus(StatusEnum.AUDITING.getCode());
+        count = getCountByCondition(societyDTO);
+        counts.add((Integer.toString(count)));
+        societyDTO.setStatus(StatusEnum.REJECT.getCode());
+        count = getCountByCondition(societyDTO);
+        counts.add((Integer.toString(count)));
+        Map<String, List<String>> result = new HashMap<>(4);
+        result.put("names",names);
+        result.put("counts",counts);
+        return result;
+    }
+
+    @Override
     public Map<String, List<String>> countByMajor(Long societyId) {
         List<String> counts = new ArrayList<>();
         List<String> majors = new ArrayList<>();

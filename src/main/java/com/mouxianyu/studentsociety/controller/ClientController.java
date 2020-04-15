@@ -1,20 +1,17 @@
 package com.mouxianyu.studentsociety.controller;
 
 import com.mouxianyu.studentsociety.common.constant.Constant;
+import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
 import com.mouxianyu.studentsociety.common.enums.StatusEnum;
 import com.mouxianyu.studentsociety.common.enums.UserSocietyRelationEnum;
+import com.mouxianyu.studentsociety.common.util.MD5Util;
 import com.mouxianyu.studentsociety.pojo.dto.ActivityDTO;
 import com.mouxianyu.studentsociety.pojo.dto.SocietyDTO;
-import com.mouxianyu.studentsociety.pojo.entity.RelUserSociety;
-import com.mouxianyu.studentsociety.pojo.entity.Society;
-import com.mouxianyu.studentsociety.pojo.entity.User;
+import com.mouxianyu.studentsociety.pojo.entity.*;
 import com.mouxianyu.studentsociety.pojo.vo.ActivityVO;
 import com.mouxianyu.studentsociety.pojo.vo.SocietyVO;
 import com.mouxianyu.studentsociety.pojo.vo.UserVO;
-import com.mouxianyu.studentsociety.service.ActivityService;
-import com.mouxianyu.studentsociety.service.RelUserSocietyService;
-import com.mouxianyu.studentsociety.service.SocietyService;
-import com.mouxianyu.studentsociety.service.UserService;
+import com.mouxianyu.studentsociety.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -23,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +45,15 @@ public class ClientController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MajorService majorService;
+
+    @Autowired
+    private CollegeService collegeService;
+
+    @Autowired
+    private ImgService imgService;
 
     @RequestMapping("home")
     public String client(HttpServletRequest request) {
@@ -273,6 +282,25 @@ public class ClientController {
         return "client/apply_society";
     }
 
+    @RequestMapping("toLogin")
+    public String toLogin(){
+        return "client/login";
+    }
+
+    @RequestMapping("login")
+    @ResponseBody
+    public String login(String userNo,String userPassword,HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        User user = userService.getByUserNo(userNo);
+        if(user==null){
+            return "用户不存在";
+        }
+        if(MD5Util.checkPassword(userPassword, user.getPassword())){
+            return "密码错误";
+        }
+        updateSession(request,user);
+        return "";
+    }
+
     @RequestMapping("logout")
     public String logout(HttpServletRequest request){
         request.getSession().removeAttribute(Constant.USER);
@@ -308,5 +336,18 @@ public class ClientController {
         request.setAttribute("isManage",false);
         request.setAttribute("societies",societyVOS);
         return "client/my_society_list";
+    }
+
+    private void updateSession(HttpServletRequest request,User user){
+        HttpSession session = request.getSession();
+        Major major = majorService.getById(user.getMajor());
+        College college = collegeService.getById(major.getCollegeId());
+        List<Img> imgs = imgService.queryByTypeObjId(user.getId(), ObjTypeEnum.AVATAR.getCode());
+        session.setAttribute(Constant.USER,user);
+        session.setAttribute(Constant.MAJOR,major.getName());
+        session.setAttribute(Constant.COLLEGE,college.getName());
+        if(imgs!=null&&imgs.size()>0){
+            session.setAttribute(Constant.AVATAR,imgs.get(0).getRelName());
+        }
     }
 }

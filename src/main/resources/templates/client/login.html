@@ -5,18 +5,79 @@
     <!--引入通用头部和css-->
     <th:block th:replace="../templates/client/client_common::common-header('学生社团系统')"/>
     <!--引入自己的css-->
+    <style>
+        .image img{
+            width: 80%;
+        }
+    </style>
 </head>
 <body>
-
-<div id="appCapsule">
+<div class="appHeader">
+    <div class="pageTitle">登录</div>
+</div>
+<div id="appCapsule" style="margin-top: 100px">
     <div class="appContent">
+        <div class="sectionTitle text-center mt-3">
+            <div class="title">
+                <h1>学 生 社 团 系 统</h1>
+            </div>
+            <div class="lead mb-2">
+                <div class="image">
+                    <img th:src="@{/img/draw-4.png}">
+                </div>
+            </div>
+        </div>
 
+        <form action="index.html">
+            <div class="form-group">
+                <input type="text" class="form-control" id="user_no" placeholder="学号...">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" id="user_password" placeholder="密码...">
+            </div>
+            <div class="form-group row mt-3 mb-3">
+                <div class="col-12 text-right">
+                    <span class="text-muted">初始密码为学号后六位或六个6</span>
+                </div>
+            </div>
+            <div>
+                <button type="button" onclick="login()" class="btn btn-primary btn-lg btn-block">登录</button>
+            </div>
+        </form>
     </div>
 </div>
 
-<th:block th:replace="../templates/client/client_common::bottom_buttom"/>
 
 <!--引入通用js-->
 <th:block th:replace="../templates/client/client_common::common-js"/>
+<script>
+    function login() {
+        var userNo = $("#user_no").val();
+        if (userNo === "") {
+            mobileAlert("请输入学号");
+            return;
+        }
+        var userPassword = $("#user_password").val();
+        if (userPassword === "") {
+            mobileAlert("请输入密码");
+            return;
+        }
+        $.ajax({
+            type: "post",
+            url: "/client/login",
+            data: {
+                userNo: userNo,
+                userPassword: userPassword
+            },
+            success: function (data) {
+                if (data === "") {
+                    window.location.href = "/client/home"
+                } else {
+                    mobileAlert(data);
+                }
+            }
+        });
+    }
+</script>
 </body>
 </html>
