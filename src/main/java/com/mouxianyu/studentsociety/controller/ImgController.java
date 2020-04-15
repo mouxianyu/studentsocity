@@ -3,6 +3,7 @@ package com.mouxianyu.studentsociety.controller;
 import com.mouxianyu.studentsociety.common.config.ImgConfig;
 import com.mouxianyu.studentsociety.common.constant.Constant;
 import com.mouxianyu.studentsociety.common.enums.ObjTypeEnum;
+import com.mouxianyu.studentsociety.common.util.ImageCheckCode;
 import com.mouxianyu.studentsociety.pojo.dto.ActivityDTO;
 import com.mouxianyu.studentsociety.pojo.entity.Activity;
 import com.mouxianyu.studentsociety.pojo.entity.Img;
@@ -19,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -88,6 +91,14 @@ public class ImgController {
         request.setAttribute("objType",objType);
         request.setAttribute("objId",objId);
         return "client/img_upload";
+    }
+
+    @RequestMapping("/checkCode")
+    public void getCheckCode(HttpSession session, HttpServletResponse response) throws IOException {
+        ImageCheckCode checkCode=new ImageCheckCode();
+        BufferedImage image=checkCode.getCheckCodeImage();
+        session.setAttribute(Constant.IMAGE_CHECK_CODE,checkCode.getText());
+        ImageCheckCode.output(image,response.getOutputStream());
     }
 
 

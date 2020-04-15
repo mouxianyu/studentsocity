@@ -32,10 +32,17 @@
                         <input id="user_password" type="password" name="loginPassword" required data-msg="请输入密码" class="input-material">
                         <label for="user_password" class="label-material">密 码</label>
                     </div>
+                    <div class="form-group-material">
+                        <input id="check_code" type="text" name="checkCode" required data-msg="请输入验证码" class="input-material">
+                        <label for="user_password" class="label-material">验证码</label>
+                    </div>
+                    <div class="form-group-material">
+                        <a onclick="refreshCode()"><img style="border: 1px solid lightgray" th:src="@{/img/checkCode}" title="看不清点击刷新" id="check_code_image"/></a>
+                    </div>
                     <div class="form-group text-center">
                         <button class="btn btn-primary" type="button" onclick="login()">登录</button>
                     </div>
-                </form><a href="#" class="forgot-pass">忘记密码？</a>
+                </form><a th:href="@{/forgetPassword}" class="forgot-pass">忘记密码？</a>
             </div>
         </div>
     </div>
@@ -43,6 +50,13 @@
 </body>
 <th:block th:replace="../templates/common::common-js"/>
 <script>
+    var host;
+    $(function () {
+        var curWwwPath = window.document.location.href;
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        host = curWwwPath.substring(0, pos);
+    })
     function login() {
         var userNo = $("#user_no").val();
         if (userNo === "") {
@@ -54,12 +68,19 @@
             myAlert("请输入密码");
             return;
         }
+
+        var checkCode = $("#check_code").val();
+        if (checkCode === "") {
+            myAlert("请输入验证码");
+            return;
+        }
         $.ajax({
             type: "post",
             url: "/user/login",
             data: {
                 userNo: userNo,
-                userPassword: userPassword
+                userPassword: userPassword,
+                checkCode:checkCode
             },
             success: function (data) {
                 if (data === "") {
@@ -69,6 +90,11 @@
                 }
             }
         });
+    }
+
+    function refreshCode() {
+        var newImage = document.getElementById("check_code_image");
+        newImage.src=host+"/img/checkCode?time="+new Date().getTime();
     }
 </script>
 </html>

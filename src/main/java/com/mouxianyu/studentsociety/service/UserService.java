@@ -29,12 +29,12 @@ public interface UserService {
     User getById(Long id);
 
     /**
-     * 通过编号查询
-     *
-     * @param userNo
+     * 通过学号活动
+     * @param no
      * @return com.mouxianyu.studentsociety.pojo.entity.User
      */
-    User getByUserNo(String userNo);
+    User getByNo(String no);
+
 
     /**
      * 查询所有

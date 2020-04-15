@@ -290,11 +290,11 @@ public class ClientController {
     @RequestMapping("login")
     @ResponseBody
     public String login(String userNo,String userPassword,HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        User user = userService.getByUserNo(userNo);
+        User user = userService.getByNo(userNo);
         if(user==null){
             return "用户不存在";
         }
-        if(MD5Util.checkPassword(userPassword, user.getPassword())){
+        if(!MD5Util.checkPassword(userPassword, user.getPassword())){
             return "密码错误";
         }
         updateSession(request,user);

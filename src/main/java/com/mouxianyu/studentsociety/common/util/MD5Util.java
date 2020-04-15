@@ -16,8 +16,7 @@ public class MD5Util {
         MessageDigest md5 = MessageDigest.getInstance("MD5");
         BASE64Encoder base64en = new BASE64Encoder();
         //加密后的字符串
-        String encode = base64en.encode(md5.digest(str.getBytes("utf-8")));
-        return encode;
+        return base64en.encode(md5.digest(str.getBytes("utf-8")));
     }
 
     /**
@@ -25,7 +24,7 @@ public class MD5Util {
      * newpasswd 用户输入的密码
      * oldpasswd 正确密码
      */
-    public static boolean checkPassword(String newPassword, String oldPassword) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        return !encoderByMd5(newPassword).equals(oldPassword);
+    public static boolean checkPassword(String input, String origin) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        return encoderByMd5(input).equals(origin);
     }
 }

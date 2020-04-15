@@ -65,10 +65,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getByUserNo(String userNo) {
+    public User getByNo(String no) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("no", userNo);
+        criteria.andEqualTo("no",no);
         return userMapper.selectOneByExample(example);
     }
 

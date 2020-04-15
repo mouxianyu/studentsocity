@@ -30,4 +30,14 @@ public final class Constant {
      * 专业
      */
     public static final String MAJOR="MAJOR";
+
+    /**
+     * 邮箱验证码
+     */
+    public static final String MAIL_CHECK_CODE="MAILCHECKCODE";
+
+    /**
+     * 图形验证码
+     */
+    public static final String IMAGE_CHECK_CODE="IMAGECHECKCODE";
 }
