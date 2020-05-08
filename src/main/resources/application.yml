@@ -17,7 +17,7 @@ mybatis:
 
 mouxianyu:
   img-path:
-    activity: C:\\mine\\毕设\\项目\\img\\activity\\
-    avatar: C:\\mine\\毕设\\项目\\img\\avatar\\
-    society: C:\\mine\\毕设\\项目\\img\\society\\
-    news: C:\\mine\\毕设\\项目\\img\\news\\
+    activity: E:\\kingsme\\Documents\\瑞幸电脑拷贝\\毕设\\项目\\img\\activity\\
+    avatar: E:\\kingsme\\Documents\\瑞幸电脑拷贝\\毕设\\项目\\img\\avatar\\
+    society: E:\\kingsme\\Documents\\瑞幸电脑拷贝\\毕设\\项目\\img\\society\\
+    news: E:\\kingsme\\Documents\\瑞幸电脑拷贝\\毕设\\项目\\img\\news\\
